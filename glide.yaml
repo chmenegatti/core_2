@@ -1,0 +1,33 @@
+package: gitlab-devops.totvs.com.br/microservices/core
+owners:
+- name: DevOps - Totvs
+  email: sp.cloud.devops@totvs.com.br
+import:
+- package: gitlab-devops.totvs.com.br/golang/moirai-http-client
+  repo: https://gitlab-devops.totvs.com.br/golang/moirai-http-client.git
+  version: v1.0.0
+- package: gitlab-devops.totvs.com.br/golang/johdin
+  repo: https://gitlab-devops.totvs.com.br/golang/johdin.git
+  version: v0.3.0
+- package: gitlab-devops.totvs.com.br/golang/go-environment
+  repo: https://gitlab-devops.totvs.com.br/golang/go-environment.git
+- package: github.com/Sirupsen/logrus
+  version: 0.10.0
+- package: gitlab-devops.totvs.com.br/golang/go-singleton
+  repo: https://gitlab-devops.totvs.com.br/golang/go-singleton.git
+  version: v0.3.6
+- package: gitlab-devops.totvs.com.br/golang/moirai-commons-logging
+  repo: https://gitlab-devops.totvs.com.br/golang/moirai-commons-logging.git
+  version: v0.2.0
+- package: gitlab-devops.totvs.com.br/golang/bigip
+  repo: https://gitlab-devops.totvs.com.br/golang/bigip.git
+- package: gitlab-devops.totvs.com.br/golang/openstack
+  repo: https://gitlab-devops.totvs.com.br/golang/openstack.git
+- package: gitlab-devops.totvs.com.br/golang/go-wap-client
+  repo: https://gitlab-devops.totvs.com.br/golang/go-wap-client.git
+- package: gitlab-devops.totvs.com.br/golang/nuage
+  repo: https://gitlab-devops.totvs.com.br/golang/nuage.git
+- package: gitlab-devops.totvs.com.br/golang/paloalto
+  repo: https://gitlab-devops.totvs.com.br/golang/paloalto.git
+- package: github.com/streadway/amqp
+  version: 0e21704c3808b805ce3d6fbaf0943fceb1ba2855 
