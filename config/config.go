@@ -36,11 +36,11 @@ type EtcdEnv struct {
 }
 
 type Config struct {
-  SyslogLevel	  string  `env:"SYSLOG_LEVEL" envDefault:"DEBUG"`
-  SyslogNetwork	  string  `env:"SYSLOG_NETWORK" envDefault:"udp"`
-  SyslogRaddr	  string  `env:"SYSLOG_RADDR" envDefault:"localhost:514"`
-  SyslogTag	  string  `env:"SYSLOG_TAG" envDefault:"moirai"`
-  SyslogFacility  string  `env:"SYSLOG_FACILITY" envDefault:"local6"`
+  SyslogLevel	  string  `json:",omitempty" env:"SYSLOG_LEVEL" envDefault:"DEBUG"`
+  SyslogNetwork	  string  `json:",omitempty" env:"SYSLOG_NETWORK" envDefault:"udp"`
+  SyslogRaddr	  string  `json:",omitempty" env:"SYSLOG_RADDR" envDefault:"localhost:514"`
+  SyslogTag	  string  `json:",omitempty" env:"SYSLOG_TAG" envDefault:"moirai"`
+  SyslogFacility  string  `json:",omitempty" env:"SYSLOG_FACILITY" envDefault:"local6"`
 }
 
 type Singletons struct {
@@ -50,27 +50,27 @@ type Singletons struct {
 }
 
 type Amqp struct {
-  Hosts		      []string	`env:"HOSTS" envDefault:"amqp://"`
-  Retry		      int	`env:"RETRY" envDefault:"10"`
-  DelayErrorMessage   string	`env:"DELAY_ERROR_MESSAGE" envDefault:"1000"`
-  DelayRequeueMessage string	`env:"DELAY_REQUEUE_MESSAGE" envDefault:"1000"`
-  ExchangeType	      string	`env:"EXCHANGE_TYPE" envDefault:"x-delayed-message"`
-  ExchangeRouting     string	`env:"EXCHANGE_ROUTING" envDefault:"topic"`
-  DeliveryMode	      uint8	`env:"DELIVERY_MODE" envDefault:"2"`
-  Timeout	      int	`env:"TIMEOUT" envDefault:"2000"`
-  SSL		      bool	`env:"SSL" envDefault:"false"`
-  SSL_Cacert	      string	`env:"SSL_CACERT" envDefault:"/etc/pki/rabbitmq/ssl/cacert.pem"`
-  SSL_Cert	      string	`env:"SSL_CERT" envDefault:"/etc/pki/rabbitmq/ssl/nuvem-intera.local.pem"`
-  SSL_Key	      string	`env:"SSL_KEY" envDefault:"/etc/pki/rabbitmq/ssl/nuvem-intera.local.key"`
+  Hosts		      []string	`json:",omitempty" env:"HOSTS" envDefault:"amqp://"`
+  Retry		      int	`json:",omitempty" env:"RETRY" envDefault:"10"`
+  DelayErrorMessage   string	`json:",omitempty" env:"DELAY_ERROR_MESSAGE" envDefault:"1000"`
+  DelayRequeueMessage string	`json:",omitempty" env:"DELAY_REQUEUE_MESSAGE" envDefault:"1000"`
+  ExchangeType	      string	`json:",omitempty" env:"EXCHANGE_TYPE" envDefault:"x-delayed-message"`
+  ExchangeRouting     string	`json:",omitempty" env:"EXCHANGE_ROUTING" envDefault:"topic"`
+  DeliveryMode	      uint8	`json:",omitempty" env:"DELIVERY_MODE" envDefault:"2"`
+  Timeout	      int	`json:",omitempty" env:"TIMEOUT" envDefault:"2000"`
+  SSL		      bool	`json:",omitempty" env:"SSL" envDefault:"false"`
+  SSL_Cacert	      string	`json:",omitempty" env:"SSL_CACERT" envDefault:"/etc/pki/rabbitmq/ssl/cacert.pem"`
+  SSL_Cert	      string	`json:",omitempty" env:"SSL_CERT" envDefault:"/etc/pki/rabbitmq/ssl/nuvem-intera.local.pem"`
+  SSL_Key	      string	`json:",omitempty" env:"SSL_KEY" envDefault:"/etc/pki/rabbitmq/ssl/nuvem-intera.local.key"`
 }
 
 type Redis struct {
-  Hosts	    map[string]string `env:"HOSTS" envDefault:"localhost"`
-  DB	    int		      `env:"DB" envDefault:"0"`
-  Timeout   int		      `env:"TIMEOUT" envDefault:"0"`
-  Retries   int		      `env:"RETRIES" envDefault:"0"`
-  Heartbeat int		      `env:"HEARTBEAT" envDefault:"0"`
-  Expire    int32	      `env:"EXPIRE" envDefault:"3000"`
+  Hosts	    map[string]string `json:",omitempty" env:"HOSTS" envDefault:"localhost"`
+  DB	    int		      `json:",omitempty" env:"DB" envDefault:"0"`
+  Timeout   int		      `json:",omitempty" env:"TIMEOUT" envDefault:"0"`
+  Retries   int		      `json:",omitempty" env:"RETRIES" envDefault:"0"`
+  Heartbeat int		      `json:",omitempty" env:"HEARTBEAT" envDefault:"0"`
+  Expire    int32	      `json:",omitempty" env:"EXPIRE" envDefault:"3000"`
 }
 
 type AmqpResourceValues struct {
