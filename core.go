@@ -12,8 +12,8 @@ import (
 
   "gitlab-devops.totvs.com.br/golang/openstack"
   "gitlab-devops.totvs.com.br/golang/nuage"
-  "gitlab-devops.totvs.com.br/golang/paloalto"
   "gitlab-devops.totvs.com.br/golang/bigip"
+  "gitlab-devops.totvs.com.br/golang/paloalto"
   "gitlab-devops.totvs.com.br/golang/go-wap-client"
   configMoiraiHttpClient "gitlab-devops.totvs.com.br/golang/moirai-http-client/config"
   "gitlab-devops.totvs.com.br/golang/moirai-http-client/clients"
