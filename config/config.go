@@ -109,15 +109,15 @@ func loadEtcd(microservice string) {
       EndPoints:  []string{etcdEnv.URL},
     }
 
-    if err = conf.Get(CORE_ETCD_ENDPOINT + getEnvironment("ENV", "prod"), &EnvConfig, true, false); err != nil {
+    if err = conf.Get(CORE_ETCD_ENDPOINT + getEnvironment("ENV", "prod"), &EnvConfig, false, false); err != nil {
       _log.Fatalf("Error to get conf config in etcd: %s\n", err)
     }
 
-    if err = conf.Get(REDIS_ENDPOINT + getEnvironment("ENV", "prod"), &EnvRedis, true, false); err != nil {
+    if err = conf.Get(REDIS_ENDPOINT + getEnvironment("ENV", "prod"), &EnvRedis, false, false); err != nil {
       _log.Fatalf("Error to get conf redis in etcd: %s\n", err)
     }
 
-    if err = conf.Get(AMQP_ENDPOINT + getEnvironment("ENV", "prod"), &EnvAmqp, true, false); err != nil {
+    if err = conf.Get(AMQP_ENDPOINT + getEnvironment("ENV", "prod"), &EnvAmqp, false, false); err != nil {
       _log.Fatalf("Error to get conf amqp in etcd: %s\n", err)
     }
 
@@ -125,7 +125,7 @@ func loadEtcd(microservice string) {
       _log.Fatalf("Error to get conf moirai http client in etcd: %s\n", err)
     }
 
-    if err = conf.Get(microservice, &EnvAmqpResources, true, false); err != nil {
+    if err = conf.Get(microservice, &EnvAmqpResources, false, false); err != nil {
       _log.Fatalf("Error to get conf amqp resources in etcd: %s\n", err)
     }
 
