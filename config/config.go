@@ -99,8 +99,8 @@ func loadEtcd(microservice string) {
     etcdEnv.Password = getEnvironment("ETCD_PASSWORKD", "123456")
 
     var conf = environment.Config{
-      Username:	  etcdEnv.Username,
-      Password:	  etcdEnv.Password,
+      //Username:	  etcdEnv.Username,
+      //Password:	  etcdEnv.Password,
       Type:	  environment.ETCD,
       TimeOut:	  ETCD_TIMEOUT,
       EndPoints:  []string{etcdEnv.URL},

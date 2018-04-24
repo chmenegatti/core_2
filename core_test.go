@@ -1,11 +1,6 @@
 package core
 
 import (
-  "gitlab-devops.totvs.com.br/golang/openstack"
-  "gitlab-devops.totvs.com.br/golang/nuage"
-  "gitlab-devops.totvs.com.br/golang/paloalto"
-  "gitlab-devops.totvs.com.br/golang/bigip"
-  "gitlab-devops.totvs.com.br/golang/go-wap-client"
   configMoiraiHttpClient "gitlab-devops.totvs.com.br/golang/moirai-http-client/config"
   "gitlab-devops.totvs.com.br/microservices/core/config"
   "net/http/httptest"
@@ -99,16 +94,6 @@ func loadConfCore() {
   config.LoadLogger()
   config.LoadAmqp()
   config.LoadRedis()
-}
-
-func NewWorkerFactory() Factorier {
-  return &WorkerFactory{
-    openstack:	&openstack.Openstack{},
-    nuage:	&nuage.Nuage{},
-    paloalto:	&paloalto.Paloalto{},
-    bigip:	&bigip.Bigip{},
-    wap:	&gowapclient.WAP{},
-  }
 }
 
 func Test_Core_Run(t *testing.T) {
