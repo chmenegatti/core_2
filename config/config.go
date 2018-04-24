@@ -71,13 +71,13 @@ type Redis struct {
 }
 
 type AmqpResourceValues struct {
-  Exchange        string
-  BindingKey      string
-  QueueName       string
-  OkExchange      string
-  OkRoutingKey    string
-  ErrorExchange   string
-  ErrorRoutingKey string
+  Exchange        string  `json:",omitempty"`
+  BindingKey      string  `json:",omitempty"`
+  QueueName       string  `json:",omitempty"`
+  OkExchange      string  `json:",omitempty"`
+  OkRoutingKey    string  `json:",omitempty"`
+  ErrorExchange   string  `json:",omitempty"`
+  ErrorRoutingKey string  `json:",omitempty"`
 }
 
 func LoadConfig(microservice string) {
