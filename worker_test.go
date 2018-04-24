@@ -8,7 +8,6 @@ import (
   "net/http/httptest"
   "net/http"
   "testing"
-  "fmt"
 )
 
 type NuageAuth struct {
@@ -173,5 +172,5 @@ func Test_WorkerFactory_AuthenticateWap(t *testing.T) {
     SmaURL:	server.URL + "/",
   }
 
-  fmt.Println(wf.Wap(a))
+  wf.Wap(a)
 }

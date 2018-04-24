@@ -8,22 +8,25 @@ import (
   "gitlab-devops.totvs.com.br/golang/go-environment"
   "gitlab-devops.totvs.com.br/microservices/core/log"
   logrus "github.com/Sirupsen/logrus"
+  configMoiraiHttpClient "gitlab-devops.totvs.com.br/golang/moirai-http-client/config"
 )
 
 const (
-  CORE_ETCD_ENDPOINT  = "/core/env-"
-  REDIS_ENDPOINT      = "/redis/env-"
-  AMQP_ENDPOINT	      = "/amqp/env-"
-  ETCD_TIMEOUT	      = 5
+  CORE_ETCD_ENDPOINT	= "/core/env-"
+  MOIRAI_HTTP_ENDPOINT	= "/moirai-http-client/env-"
+  REDIS_ENDPOINT	= "/redis/env-"
+  AMQP_ENDPOINT		= "/amqp/env-"
+  ETCD_TIMEOUT		= 5
 )
 
 var (
-  EnvConfig	    Config
-  EnvRedis	    Redis
-  EnvSingletons	    Singletons
-  EnvAmqp	    Amqp
-  EnvAmqpResources  []AmqpResourceValues
-  parsed	    = false
+  EnvConfig	      Config
+  EnvRedis	      Redis
+  EnvSingletons	      Singletons
+  EnvAmqp	      Amqp
+  EnvMoiraiHttpClient configMoiraiHttpClient.Config
+  EnvAmqpResources    []AmqpResourceValues
+  parsed	      = false
 )
 
 type EtcdEnv struct {
@@ -99,8 +102,8 @@ func loadEtcd(microservice string) {
     etcdEnv.Password = getEnvironment("ETCD_PASSWORKD", "123456")
 
     var conf = environment.Config{
-      //Username:	  etcdEnv.Username,
-      //Password:	  etcdEnv.Password,
+      Username:	  etcdEnv.Username,
+      Password:	  etcdEnv.Password,
       Type:	  environment.ETCD,
       TimeOut:	  ETCD_TIMEOUT,
       EndPoints:  []string{etcdEnv.URL},
@@ -116,6 +119,10 @@ func loadEtcd(microservice string) {
 
     if err = conf.Get(AMQP_ENDPOINT + getEnvironment("ENV", "prod"), &EnvAmqp, true, false); err != nil {
       _log.Fatalf("Error to get conf amqp in etcd: %s\n", err)
+    }
+
+    if err = conf.Get(MOIRAI_HTTP_ENDPOINT + getEnvironment("ENV", "prod"), &EnvMoiraiHttpClient, true, false); err != nil {
+      _log.Fatalf("Error to get conf moirai http client in etcd: %s\n", err)
     }
 
     if err = conf.Get(microservice, &EnvAmqpResources, true, false); err != nil {
