@@ -10,11 +10,6 @@ import (
   "sync"
   "os"
 
-  "gitlab-devops.totvs.com.br/golang/openstack"
-  "gitlab-devops.totvs.com.br/golang/nuage"
-  "gitlab-devops.totvs.com.br/golang/bigip"
-  "gitlab-devops.totvs.com.br/golang/paloalto"
-  "gitlab-devops.totvs.com.br/golang/go-wap-client"
   configMoiraiHttpClient "gitlab-devops.totvs.com.br/golang/moirai-http-client/config"
   "gitlab-devops.totvs.com.br/golang/moirai-http-client/clients"
   "gitlab-devops.totvs.com.br/microservices/core/config"
@@ -137,13 +132,7 @@ type Core struct {
 }
 
 func NewWorkerFactory() Factorier {
-  return &WorkerFactory{
-    openstack:	&openstack.Openstack{},
-    nuage:	&nuage.Nuage{},
-    paloalto:	&paloalto.Paloalto{},
-    bigip:	&bigip.Bigip{},
-    wap:	&gowapclient.WAP{},
-  }
+  return &WorkerFactory{}
 }
 
 func (c *Core) Run(httpClient *HttpClient, worker Worker) {
