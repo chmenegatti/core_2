@@ -9,6 +9,7 @@ import (
   "gitlab-devops.totvs.com.br/golang/go-singleton"
   "gitlab-devops.totvs.com.br/golang/go-cache/redis"
   "gitlab-devops.totvs.com.br/microservices/core/config"
+  "gitlab-devops.totvs.com.br/microservices/core/log"
 )
 
 const (
@@ -19,7 +20,7 @@ type Authenticate struct {
   Openstack OpenstackAuthenticate
   Nuage	    NuageAuthenticate
   Paloalto  PaloaltoAuthenticate
-  BigIP	    BigIPAuthenticate
+  Bigip	    BigipAuthenticate
   Wap	    WapAuthenticate
 }
 
@@ -42,9 +43,10 @@ type PaloaltoAuthenticate struct {
   URL	    string
   Username  string
   Password  string
+  Vsys	    string
 }
 
-type BigIPAuthenticate struct {
+type BigipAuthenticate struct {
   URL	    string
   Username  string
   Password  string
@@ -66,6 +68,8 @@ type Factorier interface {
   Paloalto(Authenticate) (*paloalto.Paloalto, error)
   Bigip(Authenticate) (*bigip.Bigip, error)
   Wap(Authenticate) (*gowapclient.WAP, error)
+  GetTransactionID() string
+  SetTransactionID(string)
 }
 
 type Factory struct {}
@@ -90,14 +94,23 @@ func (f *Factory) Wap(a Authenticate) (*bigip.Bigip, error) {
   panic("Method Wap not implemented")
 }
 
+func (f *Factory) GetTransactionID() string {
+  panic("Method GetTransactionID not implemented")
+}
+
+func (f *Factory) SetTransactionID(id string) {
+  panic("Method SetTransactionID not implemented")
+}
+
 type WorkerFactory struct {
   Factory
 
-  openstack *openstack.Openstack
-  nuage	    *nuage.Nuage
-  paloalto  *paloalto.Paloalto
-  bigip	    *bigip.Bigip
-  wap	    *gowapclient.WAP
+  openstack	*openstack.Openstack
+  nuage		*nuage.Nuage
+  paloalto	*paloalto.Paloalto
+  bigip		*bigip.Bigip
+  wap		*gowapclient.WAP
+  transactionID	string
 }
 
 func (wf *WorkerFactory) Openstack(a Authenticate) (*openstack.Openstack, error) {
@@ -150,15 +163,74 @@ func (wf *WorkerFactory) Nuage(a Authenticate) (*nuage.Nuage, error) {
 }
 
 func (wf *WorkerFactory) Paloalto(a Authenticate) (*paloalto.Paloalto, error) {
-  return wf.paloalto, nil
+  var (
+    client  interface{}
+    err	    error
+    pa	    paloalto.Paloalto
+  )
+
+  if client, err = wf.authenticate(
+    paloalto.PaloaltoFields{
+      Url:	a.Paloalto.URL,
+      UserName:	a.Paloalto.Username,
+      Password:	a.Paloalto.Password,
+      Vsys:	a.Paloalto.Vsys,
+    },
+    "paloalto",
+  ); err != nil {
+    return wf.paloalto, err
+  }
+
+  pa = client.(paloalto.Paloalto)
+
+  return &pa, nil
 }
 
 func (wf *WorkerFactory) Bigip(a Authenticate) (*bigip.Bigip, error) {
-  return wf.bigip, nil
+  var b bigip.Bigip
+
+  b = bigip.Init(bigip.Bigip{
+    Url:      a.Bigip.URL,
+    User:     a.Bigip.Username,
+    Password: a.Bigip.Password,
+  })
+
+  return &b, nil
 }
 
 func (wf *WorkerFactory) Wap(a Authenticate) (*gowapclient.WAP, error) {
-  return wf.wap, nil
+  var (
+    client  interface{}
+    err	    error
+    wap	    gowapclient.WAP
+  )
+
+  if client, err = wf.authenticate(
+    gowapclient.WAPConfig{
+      WAPAuthHost:    a.Wap.AuthURL,
+      WAPAdminHost:   a.Wap.AdminURL,
+      WAPTenantHost:  a.Wap.TenantURL,
+      WAPUserName:    a.Wap.Username,
+      WAPPassword:    a.Wap.Password,
+      WAPPlanId:      a.Wap.PlanID,
+      WAPSMAHost:     a.Wap.SmaURL,
+    },
+    "wap",
+  ); err != nil {
+    return wf.wap, err
+  }
+
+  wap = client.(gowapclient.WAP)
+
+  return &wap, nil
+}
+
+func (wf *WorkerFactory) GetTransactionID() string {
+  return wf.transactionID
+}
+
+func (wf *WorkerFactory) SetTransactionID(id string) {
+  wf.transactionID = id
 }
 
 func (wf *WorkerFactory) authenticate(auth interface{},	control string) (interface{}, error) {
@@ -174,6 +246,48 @@ func (wf *WorkerFactory) authenticate(auth interface{},	control string) (interfa
 }
 
 type Worker interface {
-  Create(f Factorier, a Authenticate) error
-  Delete(f Factorier, a Authenticate) error
+  Create(f Factorier, a Authenticate) StatusConsumer
+  Delete(f Factorier, a Authenticate) StatusConsumer
+}
+
+type Decorator struct {
+  Worker
+}
+
+type Log struct {
+  Decorator
+}
+
+func NewLog(w Worker) Worker {
+  return &Log{Decorator{w}}
+}
+
+func (l *Log) Create(f Factorier, a Authenticate) StatusConsumer {
+  var sc StatusConsumer
+  config.EnvSingletons.Logger.Infof(log.TEMPLATE_LOG_CORE, f.GetTransactionID(), PACKAGE, "Create", "Log", log.INIT, l.Worker, log.EMPTY_STR)
+
+  sc = l.Worker.Create(f, a)
+
+  if sc.Status == COMPLETED || sc.Status == IN_PROGRESS {
+    config.EnvSingletons.Logger.Infof(log.TEMPLATE_LOG_CORE, f.GetTransactionID(), PACKAGE, "Create", "Log", log.DONE, l.Worker, log.EMPTY_STR)
+  } else {
+    config.EnvSingletons.Logger.Errorf(log.TEMPLATE_LOG_CORE, f.GetTransactionID(), PACKAGE, "Create", "Log", log.DONE, l.Worker, sc.Error.Error())
+  }
+
+  return sc
+}
+
+func (l *Log) Delete(f Factorier, a Authenticate) StatusConsumer {
+  var sc StatusConsumer
+  config.EnvSingletons.Logger.Infof(log.TEMPLATE_LOG_CORE, f.GetTransactionID(), PACKAGE, "Delete", "Log", log.INIT, l.Worker, log.EMPTY_STR)
+
+  sc = l.Worker.Delete(f, a)
+
+  if sc.Status == COMPLETED || sc.Status == IN_PROGRESS {
+    config.EnvSingletons.Logger.Infof(log.TEMPLATE_LOG_CORE, f.GetTransactionID(), PACKAGE, "Delete", "Log", log.DONE, l.Worker, log.EMPTY_STR)
+  } else {
+    config.EnvSingletons.Logger.Errorf(log.TEMPLATE_LOG_CORE, f.GetTransactionID(), PACKAGE, "Delete", "Log", log.DONE, l.Worker, sc.Error.Error())
+  }
+
+  return sc
 }

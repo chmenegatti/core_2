@@ -47,7 +47,18 @@ type Singletons struct {
 }
 
 type Amqp struct {
-  Hosts	[]string  `env:"HOSTS" envDefault:"amqp://"`
+  Hosts		      []string	`env:"HOSTS" envDefault:"amqp://"`
+  Retry		      int	`env:"RETRY" envDefault:"10"`
+  DelayErrorMessage   string	`env:"DELAY_ERROR_MESSAGE" envDefault:"1000"`
+  DelayRequeueMessage string	`env:"DELAY_REQUEUE_MESSAGE" envDefault:"1000"`
+  ExchangeType	      string	`env:"EXCHANGE_TYPE" envDefault:"x-delayed-message"`
+  ExchangeRouting     string	`env:"EXCHANGE_ROUTING" envDefault:"topic"`
+  DeliveryMode	      uint8	`env:"DELIVERY_MODE" envDefault:"2"`
+  Timeout	      int	`env:"TIMEOUT" envDefault:"2000"`
+  SSL		      bool	`env:"SSL" envDefault:"false"`
+  SSL_Cacert	      string	`env:"SSL_CACERT" envDefault:"/etc/pki/rabbitmq/ssl/cacert.pem"`
+  SSL_Cert	      string	`env:"SSL_CERT" envDefault:"/etc/pki/rabbitmq/ssl/nuvem-intera.local.pem"`
+  SSL_Key	      string	`env:"SSL_KEY" envDefault:"/etc/pki/rabbitmq/ssl/nuvem-intera.local.key"`
 }
 
 type Redis struct {

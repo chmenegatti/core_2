@@ -3,10 +3,12 @@ package core
 import (
   "gitlab-devops.totvs.com.br/microservices/core/config"
   "gitlab-devops.totvs.com.br/golang/openstack"
+  "gitlab-devops.totvs.com.br/golang/go-wap-client"
   "encoding/json"
   "net/http/httptest"
   "net/http"
   "testing"
+  "fmt"
 )
 
 type NuageAuth struct {
@@ -50,11 +52,28 @@ func startServerAuthenticate() *httptest.Server {
 
       w.WriteHeader(http.StatusOK)
       w.Write(resp)
+    case "//api/?type=keygen&user=MOCK&password=MOCK":
+      resp = []byte(`<response status = 'success'><result><key>KEY</key></result></response>`)
+
+      w.WriteHeader(http.StatusOK)
+      w.Write(resp)
+    case "//WAPTokenGenerator.svc/":
+      var wap = gowapclient.RespAuthenticate{
+	Token:	"TOKEN",
+      }
+
+      if resp, err = json.Marshal(wap); err != nil {
+	http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+	return
+      }
+
+      w.WriteHeader(http.StatusOK)
+      w.Write(resp)
     }
   }))
 }
 
-func init() {
+func loadConfWorker() {
   config.EnvConfig.SyslogLevel = "DEBUG"
   config.EnvConfig.SyslogNetwork = "udp"
   config.EnvConfig.SyslogRaddr = "localhost:514"
@@ -70,7 +89,6 @@ func init() {
   config.EnvAmqp.Hosts = []string{"amqp://"}
 
   config.LoadLogger()
-  config.LoadAmqp()
   config.LoadRedis()
 }
 
@@ -81,6 +99,7 @@ func Test_WorkerFactory_AuthenticateOpenstack(t *testing.T) {
     a	    Authenticate
   )
 
+  loadConfWorker()
   server = startServerAuthenticate()
 
   a.Openstack = OpenstackAuthenticate{
@@ -100,6 +119,7 @@ func Test_WorkerFactory_AuthenticateNuage(t *testing.T) {
     a	    Authenticate
   )
 
+  loadConfWorker()
   server = startServerAuthenticate()
 
   a.Nuage = NuageAuthenticate{
@@ -111,4 +131,47 @@ func Test_WorkerFactory_AuthenticateNuage(t *testing.T) {
   }
 
   wf.Nuage(a)
+}
+
+func Test_WorkerFactory_AuthenticatePaloalto(t *testing.T) {
+  var (
+    server  *httptest.Server
+    wf	    WorkerFactory
+    a	    Authenticate
+  )
+
+  loadConfWorker()
+  server = startServerAuthenticate()
+
+  a.Paloalto = PaloaltoAuthenticate{
+    URL:	  server.URL + "/",
+    Username:	  "MOCK",
+    Password:	  "MOCK",
+    Vsys:	  "vsys1",
+  }
+
+  wf.Paloalto(a)
+}
+
+func Test_WorkerFactory_AuthenticateWap(t *testing.T) {
+  var (
+    server  *httptest.Server
+    wf	    WorkerFactory
+    a	    Authenticate
+  )
+
+  loadConfWorker()
+  server = startServerAuthenticate()
+
+  a.Wap = WapAuthenticate{
+    AuthURL:	server.URL + "/",
+    AdminURL:	server.URL + "/",
+    TenantURL:	server.URL + "/",
+    Username:	"MOCK",
+    Password:	"MOCK",
+    PlanID:	"MOCK",
+    SmaURL:	server.URL + "/",
+  }
+
+  fmt.Println(wf.Wap(a))
 }

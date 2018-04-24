@@ -18,14 +18,19 @@ type MockProject struct {
   OpenstackProjectName	string	`json:",omitempty"`
 }
 
-func (mp *MockProject) Create(f Factorier, a Authenticate) error {
-  fmt.Println("Create: ", mp)
-
-  return nil
+func (mp *MockProject) Create(f Factorier, a Authenticate) StatusConsumer {
+  fmt.Printf("Transaction ID: %s, Args: %s\n", f.GetTransactionID(), mp)
+  return StatusConsumer{Status:	COMPLETED}
 }
 
-func (mp *MockProject) Delete(f Factorier, a Authenticate) error {
-  return nil
+func (mp *MockProject) Delete(f Factorier, a Authenticate) StatusConsumer {
+  fmt.Printf("Transaction ID: %s, Args: %s\n", f.GetTransactionID(), mp)
+  return StatusConsumer{Status: COMPLETED}
+}
+
+func (mp *MockProject) Get(f Factorier, a Authenticate) StatusConsumer {
+  fmt.Printf("Transaction ID: %s, Args: %s\n", f.GetTransactionID(), mp)
+  return StatusConsumer{Status: COMPLETED}
 }
 
 func startServerHttpClient() *httptest.Server {
@@ -40,7 +45,7 @@ func startServerHttpClient() *httptest.Server {
   }))
 }
 
-func init() {
+func loadConfCore() {
   config.EnvConfig.SyslogLevel = "DEBUG"
   config.EnvConfig.SyslogNetwork = "udp"
   config.EnvConfig.SyslogRaddr = "localhost:514"
@@ -53,7 +58,13 @@ func init() {
   config.EnvRedis.Heartbeat = 60
   config.EnvRedis.Expire = 3000
 
-  config.EnvAmqp.Hosts = []string{"amqp://"}
+  config.EnvAmqp.Hosts	      = []string{"amqp://"}
+  config.EnvAmqp.Retry	      = 10
+  config.EnvAmqp.DeliveryMode = 2
+  config.EnvAmqp.ExchangeType = "x-delayed-message"
+  config.EnvAmqp.ExchangeRouting = "topic"
+  config.EnvAmqp.DelayErrorMessage = "100"
+  config.EnvAmqp.DelayRequeueMessage = "100"
 
   config.EnvAmqpResources = []config.AmqpResourceValues{
     {
@@ -69,9 +80,18 @@ func init() {
       Exchange:		"broker.topic.project.create",
       BindingKey:	"v1.1.success",
       QueueName:	"broker.queue.project.create.v1.1.success",
-      OkExchange:	"nemesis.topic.project.create",
-      OkRoutingKey:	"v1.1.success",
-      ErrorExchange:	"nemesis.topic.project.create",
+      OkExchange:	"broker.topic.project.create",
+      OkRoutingKey:	"v1.1.error",
+      ErrorExchange:	"broker.topic.instance.create",
+      ErrorRoutingKey:	"v1.1.error",
+    },
+    {
+      Exchange:		"broker.topic.project.get",
+      BindingKey:	"v1.1.success",
+      QueueName:	"broker.queue.project.get.v1.1.success",
+      OkExchange:	"broker.topic.project.get",
+      OkRoutingKey:	"v1.1.error",
+      ErrorExchange:	"broker.topic.instance.get",
       ErrorRoutingKey:	"v1.1.error",
     },
   }
@@ -102,6 +122,8 @@ func Test_Core_Run(t *testing.T) {
     c		      Core
     m		      Worker
   )
+
+  loadConfCore()
 
   auth.Openstack = OpenstackAuthenticate{
     URL:      sa.URL + "/",
