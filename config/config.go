@@ -53,7 +53,7 @@ type Config struct {
 
   PaloaltoURL	    string  `json:",omitempty" envDefault:"https://palo-alto-api.nuvem-intera.local"`
   PaloaltoUsername  string  `json:",omitempty" envDefault:"apiuser"`
-  PalosltoPassword  string  `json:",omitempty" envDefault:"apiuser@123"`
+  PaloaltoPassword  string  `json:",omitempty" envDefault:"apiuser@123"`
   PaloaltoVsys	    string  `json:",omitempty" envDefault:"vsys1"`
 
   BigipURL	string	`json:",omitempty" envDefault:"https:///bigip-api.nuvem-intera.local"`
