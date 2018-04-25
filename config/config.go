@@ -41,6 +41,33 @@ type Config struct {
   SyslogRaddr	  string  `json:",omitempty" env:"SYSLOG_RADDR" envDefault:"localhost:514"`
   SyslogTag	  string  `json:",omitempty" env:"SYSLOG_TAG" envDefault:"moirai"`
   SyslogFacility  string  `json:",omitempty" env:"SYSLOG_FACILITY" envDefault:"local6"`
+
+  OpenstackURL	    string  `json:",omitempty" envDefault:"https://services.nuvem-intera.loca"`
+  OpenstackUsername string  `json:",omitempty" envDefault:"admin"`
+  OpenstackPassword string  `json:",omitempty" envDefault:"7Jm&7iiq4zyW4TFu"`
+
+  NuageURL	    string  `json:",omitempty" envDefault:"https://cluster-vsd.nuvem-intera.local"`
+  NuageUsername	    string  `json:",omitempty" envDefault:"apiuser"`
+  NuagePassword	    string  `json:",omitempty" envDefault:"apiuser@123"`
+  NuageOrganization string  `json:",omitempty" envDefault:"CSP"`
+
+  PaloaltoURL	    string  `json:",omitempty" envDefault:"https://palo-alto-api.nuvem-intera.local"`
+  PaloaltoUsername  string  `json:",omitempty" envDefault:"apiuser"`
+  PalosltoPassword  string  `json:",omitempty" envDefault:"apiuser@123"`
+  PaloaltoVsys	    string  `json:",omitempty" envDefault:"vsys1"`
+
+  BigipURL	string	`json:",omitempty" envDefault:"https:///bigip-api.nuvem-intera.local"`
+  BigipUsername	string	`json:",omitempty" envDefault:"apiuser"`
+  BigipPassword	string	`json:",omitempty" envDefault:"apiuser@123"`
+
+  WapAuthURL	string	`json:",omitempty" envDefault:"http://nemesis-auth-wap.dev.nuvem-intera.local"`
+  WapAdminURL	string	`json:",omitempty" envDefault:"https://adminapiwap.dbaas.dev.intera.local"`
+  WapTenantURL	string	`json:",omitempty" envDefault:"https://tenapiwap.dbaas.dev.intera.local"`
+  WapUsername	string	`json:",omitempty" envDefault:"wapapiuser"`
+  WapPassword	string	`json:",omitempty" envDefault:"hJblx*%w?%BQ=mFca/.o"`
+  WapPlanID	string	`json:",omitempty" envDefault:"PLANIiskudxsc"`
+  WapSmaURL	string	`json:",omitempty" envDefault:"https://smawap.dbaas.dev.intera.local"`
+  WapWsURL	string	`json:",omitempty" envDefault:"https://adminauthwap.dbaas.dev.intera.local"`
 }
 
 type Singletons struct {
@@ -85,9 +112,9 @@ type AmqpResourceValues struct {
 
 func LoadConfig(microservice string) {
   loadEtcd(microservice)
+  LoadLogger()
   LoadRedis()
   LoadAmqp()
-  LoadLogger()
 
   EnvSingletons.Logger.Infof(log.TEMPLATE_LOAD, PACKAGE, "LoadConfig", DONE)
 }

@@ -165,7 +165,7 @@ func (c *Core) Run(httpClient *HttpClient, worker Worker) {
 
     queue = strings.Split(values.QueueName, ".")
     resource = strings.ToLower(queue[2])
-    action = strings.ToLower(queue[3])
+    action = strings.ToLower(queue[len(queue) - 1])
 
     go func(resource, action string, values config.AmqpResourceValues, an AnotherMethods) {
       for {

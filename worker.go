@@ -60,6 +60,7 @@ type WapAuthenticate struct {
   Password  string
   PlanID    string
   SmaURL    string
+  WsURL	    string
 }
 
 type Factorier interface {
