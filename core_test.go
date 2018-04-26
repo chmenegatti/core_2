@@ -3,10 +3,14 @@ package core
 import (
   configMoiraiHttpClient "gitlab-devops.totvs.com.br/golang/moirai-http-client/config"
   "gitlab-devops.totvs.com.br/microservices/core/config"
+  "golang.org/x/net/context"
   "net/http/httptest"
+  "os/signal"
   "net/http"
+  "syscall"
   "testing"
   "fmt"
+  "os"
 )
 
 type MockProject struct {
@@ -71,24 +75,6 @@ func loadConfCore() {
       ErrorExchange:	"broker.topic.project.create",
       ErrorRoutingKey:	"v1.1.error",
     },
-    {
-      Exchange:		"broker.topic.project.create",
-      BindingKey:	"v1.1.success",
-      QueueName:	"broker.queue.project.create.v1.1.success",
-      OkExchange:	"broker.topic.project.create",
-      OkRoutingKey:	"v1.1.error",
-      ErrorExchange:	"broker.topic.instance.create",
-      ErrorRoutingKey:	"v1.1.error",
-    },
-    {
-      Exchange:		"broker.topic.project.get",
-      BindingKey:	"v1.1.success",
-      QueueName:	"broker.queue.project.get.v1.1.success",
-      OkExchange:	"broker.topic.project.get",
-      OkRoutingKey:	"v1.1.error",
-      ErrorExchange:	"broker.topic.instance.get",
-      ErrorRoutingKey:	"v1.1.error",
-    },
   }
 
   config.LoadLogger()
@@ -106,7 +92,18 @@ func Test_Core_Run(t *testing.T) {
     auth	      Authenticate
     c		      Core
     m		      Worker
+    ctx		      context.Context
+    done	      context.CancelFunc
+    sigs	      = make(chan os.Signal, 1)
   )
+
+  ctx, done = context.WithCancel(context.Background())
+  signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
+
+  go func() {
+    <-sigs
+    done()
+  }()
 
   loadConfCore()
 
@@ -120,7 +117,7 @@ func Test_Core_Run(t *testing.T) {
   c = Core{factory, auth, &AmqpResource{}}
   m = &MockProject{}
 
-  c.Run(httpClient, m)
+  c.Run(ctx, httpClient, m)
 }
 
 func newConfigMoiraiHttpClient(url string) configMoiraiHttpClient.Config {

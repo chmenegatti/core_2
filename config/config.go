@@ -36,11 +36,11 @@ type EtcdEnv struct {
 }
 
 type Config struct {
-  SyslogLevel	  string  `json:",omitempty" env:"SYSLOG_LEVEL" envDefault:"DEBUG"`
-  SyslogNetwork	  string  `json:",omitempty" env:"SYSLOG_NETWORK" envDefault:"udp"`
-  SyslogRaddr	  string  `json:",omitempty" env:"SYSLOG_RADDR" envDefault:"localhost:514"`
-  SyslogTag	  string  `json:",omitempty" env:"SYSLOG_TAG" envDefault:"moirai"`
-  SyslogFacility  string  `json:",omitempty" env:"SYSLOG_FACILITY" envDefault:"local6"`
+  SyslogLevel	  string  `json:",omitempty" envDefault:"DEBUG"`
+  SyslogNetwork	  string  `json:",omitempty" envDefault:"udp"`
+  SyslogRaddr	  string  `json:",omitempty" envDefault:"localhost:514"`
+  SyslogTag	  string  `json:",omitempty" envDefault:"moirai"`
+  SyslogFacility  string  `json:",omitempty" envDefault:"local6"`
 
   OpenstackURL	    string  `json:",omitempty" envDefault:"https://services.nuvem-intera.loca"`
   OpenstackUsername string  `json:",omitempty" envDefault:"admin"`
@@ -77,27 +77,27 @@ type Singletons struct {
 }
 
 type Amqp struct {
-  Hosts		      []string	`json:",omitempty" env:"HOSTS" envDefault:"amqp://"`
-  Retry		      int	`json:",omitempty" env:"RETRY" envDefault:"10"`
-  DelayErrorMessage   string	`json:",omitempty" env:"DELAY_ERROR_MESSAGE" envDefault:"1000"`
-  DelayRequeueMessage string	`json:",omitempty" env:"DELAY_REQUEUE_MESSAGE" envDefault:"1000"`
-  ExchangeType	      string	`json:",omitempty" env:"EXCHANGE_TYPE" envDefault:"x-delayed-message"`
-  ExchangeRouting     string	`json:",omitempty" env:"EXCHANGE_ROUTING" envDefault:"topic"`
-  DeliveryMode	      uint8	`json:",omitempty" env:"DELIVERY_MODE" envDefault:"2"`
-  Timeout	      int	`json:",omitempty" env:"TIMEOUT" envDefault:"2000"`
-  SSL		      bool	`json:",omitempty" env:"SSL" envDefault:"false"`
-  SSL_Cacert	      string	`json:",omitempty" env:"SSL_CACERT" envDefault:"/etc/pki/rabbitmq/ssl/cacert.pem"`
-  SSL_Cert	      string	`json:",omitempty" env:"SSL_CERT" envDefault:"/etc/pki/rabbitmq/ssl/nuvem-intera.local.pem"`
-  SSL_Key	      string	`json:",omitempty" env:"SSL_KEY" envDefault:"/etc/pki/rabbitmq/ssl/nuvem-intera.local.key"`
+  Hosts		      []string	`json:",omitempty" envDefault:"amqp://"`
+  Retry		      int	`json:",omitempty" envDefault:"10"`
+  DelayErrorMessage   string	`json:",omitempty" envDefault:"1000"`
+  DelayRequeueMessage string	`json:",omitempty" envDefault:"1000"`
+  ExchangeType	      string	`json:",omitempty" envDefault:"x-delayed-message"`
+  ExchangeRouting     string	`json:",omitempty" envDefault:"topic"`
+  DeliveryMode	      uint8	`json:",omitempty" envDefault:"2"`
+  Timeout	      int	`json:",omitempty" envDefault:"2000"`
+  SSL		      bool	`json:",omitempty" envDefault:"false"`
+  SSL_Cacert	      string	`json:",omitempty" envDefault:"/etc/pki/rabbitmq/ssl/cacert.pem"`
+  SSL_Cert	      string	`json:",omitempty" envDefault:"/etc/pki/rabbitmq/ssl/nuvem-intera.local.pem"`
+  SSL_Key	      string	`json:",omitempty" envDefault:"/etc/pki/rabbitmq/ssl/nuvem-intera.local.key"`
 }
 
 type Redis struct {
-  Hosts	    map[string]string `json:",omitempty" env:"HOSTS" envDefault:"localhost"`
-  DB	    int		      `json:",omitempty" env:"DB" envDefault:"0"`
-  Timeout   int		      `json:",omitempty" env:"TIMEOUT" envDefault:"0"`
-  Retries   int		      `json:",omitempty" env:"RETRIES" envDefault:"0"`
-  Heartbeat int		      `json:",omitempty" env:"HEARTBEAT" envDefault:"0"`
-  Expire    int32	      `json:",omitempty" env:"EXPIRE" envDefault:"3000"`
+  Hosts	    map[string]string `json:",omitempty" envDefault:"localhost"`
+  DB	    int		      `json:",omitempty" envDefault:"0"`
+  Timeout   int		      `json:",omitempty" envDefault:"0"`
+  Retries   int		      `json:",omitempty" envDefault:"0"`
+  Heartbeat int		      `json:",omitempty" envDefault:"0"`
+  Expire    int32	      `json:",omitempty" envDefault:"3000"`
 }
 
 type AmqpResourceValues struct {
@@ -148,7 +148,7 @@ func loadEtcd(microservice string) {
       _log.Fatalf("Error to get conf amqp in etcd: %s\n", err)
     }
 
-    if err = conf.Get(MOIRAI_HTTP_ENDPOINT + getEnvironment("ENV", "prod"), &EnvMoiraiHttpClient, true, false); err != nil {
+    if err = conf.Get(MOIRAI_HTTP_ENDPOINT + getEnvironment("ENV", "prod"), &EnvMoiraiHttpClient, false, false); err != nil {
       _log.Fatalf("Error to get conf moirai http client in etcd: %s\n", err)
     }
 

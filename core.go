@@ -2,13 +2,10 @@ package core
 
 import (
   "encoding/json"
-  "os/signal"
-  "syscall"
   "reflect"
   "strings"
   "strconv"
   "sync"
-  "os"
 
   configMoiraiHttpClient "gitlab-devops.totvs.com.br/golang/moirai-http-client/config"
   "gitlab-devops.totvs.com.br/golang/moirai-http-client/clients"
@@ -135,23 +132,10 @@ func NewWorkerFactory() Factorier {
   return &WorkerFactory{}
 }
 
-func (c *Core) Run(httpClient *HttpClient, worker Worker) {
-  var (
-    ctx	  context.Context
-    done  context.CancelFunc
-    an	  AnotherMethods
-    sigs  = make(chan os.Signal, 1)
-  )
+func (c *Core) Run(ctx	context.Context, httpClient *HttpClient, worker Worker) {
+  var an AnotherMethods
 
-  ctx, done = context.WithCancel(context.Background())
-  signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
   c.resources()
-
-  go func() {
-    <-sigs
-    done()
-  }()
-
   an = c.mapMethods(worker)
 
   for _, values := range config.EnvAmqpResources {
