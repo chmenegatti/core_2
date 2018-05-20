@@ -68,6 +68,8 @@ type Config struct {
   WapPlanID	string	`json:",omitempty" envDefault:"PLANIiskudxsc"`
   WapSmaURL	string	`json:",omitempty" envDefault:"https://smawap.dbaas.dev.intera.local"`
   WapWsURL	string	`json:",omitempty" envDefault:"https://adminauthwap.dbaas.dev.intera.local"`
+
+  NuageRulesProtocol  map[string]string	`json:",omitempty" envDefault:""`
 }
 
 type Singletons struct {
@@ -135,6 +137,8 @@ func loadEtcd(microservice string) {
       TimeOut:	  ETCD_TIMEOUT,
       EndPoints:  []string{etcdEnv.URL},
     }
+
+    EnvConfig.NuageRulesProtocol = make(map[string]string)
 
     if err = conf.Get(CORE_ETCD_ENDPOINT + getEnvironment("ENV", "prod"), &EnvConfig, false, false); err != nil {
       _log.Fatalf("Error to get conf config in etcd: %s\n", err)
