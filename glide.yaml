@@ -26,6 +26,7 @@ import:
   repo: https://gitlab-devops.totvs.com.br/golang/openstack.git
 - package: gitlab-devops.totvs.com.br/golang/go-wap-client
   repo: https://gitlab-devops.totvs.com.br/golang/go-wap-client.git
+  version: v0.4.7
 - package: gitlab-devops.totvs.com.br/golang/nuage
   repo: https://gitlab-devops.totvs.com.br/golang/nuage.git
 - package: gitlab-devops.totvs.com.br/golang/paloalto
