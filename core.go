@@ -6,6 +6,8 @@ import (
   "strings"
   "strconv"
   "sync"
+  "fmt"
+  "os"
 
   configMoiraiHttpClient "gitlab-devops.totvs.com.br/golang/moirai-http-client/config"
   "gitlab-devops.totvs.com.br/golang/moirai-http-client/clients"
@@ -151,6 +153,11 @@ func (c *Core) Run(ctx	context.Context, httpClient *HttpClient, worker Worker) {
     resource = strings.ToLower(queue[2])
     action = strings.ToLower(queue[len(queue) - 1])
 
+    if !c.checkMethods(action, an) {
+      config.EnvSingletons.Logger.Errorf(log.TEMPLATE_LOAD, PACKAGE, "checkMethods", fmt.Sprintf("Action \"%s\" not exist", action))
+      os.Exit(1)
+    }
+
     go func(resource, action string, values config.AmqpResourceValues, an AnotherMethods) {
       for {
 	select {
@@ -220,6 +227,18 @@ func (c *Core) Run(ctx	context.Context, httpClient *HttpClient, worker Worker) {
   }
 
   <-ctx.Done()
+}
+
+func (c *Core) checkMethods(action string, an AnotherMethods) bool {
+  if action == "create" || action == "delete" {
+    return true
+  }
+
+  if _, ok := an[action]; ok {
+    return true
+  }
+
+  return false
 }
 
 func (c *Core) publish(msg johdin.Delivery, headers utils.Headers, values config.AmqpResourceValues, sc StatusConsumer) {
