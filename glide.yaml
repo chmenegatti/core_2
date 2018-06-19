@@ -32,4 +32,6 @@ import:
   repo: https://gitlab-devops.totvs.com.br/golang/go-wap-client.git
   version: 3d50626f0603dff19445f926929fe66648b2ac1d
 - package: github.com/streadway/amqp
-  version: 0e21704c3808b805ce3d6fbaf0943fceb1ba2855 
+  version: 0e21704c3808b805ce3d6fbaf0943fceb1ba2855
+- package: github.com/jinzhu/gorm
+- package: github.com/go-sql-driver/mysql

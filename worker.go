@@ -10,6 +10,9 @@ import (
   "gitlab-devops.totvs.com.br/golang/go-cache/redis"
   "gitlab-devops.totvs.com.br/microservices/core/config"
   "gitlab-devops.totvs.com.br/microservices/core/log"
+
+  _ "github.com/go-sql-driver/mysql"
+  "github.com/jinzhu/gorm"
 )
 
 const (
@@ -22,6 +25,7 @@ type Authenticate struct {
   Paloalto  PaloaltoAuthenticate
   Bigip	    BigipAuthenticate
   Wap	    WapAuthenticate
+  DB	    DBAuthenticate
 }
 
 type OpenstackAuthenticate struct {
@@ -63,12 +67,17 @@ type WapAuthenticate struct {
   WsURL	    string
 }
 
+type DBAuthenticate struct {
+  Connection  *gorm.DB
+}
+
 type Factorier interface {
   Openstack(Authenticate) (*openstack.Openstack, error)
   Nuage(Authenticate) (*nuage.Nuage, error)
   Paloalto(Authenticate) (*paloalto.Paloalto, error)
   Bigip(Authenticate) (*bigip.Bigip, error)
   Wap(Authenticate) (*gowapclient.WAP, error)
+  DB(Authenticate) (*gorm.DB, error)
   GetTransactionID() string
   SetTransactionID(string)
 }
@@ -95,6 +104,10 @@ func (f *Factory) Wap(a Authenticate) (*bigip.Bigip, error) {
   panic("Method Wap not implemented")
 }
 
+func (f *Factory) DB(a Authenticate) (*gorm.DB, error) {
+  panic("Method DB not implemented")
+}
+
 func (f *Factory) GetTransactionID() string {
   panic("Method GetTransactionID not implemented")
 }
@@ -111,6 +124,7 @@ type WorkerFactory struct {
   paloalto	*paloalto.Paloalto
   bigip		*bigip.Bigip
   wap		*gowapclient.WAP
+  db		*gorm.DB
   transactionID	string
 }
 
@@ -224,6 +238,10 @@ func (wf *WorkerFactory) Wap(a Authenticate) (*gowapclient.WAP, error) {
   wap = client.(gowapclient.WAP)
 
   return &wap, nil
+}
+
+func (wf *WorkerFactory) DB(a Authenticate) (*gorm.DB, error) {
+  return a.DB.Connection, nil
 }
 
 func (wf *WorkerFactory) GetTransactionID() string {

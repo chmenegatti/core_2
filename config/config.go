@@ -24,6 +24,7 @@ var (
   EnvRedis	      Redis
   EnvSingletons	      Singletons
   EnvAmqp	      Amqp
+  EnvDB		      DB
   EnvMoiraiHttpClient configMoiraiHttpClient.Config
   EnvAmqpResources    []AmqpResourceValues
   parsed	      = false
@@ -42,7 +43,7 @@ type Config struct {
   SyslogTag	  string  `json:",omitempty" envDefault:"moirai"`
   SyslogFacility  string  `json:",omitempty" envDefault:"local6"`
 
-  OpenstackURL	    string  `json:",omitempty" envDefault:"https://services.nuvem-intera.loca"`
+  OpenstackURL	    string  `json:",omitempty" envDefault:"https://services.nuvem-intera.local"`
   OpenstackUsername string  `json:",omitempty" envDefault:"admin"`
   OpenstackPassword string  `json:",omitempty" envDefault:"7Jm&7iiq4zyW4TFu"`
 
@@ -102,6 +103,19 @@ type Redis struct {
   Expire    int32	      `json:",omitempty" envDefault:"3000"`
 }
 
+type DB struct {
+  Host		    string  `json:",omitempty" envDefault:""`
+  Username	    string  `json:",omitempty" envDefault:""`
+  Password	    string  `json:",omitempty" envDefault:""`
+  Port		    string  `json:",omitempty" envDefault:""`
+  DBName	    string  `json:",omitempty" envDefault:""`
+  Timeout	    string  `json:",omitempty" envDefault:""`
+  Debug		    bool    `json:",omitempty" envDefault:""`
+  ConnsMaxIdle	    int	    `json:",omitempty" envDefault:""`
+  ConnsMaxOpen	    int	    `json:",omitempty" envDefault:""`
+  ConnsMaxLifetime  int	    `json:",omitempty" envDefault:""`
+}
+
 type AmqpResourceValues struct {
   Exchange        string  `json:",omitempty"`
   BindingKey      string  `json:",omitempty"`
@@ -112,8 +126,14 @@ type AmqpResourceValues struct {
   ErrorRoutingKey string  `json:",omitempty"`
 }
 
-func LoadConfig(microservice string) {
-  loadEtcd(microservice)
+type Infos struct {
+  Microservice	string
+  DB		bool
+  DBKey		string
+}
+
+func LoadConfig(infos Infos) {
+  loadEtcd(infos)
   LoadLogger()
   LoadRedis()
   LoadAmqp()
@@ -121,7 +141,7 @@ func LoadConfig(microservice string) {
   EnvSingletons.Logger.Infof(log.TEMPLATE_LOAD, PACKAGE, "LoadConfig", DONE)
 }
 
-func loadEtcd(microservice string) {
+func loadEtcd(infos Infos) {
   if !parsed {
     var etcdEnv EtcdEnv
     var err error
@@ -156,8 +176,14 @@ func loadEtcd(microservice string) {
       _log.Fatalf("Error to get conf moirai http client in etcd: %s\n", err)
     }
 
-    if err = conf.Get(microservice, &EnvAmqpResources, false, false); err != nil {
+    if err = conf.Get(infos.Microservice, &EnvAmqpResources, false, false); err != nil {
       _log.Fatalf("Error to get conf amqp resources in etcd: %s\n", err)
+    }
+
+    if infos.DB {
+      if err = conf.Get(infos.DBKey, &EnvDB, false, false); err != nil {
+	_log.Fatalf("Error to get conf db resources in etcd: %s\n", err)
+      }
     }
 
     parsed = true
