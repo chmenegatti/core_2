@@ -35,3 +35,5 @@ import:
   version: 0e21704c3808b805ce3d6fbaf0943fceb1ba2855
 - package: github.com/jinzhu/gorm
 - package: github.com/go-sql-driver/mysql
+- package: github.com/satori/go.uuid
+- package: github.com/erikstmartin/go-testdb
