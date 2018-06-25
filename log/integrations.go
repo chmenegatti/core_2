@@ -8,4 +8,5 @@ const (
   INTEGRATION_OPENSTACK	  = "openstack"
   INTEGRATION_WAP	  = "wap"
   INTEGRATION_CORE	  = "core"
+  INTEGRATION_GORM	  = "gorm"
 )
