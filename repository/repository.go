@@ -3,9 +3,12 @@ package repository
 import (
   "encoding/json"
   "github.com/jinzhu/gorm"
-  //"github.com/satori/go.uuid"
   "reflect"
   "errors"
+)
+
+const (
+  STATEMENT = "id = ?"
 )
 
 type Repository struct {
@@ -30,7 +33,79 @@ func (r *Repository) Create(src, dst interface{}) error {
   return nil
 }
 
-func (r *Repository) Delete(id string) error {
+func (r *Repository) Delete(condition interface{}) (bool, error) {
+  var (
+    entity    reflect.Value
+    operation *gorm.DB
+  )
+
+  if reflect.ValueOf(condition).Kind() != reflect.Ptr {
+    return false, errors.New("The target struct is required to be a pointer")
+  }
+
+  entity = reflect.New(reflect.ValueOf(condition).Type().Elem()).Elem()
+  operation = r.DB.Where(condition).Delete(entity.Interface())
+
+  if operation.RecordNotFound() {
+    return false, nil
+  }
+
+  if operation.Error != nil {
+    return true, operation.Error
+  }
+
+  return true, nil
+}
+
+func (r *Repository) Read(ID string, entity interface{}) (bool, error) {
+  if reflect.ValueOf(entity).Kind() != reflect.Ptr {
+    return false, errors.New("The target struct is required to be a pointer")
+  }
+
+  var operation *gorm.DB = r.DB.First(entity, ID)
+
+  if operation.RecordNotFound() {
+    return false, nil
+  }
+
+  if operation.Error != nil {
+    return true, operation.Error
+  }
+
+  return true, nil
+}
+
+func (r *Repository) ReadByConditions(entity, conditions interface{}) (bool, error) {
+  if reflect.ValueOf(entity).Kind() != reflect.Ptr {
+    return false, errors.New("The target struct is required to be a pointer")
+  }
+
+  var operation *gorm.DB = r.DB.First(entity, conditions)
+
+  if operation.RecordNotFound() {
+    return false, nil
+  }
+
+  if operation.Error != nil {
+    return true, operation.Error
+  }
+
+  return true, nil
+}
+
+func (r *Repository) Update(condition, entity interface{}) error {
+  if reflect.ValueOf(condition).Kind() != reflect.Ptr {
+    return errors.New("The target struct is required to be a pointer")
+  }
+
+  if reflect.ValueOf(entity).Kind() != reflect.Ptr {
+    return errors.New("The target struct is required to be a pointer")
+  }
+
+  if operation := r.DB.Model(entity).Where(condition).Updates(entity); operation.Error != nil {
+    return operation.Error
+  }
+
   return nil
 }
 
