@@ -9,17 +9,19 @@ import (
   "net/http"
   "syscall"
   "testing"
+  "errors"
   "fmt"
   "os"
 )
 
 type MockProject struct {
+  Error			string	`json:",omitempty"`
   OpenstackProjectName	string	`json:",omitempty"`
 }
 
 func (mp *MockProject) Create(f Factorier, a Authenticate) StatusConsumer {
   fmt.Printf("Transaction ID: %s, Args: %s\n", f.GetTransactionID(), mp)
-  return StatusConsumer{Status:	COMPLETED}
+  return StatusConsumer{Status:	ERROR, Error: errors.New("Error Mock")}
 }
 
 func (mp *MockProject) Delete(f Factorier, a Authenticate) StatusConsumer {
@@ -28,6 +30,11 @@ func (mp *MockProject) Delete(f Factorier, a Authenticate) StatusConsumer {
 }
 
 func (mp *MockProject) Get(f Factorier, a Authenticate) StatusConsumer {
+  fmt.Printf("Transaction ID: %s, Args: %s\n", f.GetTransactionID(), mp)
+  return StatusConsumer{Status: COMPLETED}
+}
+
+func (mp *MockProject) CreateError(f Factorier, a Authenticate) StatusConsumer {
   fmt.Printf("Transaction ID: %s, Args: %s\n", f.GetTransactionID(), mp)
   return StatusConsumer{Status: COMPLETED}
 }
@@ -70,6 +77,15 @@ func loadConfCore() {
       Exchange:		"broker.topic.project.create",
       BindingKey:	"v1.1.project.create",
       QueueName:	"broker.queue.project.create.v1.1.project.create",
+      OkExchange:	"broker.topic.project.create",
+      OkRoutingKey:	"v1.1.success",
+      ErrorExchange:	"broker.topic.project.create",
+      ErrorRoutingKey:	"v1.1.project.createerror",
+    },
+    {
+      Exchange:		"broker.topic.project.create",
+      BindingKey:	"v1.1.project.createerror",
+      QueueName:	"broker.queue.project.create.v1.1.project.createerror",
       OkExchange:	"broker.topic.project.create",
       OkRoutingKey:	"v1.1.success",
       ErrorExchange:	"broker.topic.project.create",

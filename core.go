@@ -2,6 +2,7 @@ package core
 
 import (
   "encoding/json"
+  "database/sql"
   "reflect"
   "strings"
   "strconv"
@@ -124,6 +125,10 @@ type Message struct {
   Error	string	`json:",omitempty"`
 }
 
+type SetError struct {
+  Error	sql.NullString	`json:",omitempty"`
+}
+
 type Core struct {
   Factorier	Factorier
   Authenticate	Authenticate
@@ -183,6 +188,9 @@ func (c *Core) Run(ctx	context.Context, httpClient *HttpClient, worker Worker) {
 	    continue
 	  }
 
+	  if msg.Error != log.EMPTY_STR {
+	  }
+
 	  c.Factorier.SetTransactionID(headers.TransactionID)
 	  w = NewLog(worker)
 
@@ -199,6 +207,22 @@ func (c *Core) Run(ctx	context.Context, httpClient *HttpClient, worker Worker) {
 	      config.EnvSingletons.Logger.Infof(log.TEMPLATE_LOG_CORE, headers.TransactionID, PACKAGE, action, "Log", log.DONE, worker, log.EMPTY_STR)
 	    } else {
 	      config.EnvSingletons.Logger.Errorf(log.TEMPLATE_LOG_CORE, headers.TransactionID, PACKAGE, action, "Log", log.DONE, worker, sc.Error.Error())
+	    }
+	  }
+
+	  if sc.Status == ERROR {
+	    if err = httpClient.Clients[resource].Update(msg.ID, &SetError{Error: sql.NullString{String: sc.Error.Error(), Valid: true}}, message.Headers); err != nil {
+	      config.EnvSingletons.Logger.Errorf(log.TEMPLATE_CORE, headers.TransactionID, PACKAGE, "Core", "Update", err.Error())
+	      c.publish(message, headers, values, StatusConsumer{Status: ERROR, Error: err})
+	      continue
+	    }
+	  }
+
+	  if sc.Status == COMPLETED {
+	    if err = httpClient.Clients[resource].Update(msg.ID, &SetError{Error: sql.NullString{Valid: true}}, message.Headers); err != nil {
+	      config.EnvSingletons.Logger.Errorf(log.TEMPLATE_CORE, headers.TransactionID, PACKAGE, "Core", "Update", err.Error())
+	      c.publish(message, headers, values, StatusConsumer{Status: ERROR, Error: err})
+	      continue
 	    }
 	  }
 
