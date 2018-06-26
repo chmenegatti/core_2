@@ -135,6 +135,16 @@ type Core struct {
   amqp		*AmqpResource
 }
 
+type Publish struct {
+  id	      uint
+  msg	      johdin.Delivery
+  headers     utils.Headers
+  values      config.AmqpResourceValues
+  sc	      StatusConsumer
+  httpClient  *HttpClient
+  resource    string
+}
+
 func NewWorkerFactory() Factorier {
   return &WorkerFactory{}
 }
@@ -173,22 +183,26 @@ func (c *Core) Run(ctx	context.Context, httpClient *HttpClient, worker Worker) {
 	    sc	    StatusConsumer
 	    headers utils.Headers
 	    w	    Worker
+	    p	    Publish
 	  )
 
 	  headers = utils.GetHeader(message.Headers)
+	  p = Publish{msg: message, headers: headers, values: values, httpClient: httpClient, resource: resource}
+
 	  if err = json.Unmarshal(message.Body, &msg); err != nil {
 	    config.EnvSingletons.Logger.Errorf(log.TEMPLATE_CORE, headers.TransactionID, PACKAGE, "Core", "json.Unmarshal", err.Error())
-	    c.publish(message, headers, values, StatusConsumer{Status: ERROR, Error: err})
+	    p.sc = StatusConsumer{Status: ERROR, Error: err}
+	    c.publish(p)
 	    continue
 	  }
+
+	  p.id = msg.ID
 
 	  if err = httpClient.Clients[resource].Read(msg.ID, message.Headers, worker); err != nil {
 	    config.EnvSingletons.Logger.Errorf(log.TEMPLATE_CORE, headers.TransactionID, PACKAGE, "Core", "Read", err.Error())
-	    c.publish(message, headers, values, StatusConsumer{Status: ERROR, Error: err})
+	    p.sc = StatusConsumer{Status: ERROR, Error: err}
+	    c.publish(p)
 	    continue
-	  }
-
-	  if msg.Error != log.EMPTY_STR {
 	  }
 
 	  c.Factorier.SetTransactionID(headers.TransactionID)
@@ -210,26 +224,11 @@ func (c *Core) Run(ctx	context.Context, httpClient *HttpClient, worker Worker) {
 	    }
 	  }
 
-	  if sc.Status == ERROR {
-	    if err = httpClient.Clients[resource].Update(msg.ID, &SetError{Error: sql.NullString{String: sc.Error.Error(), Valid: true}}, message.Headers); err != nil {
-	      config.EnvSingletons.Logger.Errorf(log.TEMPLATE_CORE, headers.TransactionID, PACKAGE, "Core", "Update", err.Error())
-	      c.publish(message, headers, values, StatusConsumer{Status: ERROR, Error: err})
-	      continue
-	    }
-	  }
-
-	  if sc.Status == COMPLETED {
-	    if err = httpClient.Clients[resource].Update(msg.ID, &SetError{Error: sql.NullString{Valid: true}}, message.Headers); err != nil {
-	      config.EnvSingletons.Logger.Errorf(log.TEMPLATE_CORE, headers.TransactionID, PACKAGE, "Core", "Update", err.Error())
-	      c.publish(message, headers, values, StatusConsumer{Status: ERROR, Error: err})
-	      continue
-	    }
-	  }
-
 	  if sc.Update {
 	    if err = httpClient.Clients[resource].Update(msg.ID, worker, message.Headers); err != nil {
 	      config.EnvSingletons.Logger.Errorf(log.TEMPLATE_CORE, headers.TransactionID, PACKAGE, "Core", "Update", err.Error())
-	      c.publish(message, headers, values, StatusConsumer{Status: ERROR, Error: err})
+	      p.sc = StatusConsumer{Status: ERROR, Error: err}
+	      c.publish(p)
 	      continue
 	    }
 	  }
@@ -237,12 +236,14 @@ func (c *Core) Run(ctx	context.Context, httpClient *HttpClient, worker Worker) {
 	  if sc.Delete {
 	    if err = httpClient.Clients[resource].Delete(msg.ID, message.Headers); err != nil {
 	      config.EnvSingletons.Logger.Errorf(log.TEMPLATE_CORE, headers.TransactionID, PACKAGE, "Core", "Delete", err.Error())
-	      c.publish(message, headers, values, StatusConsumer{Status: ERROR, Error: err})
+	      p.sc = StatusConsumer{Status: ERROR, Error: err}
+	      c.publish(p)
 	      continue
 	    }
 	  }
 
-	  c.publish(message, headers, values, sc)
+	  p.sc = sc
+	  c.publish(p)
 	case e := <-c.amqp.AmqpResourceDeliveryError[values.Exchange][values.BindingKey]:
 	  config.EnvSingletons.Logger.Errorf(log.TEMPLATE_PUBLISH, log.EMPTY_STR, PACKAGE, "consume", "johdin", values.Exchange, values.BindingKey, e.Error())
 	}
@@ -265,7 +266,7 @@ func (c *Core) checkMethods(action string, an AnotherMethods) bool {
   return false
 }
 
-func (c *Core) publish(msg johdin.Delivery, headers utils.Headers, values config.AmqpResourceValues, sc StatusConsumer) {
+func (c *Core) publish(p Publish) {
   var (
     ctx		  context.Context
     cancel	  context.CancelFunc
@@ -274,26 +275,26 @@ func (c *Core) publish(msg johdin.Delivery, headers utils.Headers, values config
   )
 
   ctx, cancel = context.WithCancel(context.Background())
-  msg.Ack(false)
+  p.msg.Ack(false)
 
-  switch sc.Status {
+  switch p.sc.Status {
   case COMPLETED:
-    if values.OkExchange == "" || values.OkRoutingKey == "" {
+    if p.values.OkExchange == "" || p.values.OkRoutingKey == "" {
       return
     }
 
-    exchange = values.OkExchange
-    routing = values.OkRoutingKey
+    exchange = p.values.OkExchange
+    routing = p.values.OkRoutingKey
 
-    msg.Headers[HEADER_REDELIVERED_AMOUNT] = DEFAULT_VALUE
-    msg.Headers[HEADER_DELAY_MESSAGE] = DEFAULT_VALUE
+    p.msg.Headers[HEADER_REDELIVERED_AMOUNT] = DEFAULT_VALUE
+    p.msg.Headers[HEADER_DELAY_MESSAGE] = DEFAULT_VALUE
   case ERROR:
     var (
       retry int
       err   error
     )
 
-    if v, ok := msg.Headers[HEADER_REDELIVERED_AMOUNT]; ok {
+    if v, ok := p.msg.Headers[HEADER_REDELIVERED_AMOUNT]; ok {
       if retry, err = strconv.Atoi(v.(string)); err != nil {
 	retry = config.EnvAmqp.Retry + 1
       }
@@ -302,29 +303,35 @@ func (c *Core) publish(msg johdin.Delivery, headers utils.Headers, values config
     }
 
     if retry <= config.EnvAmqp.Retry {
-      exchange = values.Exchange
-      routing = values.BindingKey
+      exchange = p.values.Exchange
+      routing = p.values.BindingKey
 
-      msg.Headers[HEADER_DELAY_MESSAGE] = config.EnvAmqp.DelayErrorMessage
-      msg.Headers[HEADER_REDELIVERED_AMOUNT] = strconv.Itoa(retry + 1)
+      p.msg.Headers[HEADER_DELAY_MESSAGE] = config.EnvAmqp.DelayErrorMessage
+      p.msg.Headers[HEADER_REDELIVERED_AMOUNT] = strconv.Itoa(retry + 1)
     } else {
-      if values.ErrorExchange == "" || values.ErrorRoutingKey == "" {
+      if p.values.ErrorExchange == "" || p.values.ErrorRoutingKey == "" {
 	return
       }
 
-      exchange = values.ErrorExchange
-      routing = values.ErrorRoutingKey
+      exchange = p.values.ErrorExchange
+      routing = p.values.ErrorRoutingKey
 
-      msg.Body = setErrorPublish(msg.Body, sc.Error)
-      msg.Headers[HEADER_DELAY_MESSAGE] = config.EnvAmqp.DelayRequeueMessage
-      msg.Headers[HEADER_REDELIVERED_AMOUNT] = DEFAULT_VALUE
+      p.msg.Body = setErrorPublish(p.msg.Body, p.sc.Error)
+      p.msg.Headers[HEADER_DELAY_MESSAGE] = config.EnvAmqp.DelayRequeueMessage
+      p.msg.Headers[HEADER_REDELIVERED_AMOUNT] = DEFAULT_VALUE
+
+      if p.id != 0 {
+	if err = p.httpClient.Clients[p.resource].Update(p.id, &SetError{Error: sql.NullString{String: p.sc.Error.Error(), Valid: true}}, p.msg.Headers); err != nil {
+	  config.EnvSingletons.Logger.Errorf(log.TEMPLATE_CORE, p.headers.TransactionID, PACKAGE, "publish", "Update", err.Error())
+	}
+      }
     }
   case IN_PROGRESS:
-    exchange = values.Exchange
-    routing = values.BindingKey
+    exchange = p.values.Exchange
+    routing = p.values.BindingKey
 
-    msg.Headers[HEADER_REDELIVERED_AMOUNT] = DEFAULT_VALUE
-    msg.Headers[HEADER_DELAY_MESSAGE] = DEFAULT_VALUE
+    p.msg.Headers[HEADER_REDELIVERED_AMOUNT] = DEFAULT_VALUE
+    p.msg.Headers[HEADER_DELAY_MESSAGE] = DEFAULT_VALUE
   }
 
   go func(exchange, routing string, transationID interface{}, msg []byte, headers map[string]interface{}) {
@@ -342,7 +349,7 @@ func (c *Core) publish(msg johdin.Delivery, headers utils.Headers, values config
     }
 
     cancel()
-  }(exchange, routing, headers.TransactionID, msg.Body, msg.Headers)
+  }(exchange, routing, p.headers.TransactionID, p.msg.Body, p.msg.Headers)
 
   <-ctx.Done()
 }
