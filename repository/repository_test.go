@@ -30,7 +30,6 @@ func loadDB() *gorm.DB {
 
 func Test_Create(t *testing.T) {
   var (
-    s		= Src{}
     d		= Dst{}
     r		Repository
     err		error
@@ -44,9 +43,9 @@ func Test_Create(t *testing.T) {
   })
 
   r.DB = loadDB()
-  s = Src{Name: "test", NameID: "1"}
+  d = Dst{Name: "test", ID: "1"}
 
-  if err = r.Create(s, &d); err != nil {
+  if err = r.Create(&d); err != nil {
     t.Fatalf(err.Error())
   }
 }

@@ -15,18 +15,14 @@ type Repository struct {
   DB  *gorm.DB
 }
 
-func (r *Repository) Create(src, dst interface{}) error {
+func (r *Repository) Create(entity interface{}) error {
   var err error
 
-  if reflect.ValueOf(dst).Kind() != reflect.Ptr {
+  if reflect.ValueOf(entity).Kind() != reflect.Ptr {
     return errors.New("The target struct is required to be a pointer")
   }
 
-  if err = r.marshalAndUnmarshal(src, dst); err != nil {
-    return err
-  }
-
-  if err = r.DB.Create(dst).Error; err != nil {
+  if err = r.DB.Create(entity).Error; err != nil {
     return err
   }
 
