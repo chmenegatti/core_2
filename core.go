@@ -71,15 +71,15 @@ func NewMoiraiHttpClient(config configMoiraiHttpClient.Config) *clients.MoiraiHT
 }
 
 type Broker interface {
-  Publish(infos johdin.AmqpInfos, pub <-chan johdin.Publishing, err chan<- error, done chan<- struct{}) error
-  Consume(infos johdin.AmqpInfos, prefetch int, err chan<- error, messages chan<- johdin.Delivery) error
+  Publish(infos johdin.Infos, pub <-chan johdin.Publishing, err chan<- error, done chan<- struct{}) error
+  Consume(infos johdin.Infos, prefetch int, err chan<- error, messages chan<- johdin.Delivery) error
 }
 
 type AmqpBroker struct {
   amqp *johdin.Amqp
 }
 
-func (a *AmqpBroker) Publish(infos johdin.AmqpInfos, pub <-chan johdin.Publishing, err chan<- error, done chan<- struct{}) error {
+func (a *AmqpBroker) Publish(infos johdin.Infos, pub <-chan johdin.Publishing, err chan<- error, done chan<- struct{}) error {
   go func() {
     err <- a.amqp.Publish(infos, pub, done)
   }()
@@ -87,7 +87,7 @@ func (a *AmqpBroker) Publish(infos johdin.AmqpInfos, pub <-chan johdin.Publishin
   return nil
 }
 
-func (a *AmqpBroker) Consume(infos johdin.AmqpInfos, prefetch int,  err chan<- error, messages chan<- johdin.Delivery) error {
+func (a *AmqpBroker) Consume(infos johdin.Infos, prefetch int,  err chan<- error, messages chan<- johdin.Delivery) error {
   go func() {
     err <- a.amqp.Consume(infos, prefetch, messages)
   }()
@@ -374,16 +374,16 @@ func (c *Core) resources() {
   }()
 
   for _, resource := range config.EnvAmqpResources {
-    var infos []johdin.AmqpInfos
+    var infos []johdin.Infos
 
-    infos = append(infos, johdin.AmqpInfos{ExchangeName: resource.Exchange, ExchangeType: config.EnvAmqp.ExchangeType, Durable: true, QueueName: resource.QueueName, RoutingKey: resource.BindingKey, Args: args})
+    infos = append(infos, johdin.Infos{ExchangeName: resource.Exchange, ExchangeType: config.EnvAmqp.ExchangeType, Durable: true, QueueName: resource.QueueName, RoutingKey: resource.BindingKey, Args: args})
 
     if resource.OkExchange != "" && resource.OkRoutingKey != "" {
-      infos = append(infos, johdin.AmqpInfos{ExchangeName: resource.OkExchange, ExchangeType: config.EnvAmqp.ExchangeType, Durable: true, RoutingKey: resource.OkRoutingKey, Args: args})
+      infos = append(infos, johdin.Infos{ExchangeName: resource.OkExchange, ExchangeType: config.EnvAmqp.ExchangeType, Durable: true, RoutingKey: resource.OkRoutingKey, Args: args})
     }
 
     if resource.ErrorExchange != "" && resource.ErrorRoutingKey != "" {
-      infos = append(infos, johdin.AmqpInfos{ExchangeName: resource.ErrorExchange, ExchangeType: config.EnvAmqp.ExchangeType, Durable: true, RoutingKey: resource.ErrorRoutingKey, Args: args})
+      infos = append(infos, johdin.Infos{ExchangeName: resource.ErrorExchange, ExchangeType: config.EnvAmqp.ExchangeType, Durable: true, RoutingKey: resource.ErrorRoutingKey, Args: args})
     }
 
     for _, values := range infos {

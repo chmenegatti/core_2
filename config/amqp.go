@@ -1,7 +1,6 @@
 package config
 
 import (
-  "golang.org/x/net/context"
   "gitlab-devops.totvs.com.br/golang/johdin"
   "gitlab-devops.totvs.com.br/microservices/core/log"
 )
@@ -9,11 +8,16 @@ import (
 func LoadAmqp() {
   EnvSingletons.Logger.Infof(log.TEMPLATE_LOAD, PACKAGE, "LoadAmqp", INIT)
 
-  var ctx context.Context
-  ctx, _ = context.WithCancel(context.Background())
+  var err error
 
-  if EnvSingletons.AmqpConnection = johdin.New(EnvAmqp.Hosts, ctx); EnvSingletons.AmqpConnection == nil {
-    EnvSingletons.Logger.Fatalf(log.TEMPLATE_LOAD, PACKAGE, "LoadAmqp", "Could not connect in rabbitmq-server")
+  var config = johdin.Config{
+    Hosts:    EnvAmqp.Hosts,
+    Timeout:  EnvAmqp.Timeout,
+    Logger:   EnvSingletons.Logger,
+  }
+
+  if EnvSingletons.AmqpConnection, err = johdin.Connect(config); err != nil {
+    EnvSingletons.Logger.Fatalf(log.TEMPLATE_LOAD, PACKAGE, "LoadAmqp", err.Error())
   }
 
   EnvSingletons.Logger.Infof(log.TEMPLATE_LOAD, PACKAGE, "LoadAmqp", DONE)
