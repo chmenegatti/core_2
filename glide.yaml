@@ -8,7 +8,7 @@ import:
   version: v1.0.0
 - package: gitlab-devops.totvs.com.br/golang/johdin
   repo: https://gitlab-devops.totvs.com.br/golang/johdin.git
-  version: v0.3.1
+  version: b7b88fba33278d5c04a4ee753634e6fb0a38421c
 - package: gitlab-devops.totvs.com.br/golang/go-environment
   repo: https://gitlab-devops.totvs.com.br/golang/go-environment.git
   version: v0.2.1

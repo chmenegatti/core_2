@@ -71,7 +71,7 @@ func NewMoiraiHttpClient(config configMoiraiHttpClient.Config) *clients.MoiraiHT
 }
 
 type Broker interface {
-  Publish(infos johdin.Infos, pub <-chan johdin.Publishing, err chan<- error, done chan<- struct{}) error
+  Publish(ctx context.Context, infos johdin.Infos, pub <-chan johdin.Publishing, err chan<- error, done chan<- bool) error
   Consume(infos johdin.Infos, prefetch int, err chan<- error, messages chan<- johdin.Delivery) error
 }
 
@@ -79,9 +79,9 @@ type AmqpBroker struct {
   amqp *johdin.Amqp
 }
 
-func (a *AmqpBroker) Publish(infos johdin.Infos, pub <-chan johdin.Publishing, err chan<- error, done chan<- struct{}) error {
+func (a *AmqpBroker) Publish(ctx context.Context, infos johdin.Infos, pub chan johdin.Publishing, err chan<- error, done chan<- bool) error {
   go func() {
-    err <- a.amqp.Publish(infos, pub, done)
+    err <- a.amqp.Publish(ctx, infos, pub, done)
   }()
 
   return nil
@@ -107,7 +107,7 @@ type AnotherMethods map[string]Signature
 
 type AmqpResourcePublish  map[string]map[string]chan johdin.Publishing
 type AmqpResourcePublishError map[string]map[string]chan error
-type AmqpResourceDone map[string]map[string]chan struct{}
+type AmqpResourceDone map[string]map[string]chan bool
 type AmqpResourceDelivery map[string]map[string]chan johdin.Delivery
 type AmqpResourceDeliveryError map[string]map[string]chan error
 
@@ -152,7 +152,7 @@ func NewWorkerFactory() Factorier {
 func (c *Core) Run(ctx	context.Context, httpClient *HttpClient, worker Worker) {
   var an AnotherMethods
 
-  c.resources()
+  c.resources(ctx)
   an = c.mapMethods(worker)
 
   for _, values := range config.EnvAmqpResources {
@@ -331,19 +331,23 @@ func (c *Core) publish(p Publish) {
     routing = p.values.BindingKey
 
     p.msg.Headers[HEADER_REDELIVERED_AMOUNT] = DEFAULT_VALUE
-    p.msg.Headers[HEADER_DELAY_MESSAGE] = DEFAULT_VALUE
+    p.msg.Headers[HEADER_DELAY_MESSAGE] = config.EnvAmqp.DelayRequeueMessage
   }
 
   go func(exchange, routing string, transationID interface{}, msg []byte, headers map[string]interface{}) {
+    var correlationID = fmt.Sprintf("%s.%s", exchange, routing)
+
     c.amqp.AmqpResourcePublish[exchange][routing] <- johdin.Publishing {
-      Headers:	    headers,
-      Body:	    msg,
-      DeliveryMode: config.EnvAmqp.DeliveryMode,
+      Headers:	      headers,
+      Body:	      msg,
+      DeliveryMode:   config.EnvAmqp.DeliveryMode,
+      CorrelationId:  correlationID,
     }
 
     select {
     case err := <-c.amqp.AmqpResourcePublishError[exchange][routing]:
-      config.EnvSingletons.Logger.Errorf(log.TEMPLATE_PUBLISH, transationID, PACKAGE, "publish", "johdin", exchange, routing, err.Error())
+      fmt.Println(err)
+      //config.EnvSingletons.Logger.Errorf(log.TEMPLATE_PUBLISH, transationID, PACKAGE, "publish", "johdin", exchange, routing, err.Error())
     case _ = <-c.amqp.AmqpResourceDone[exchange][routing]:
       config.EnvSingletons.Logger.Infof(log.TEMPLATE_PUBLISH, transationID, PACKAGE, "publish", "johdin", exchange, routing, log.EMPTY_STR)
     }
@@ -354,7 +358,7 @@ func (c *Core) publish(p Publish) {
   <-ctx.Done()
 }
 
-func (c *Core) resources() {
+func (c *Core) resources(ctx context.Context) {
   var (
     broker  = &AmqpBroker{config.EnvSingletons.AmqpConnection}
     amqpRes = &AmqpResource{AmqpResourcePublish: make(AmqpResourcePublish), AmqpResourcePublishError: make(AmqpResourcePublishError), AmqpResourceDone: make(AmqpResourceDone), AmqpResourceDelivery: make(AmqpResourceDelivery), AmqpResourceDeliveryError: make(AmqpResourceDeliveryError)}
@@ -376,21 +380,21 @@ func (c *Core) resources() {
   for _, resource := range config.EnvAmqpResources {
     var infos []johdin.Infos
 
-    infos = append(infos, johdin.Infos{ExchangeName: resource.Exchange, ExchangeType: config.EnvAmqp.ExchangeType, Durable: true, QueueName: resource.QueueName, RoutingKey: resource.BindingKey, Args: args})
+    infos = append(infos, johdin.Infos{ExchangeName: resource.Exchange, ExchangeType: config.EnvAmqp.ExchangeType, Durable: true, QueueName: resource.QueueName, RoutingKey: resource.BindingKey, Args: args, CorrelationID: fmt.Sprintf("%s.%s", resource.Exchange, resource.BindingKey)})
 
     if resource.OkExchange != "" && resource.OkRoutingKey != "" {
-      infos = append(infos, johdin.Infos{ExchangeName: resource.OkExchange, ExchangeType: config.EnvAmqp.ExchangeType, Durable: true, RoutingKey: resource.OkRoutingKey, Args: args})
+      infos = append(infos, johdin.Infos{ExchangeName: resource.OkExchange, ExchangeType: config.EnvAmqp.ExchangeType, Durable: true, RoutingKey: resource.OkRoutingKey, Args: args, CorrelationID: fmt.Sprintf("%s.%s", resource.OkExchange, resource.OkRoutingKey)})
     }
 
     if resource.ErrorExchange != "" && resource.ErrorRoutingKey != "" {
-      infos = append(infos, johdin.Infos{ExchangeName: resource.ErrorExchange, ExchangeType: config.EnvAmqp.ExchangeType, Durable: true, RoutingKey: resource.ErrorRoutingKey, Args: args})
+      infos = append(infos, johdin.Infos{ExchangeName: resource.ErrorExchange, ExchangeType: config.EnvAmqp.ExchangeType, Durable: true, RoutingKey: resource.ErrorRoutingKey, Args: args, CorrelationID: fmt.Sprintf("%s.%s", resource.ErrorExchange, resource.ErrorRoutingKey)})
     }
 
     for _, values := range infos {
       if amqpRes.AmqpResourcePublish[values.ExchangeName] == nil {
 	amqpRes.AmqpResourcePublish[values.ExchangeName] = make(map[string]chan johdin.Publishing)
 	amqpRes.AmqpResourcePublishError[values.ExchangeName] = make(map[string]chan error)
-	amqpRes.AmqpResourceDone[values.ExchangeName] = make(map[string]chan struct{})
+	amqpRes.AmqpResourceDone[values.ExchangeName] = make(map[string]chan bool)
 
 	if values.QueueName != "" {
 	  amqpRes.AmqpResourceDelivery[values.ExchangeName] = make(map[string]chan johdin.Delivery)
@@ -401,9 +405,9 @@ func (c *Core) resources() {
       amqpRes.Lock()
       amqpRes.AmqpResourcePublish[values.ExchangeName][values.RoutingKey] = make(chan johdin.Publishing)
       amqpRes.AmqpResourcePublishError[values.ExchangeName][values.RoutingKey] = make(chan error)
-      amqpRes.AmqpResourceDone[values.ExchangeName][values.RoutingKey] = make(chan struct{})
+      amqpRes.AmqpResourceDone[values.ExchangeName][values.RoutingKey] = make(chan bool)
 
-      go broker.Publish(values, amqpRes.AmqpResourcePublish[values.ExchangeName][values.RoutingKey], amqpRes.AmqpResourcePublishError[values.ExchangeName][values.RoutingKey], amqpRes.AmqpResourceDone[values.ExchangeName][values.RoutingKey])
+      go broker.Publish(ctx, values, amqpRes.AmqpResourcePublish[values.ExchangeName][values.RoutingKey], amqpRes.AmqpResourcePublishError[values.ExchangeName][values.RoutingKey], amqpRes.AmqpResourceDone[values.ExchangeName][values.RoutingKey])
 
       if values.QueueName != "" {
 	amqpRes.AmqpResourceDelivery[values.ExchangeName][values.RoutingKey] = make(chan johdin.Delivery)

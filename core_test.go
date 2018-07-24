@@ -9,7 +9,6 @@ import (
   "net/http"
   "syscall"
   "testing"
-  //"errors"
   "fmt"
   "os"
 )
@@ -22,7 +21,6 @@ type MockProject struct {
 func (mp *MockProject) Create(f Factorier, a Authenticate) StatusConsumer {
   fmt.Printf("Transaction ID: %s, Args: %s\n", f.GetTransactionID(), mp)
   return StatusConsumer{Status: COMPLETED}
-  //return StatusConsumer{Status:	ERROR, Error: errors.New("Error Mock")}
 }
 
 func (mp *MockProject) Delete(f Factorier, a Authenticate) StatusConsumer {
