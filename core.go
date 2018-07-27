@@ -149,9 +149,17 @@ func NewWorkerFactory() Factorier {
   return &WorkerFactory{}
 }
 
-func (c *Core) Run(ctx	context.Context, httpClient *HttpClient, worker Worker) {
-  var an AnotherMethods
+func clone(org interface{}) interface{} {
+  return reflect.New(reflect.ValueOf(org).Elem().Type()).Interface()
+}
 
+func (c *Core) Run(ctx	context.Context, httpClient *HttpClient, worker Worker) {
+  var (
+    an	AnotherMethods
+    cw	Worker
+  )
+
+  cw = clone(worker).(Worker)
   c.resources(ctx)
   an = c.mapMethods(worker)
 
@@ -185,6 +193,9 @@ func (c *Core) Run(ctx	context.Context, httpClient *HttpClient, worker Worker) {
 	    w	    Worker
 	    p	    Publish
 	  )
+
+	  //set empty worker
+	  worker = cw
 
 	  headers = utils.GetHeader(message.Headers)
 	  p = Publish{msg: message, headers: headers, values: values, httpClient: httpClient, resource: resource}
