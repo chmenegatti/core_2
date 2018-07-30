@@ -153,13 +153,16 @@ func clone(org interface{}) interface{} {
   return reflect.New(reflect.ValueOf(org).Elem().Type()).Interface()
 }
 
+func clear(w interface{}) {
+  v := reflect.ValueOf(w).Elem()
+  v.Set(reflect.Zero(v.Type()))
+}
+
 func (c *Core) Run(ctx	context.Context, httpClient *HttpClient, worker Worker) {
   var (
     an	AnotherMethods
-    cw	Worker
   )
 
-  cw = clone(worker).(Worker)
   c.resources(ctx)
   an = c.mapMethods(worker)
 
@@ -195,7 +198,7 @@ func (c *Core) Run(ctx	context.Context, httpClient *HttpClient, worker Worker) {
 	  )
 
 	  //set empty worker
-	  worker = cw
+	  clear(worker)
 
 	  headers = utils.GetHeader(message.Headers)
 	  p = Publish{msg: message, headers: headers, values: values, httpClient: httpClient, resource: resource}
