@@ -14,8 +14,14 @@ import (
 )
 
 type MockProject struct {
+  Action		string	`json:"-"`
   Error			string	`json:",omitempty"`
   OpenstackProjectName	string	`json:",omitempty"`
+}
+
+var maps = map[string]func(*MockProject, Factorier, Authenticate) StatusConsumer{
+  "get": Get,
+  "createerror": CreateError,
 }
 
 func (mp *MockProject) Create(f Factorier, a Authenticate) StatusConsumer {
@@ -28,12 +34,16 @@ func (mp *MockProject) Delete(f Factorier, a Authenticate) StatusConsumer {
   return StatusConsumer{Status: COMPLETED}
 }
 
-func (mp *MockProject) Get(f Factorier, a Authenticate) StatusConsumer {
+func (mp *MockProject) Custom(f Factorier, a Authenticate) StatusConsumer {
+  return maps[mp.Action](mp, f, a)
+}
+
+func Get(mp *MockProject, f Factorier, a Authenticate) StatusConsumer {
   fmt.Printf("Transaction ID: %s, Args: %s\n", f.GetTransactionID(), mp)
   return StatusConsumer{Status: COMPLETED}
 }
 
-func (mp *MockProject) CreateError(f Factorier, a Authenticate) StatusConsumer {
+func CreateError(mp *MockProject, f Factorier, a Authenticate) StatusConsumer {
   fmt.Printf("Transaction ID: %s, Args: %s\n", f.GetTransactionID(), mp)
   return StatusConsumer{Status: COMPLETED}
 }
@@ -106,7 +116,6 @@ func Test_Core_Run(t *testing.T) {
     factory	      = NewWorkerFactory()
     auth	      Authenticate
     c		      Core
-    m		      Worker
     ctx		      context.Context
     done	      context.CancelFunc
     sigs	      = make(chan os.Signal, 1)
@@ -130,9 +139,12 @@ func Test_Core_Run(t *testing.T) {
   }
 
   c = Core{factory, auth, &AmqpResource{}}
-  m = &MockProject{}
 
-  c.Run(ctx, httpClient, m)
+  c.Run(ctx, httpClient, func(ac string) Worker {
+    var m = &MockProject{}
+    m.Action = ac
+    return m
+  })
 }
 
 func newConfigMoiraiHttpClient(url string) configMoiraiHttpClient.Config {

@@ -8,7 +8,6 @@ import (
   "strconv"
   "sync"
   "fmt"
-  "os"
 
   configMoiraiHttpClient "gitlab-devops.totvs.com.br/golang/moirai-http-client/config"
   "gitlab-devops.totvs.com.br/golang/moirai-http-client/clients"
@@ -29,6 +28,8 @@ const (
   HEADER_REDELIVERED_AMOUNT = "x-redelivered-amount"
   HEADER_EXCHANGE_ROUTING   = "x-delayed-type"
 )
+
+type NewWorker func(string) Worker
 
 type Client interface {
   Create(payload interface{}, headers map[string]interface{}) (ID uint, err error)
@@ -158,13 +159,8 @@ func clear(w interface{}) {
   v.Set(reflect.Zero(v.Type()))
 }
 
-func (c *Core) Run(ctx	context.Context, httpClient *HttpClient, worker Worker) {
-  var (
-    an	AnotherMethods
-  )
-
+func (c *Core) Run(ctx	context.Context, httpClient *HttpClient, fw NewWorker) {
   c.resources(ctx)
-  an = c.mapMethods(worker)
 
   for _, values := range config.EnvAmqpResources {
     var (
@@ -179,12 +175,7 @@ func (c *Core) Run(ctx	context.Context, httpClient *HttpClient, worker Worker) {
     resource = strings.ToLower(queue[2])
     action = strings.ToLower(queue[len(queue) - 1])
 
-    if !c.checkMethods(action, an) {
-      config.EnvSingletons.Logger.Errorf(log.TEMPLATE_LOAD, PACKAGE, "checkMethods", fmt.Sprintf("Action \"%s\" not exist", action))
-      os.Exit(1)
-    }
-
-    go func(resource, action string, values config.AmqpResourceValues, an AnotherMethods) {
+    go func(resource, action string, values config.AmqpResourceValues) {
       for {
 	select {
 	case message := <-c.amqp.AmqpResourceDelivery[values.Exchange][values.BindingKey]:
@@ -195,11 +186,10 @@ func (c *Core) Run(ctx	context.Context, httpClient *HttpClient, worker Worker) {
 	    headers utils.Headers
 	    w	    Worker
 	    p	    Publish
+	    worker  Worker
 	  )
 
-	  //set empty worker
-	  clear(worker)
-
+	  worker = fw(action)
 	  headers = utils.GetHeader(message.Headers)
 	  p = Publish{msg: message, headers: headers, values: values, httpClient: httpClient, resource: resource}
 
@@ -228,14 +218,7 @@ func (c *Core) Run(ctx	context.Context, httpClient *HttpClient, worker Worker) {
 	  case "delete":
 	    sc = w.Delete(c.Factorier, c.Authenticate)
 	  default:
-	    config.EnvSingletons.Logger.Infof(log.TEMPLATE_LOG_CORE, headers.TransactionID, PACKAGE, action, "Log", log.INIT, worker, log.EMPTY_STR)
-	    sc = an[action](c.Factorier, c.Authenticate)
-
-	    if sc.Status == COMPLETED || sc.Status == IN_PROGRESS {
-	      config.EnvSingletons.Logger.Infof(log.TEMPLATE_LOG_CORE, headers.TransactionID, PACKAGE, action, "Log", log.DONE, worker, log.EMPTY_STR)
-	    } else {
-	      config.EnvSingletons.Logger.Errorf(log.TEMPLATE_LOG_CORE, headers.TransactionID, PACKAGE, action, "Log", log.DONE, worker, sc.Error.Error())
-	    }
+	    sc = w.Custom(c.Factorier, c.Authenticate)
 	  }
 
 	  if sc.Update {
@@ -262,7 +245,7 @@ func (c *Core) Run(ctx	context.Context, httpClient *HttpClient, worker Worker) {
 	  config.EnvSingletons.Logger.Errorf(log.TEMPLATE_PUBLISH, log.EMPTY_STR, PACKAGE, "consume", "johdin", values.Exchange, values.BindingKey, e.Error())
 	}
       }
-    }(resource, action, values, an)
+    }(resource, action, values)
   }
 
   <-ctx.Done()
@@ -360,8 +343,7 @@ func (c *Core) publish(p Publish) {
 
     select {
     case err := <-c.amqp.AmqpResourcePublishError[exchange][routing]:
-      fmt.Println(err)
-      //config.EnvSingletons.Logger.Errorf(log.TEMPLATE_PUBLISH, transationID, PACKAGE, "publish", "johdin", exchange, routing, err.Error())
+      config.EnvSingletons.Logger.Errorf(log.TEMPLATE_PUBLISH, transationID, PACKAGE, "publish", "johdin", exchange, routing, err.Error())
     case _ = <-c.amqp.AmqpResourceDone[exchange][routing]:
       config.EnvSingletons.Logger.Infof(log.TEMPLATE_PUBLISH, transationID, PACKAGE, "publish", "johdin", exchange, routing, log.EMPTY_STR)
     }

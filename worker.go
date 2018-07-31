@@ -267,6 +267,7 @@ func (wf *WorkerFactory) authenticate(auth interface{},	control string) (interfa
 type Worker interface {
   Create(f Factorier, a Authenticate) StatusConsumer
   Delete(f Factorier, a Authenticate) StatusConsumer
+  Custom(f Factorier, a Authenticate) StatusConsumer
 }
 
 type Decorator struct {
