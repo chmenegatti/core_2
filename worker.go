@@ -311,3 +311,18 @@ func (l *Log) Delete(f Factorier, a Authenticate) StatusConsumer {
 
   return sc
 }
+
+func (l *Log) Custom(f Factorier, a Authenticate) StatusConsumer {
+  var sc StatusConsumer
+  config.EnvSingletons.Logger.Infof(log.TEMPLATE_LOG_CORE, f.GetTransactionID(), PACKAGE, "Custom", "Log", log.INIT, l.Worker, log.EMPTY_STR)
+
+  sc = l.Worker.Custom(f, a)
+
+  if sc.Status == COMPLETED || sc.Status == IN_PROGRESS {
+    config.EnvSingletons.Logger.Infof(log.TEMPLATE_LOG_CORE, f.GetTransactionID(), PACKAGE, "Custom", "Log", log.DONE, l.Worker, log.EMPTY_STR)
+  } else {
+    config.EnvSingletons.Logger.Errorf(log.TEMPLATE_LOG_CORE, f.GetTransactionID(), PACKAGE, "Custom", "Log", log.DONE, l.Worker, sc.Error.Error())
+  }
+
+  return sc
+}
