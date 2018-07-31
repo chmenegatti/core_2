@@ -38,6 +38,10 @@ type Client interface {
   Delete(ID uint, headers map[string]interface{}) error
 }
 
+type Base struct {
+  Action  string  `json:"-"`
+}
+
 type HttpClient struct {
   Clients map[string]Client
 }
