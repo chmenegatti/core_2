@@ -402,11 +402,15 @@ func (c *Core) resources(ctx context.Context) {
 	}
       }
 
-      amqpRes.Lock()
-      amqpRes.AmqpResourcePublish[values.ExchangeName][values.RoutingKey] = make(chan johdin.Publishing)
-      amqpRes.AmqpResourcePublishError[values.ExchangeName][values.RoutingKey] = make(chan error)
-      amqpRes.AmqpResourceDone[values.ExchangeName][values.RoutingKey] = make(chan bool)
+      if amqpRes.AmqpResourcePublish[values.ExchangeName][values.RoutingKey] == nil {
+	amqpRes.Lock()
+	amqpRes.AmqpResourcePublish[values.ExchangeName][values.RoutingKey] = make(chan johdin.Publishing)
+	amqpRes.AmqpResourcePublishError[values.ExchangeName][values.RoutingKey] = make(chan error)
+	amqpRes.AmqpResourceDone[values.ExchangeName][values.RoutingKey] = make(chan bool)
+	amqpRes.Unlock()
+      }
 
+      amqpRes.Lock()
       go broker.Publish(ctx, values, amqpRes.AmqpResourcePublish[values.ExchangeName][values.RoutingKey], amqpRes.AmqpResourcePublishError[values.ExchangeName][values.RoutingKey], amqpRes.AmqpResourceDone[values.ExchangeName][values.RoutingKey])
 
       if values.QueueName != "" {
