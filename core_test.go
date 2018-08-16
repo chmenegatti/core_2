@@ -9,6 +9,7 @@ import (
   "net/http"
   "syscall"
   "testing"
+  "time"
   "fmt"
   "os"
 )
@@ -40,6 +41,7 @@ func (mp *MockProject) Custom(f Factorier, a Authenticate) StatusConsumer {
 
 func Get(mp *MockProject, f Factorier, a Authenticate) StatusConsumer {
   fmt.Printf("Transaction ID: %s, Args: %s\n", f.GetTransactionID(), mp)
+  time.Sleep(10 * time.Second)
   return StatusConsumer{Status: COMPLETED}
 }
 
@@ -87,9 +89,17 @@ func loadConfCore() {
       BindingKey:	"v1.1.project.create",
       QueueName:	"broker.queue.project.create.v1.1.project.create",
       OkExchange:	"broker.topic.project.create",
-      OkRoutingKey:	"v1.1.success",
+      OkRoutingKey:	"v1.1.project.create.get",
       ErrorExchange:	"broker.topic.project.create",
       ErrorRoutingKey:	"v1.1.project.createerror",
+      Lock:		true,
+      Expiration:	10,
+    },
+    {
+      Exchange:		"broker.topic.project.create",
+      BindingKey:	"v1.1.project.create.get",
+      QueueName:	"broker.queue.project.create.v1.1.project.create.get",
+      Unlock:		true,
     },
     {
       Exchange:		"broker.topic.project.create",

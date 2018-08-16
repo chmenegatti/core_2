@@ -8,13 +8,16 @@ import (
   "strconv"
   "sync"
   "fmt"
+  "os"
 
   configMoiraiHttpClient "gitlab-devops.totvs.com.br/golang/moirai-http-client/config"
   "gitlab-devops.totvs.com.br/golang/moirai-http-client/clients"
+  "gitlab-devops.totvs.com.br/golang/go-cache"
   "gitlab-devops.totvs.com.br/microservices/core/config"
   "gitlab-devops.totvs.com.br/microservices/core/utils"
   "gitlab-devops.totvs.com.br/microservices/core/log"
   "gitlab-devops.totvs.com.br/golang/johdin"
+  "github.com/satori/go.uuid"
   "github.com/streadway/amqp"
   "golang.org/x/net/context"
 )
@@ -24,9 +27,11 @@ const (
   IN_PROGRESS		    = "IN_PROGRESS"
   ERROR			    = "ERROR"
   COMPLETED		    = "COMPLETED"
+  REDELIVERE_LOCK	    = "REDELIVERE_LOCK"
   HEADER_DELAY_MESSAGE	    = "x-delay"
   HEADER_REDELIVERED_AMOUNT = "x-redelivered-amount"
   HEADER_EXCHANGE_ROUTING   = "x-delayed-type"
+  DEFAULT_EXPIRATION	    = 60
 )
 
 type NewWorker func(string) Worker
@@ -197,6 +202,29 @@ func (c *Core) Run(ctx	context.Context, httpClient *HttpClient, fw NewWorker) {
 	  headers = utils.GetHeader(message.Headers)
 	  p = Publish{msg: message, headers: headers, values: values, httpClient: httpClient, resource: resource}
 
+	  if values.Lock {
+	    var (
+	      id      string
+	      set     bool
+	      err     error
+	    )
+
+	    if id, set, err = lock(resource, values.Expiration); err != nil {
+	      config.EnvSingletons.Logger.Errorf(log.TEMPLATE_CORE, headers.TransactionID, PACKAGE, "Core", "lock", err.Error())
+	      p.sc = StatusConsumer{Status: ERROR, Error: err}
+	      c.publish(p)
+	      continue
+	    }
+
+	    if !set {
+	      p.sc = StatusConsumer{Status: REDELIVERE_LOCK}
+	      c.publish(p)
+	      continue
+	    }
+
+	    p.msg.Headers[utils.LOCK_ID] = id
+	  }
+
 	  if err = json.Unmarshal(message.Body, &msg); err != nil {
 	    config.EnvSingletons.Logger.Errorf(log.TEMPLATE_CORE, headers.TransactionID, PACKAGE, "Core", "json.Unmarshal", err.Error())
 	    p.sc = StatusConsumer{Status: ERROR, Error: err}
@@ -243,16 +271,82 @@ func (c *Core) Run(ctx	context.Context, httpClient *HttpClient, fw NewWorker) {
 	    }
 	  }
 
+	  if values.Unlock {
+	    if err = unlock(resource, headers.LockID); err != nil {
+	      config.EnvSingletons.Logger.Errorf(log.TEMPLATE_CORE, headers.TransactionID, PACKAGE, "Core", "unlock", err.Error())
+	      p.sc = StatusConsumer{Status: ERROR, Error: err}
+	      c.publish(p)
+	      continue
+	    }
+	  }
+
 	  p.sc = sc
 	  c.publish(p)
 	case e := <-c.amqp.AmqpResourceDeliveryError[values.Exchange][values.BindingKey]:
 	  config.EnvSingletons.Logger.Errorf(log.TEMPLATE_PUBLISH, log.EMPTY_STR, PACKAGE, "consume", "johdin", values.Exchange, values.BindingKey, e.Error())
+	  os.Exit(1)
 	}
       }
     }(resource, action, values)
   }
 
   <-ctx.Done()
+}
+
+func lock(resource string, expiration int32) (string, bool, error) {
+  var (
+    id	    uuid.UUID
+    err	    error
+    exists  bool
+    c	    cache.Cache
+  )
+
+  if id, err = uuid.NewV4(); err != nil {
+    return "", exists, err
+  }
+
+  if expiration == 0 {
+    expiration = DEFAULT_EXPIRATION
+  }
+
+  c = cache.Cache{
+    Key:    resource,
+    Time:   expiration,
+    Client: config.EnvSingletons.RedisConnection,
+    Value:  id.String(),
+  }
+
+  exists, err = c.Set()
+
+  return id.String(), exists, err
+}
+
+func unlock(resource string, id string) error {
+  var (
+    err	    error
+    c	    cache.Cache
+    value   interface{}
+    exists  bool
+  )
+
+  if id != "" {
+    c = cache.Cache{
+      Key:    resource,
+      Client: config.EnvSingletons.RedisConnection,
+    }
+
+    if value, err, exists = c.Get(); err != nil {
+      return err
+    }
+
+    if exists {
+      if value.(string) == id {
+	return c.Del()
+      }
+    }
+  }
+
+  return nil
 }
 
 func (c *Core) checkMethods(action string, an AnotherMethods) bool {
@@ -333,6 +427,20 @@ func (c *Core) publish(p Publish) {
 
     p.msg.Headers[HEADER_REDELIVERED_AMOUNT] = DEFAULT_VALUE
     p.msg.Headers[HEADER_DELAY_MESSAGE] = config.EnvAmqp.DelayRequeueMessage
+  case REDELIVERE_LOCK:
+    var delay = p.values.Expiration
+
+    exchange = p.values.Exchange
+    routing = p.values.BindingKey
+
+    if delay == 0 {
+      delay = DEFAULT_EXPIRATION
+    }
+
+    delay = (delay * 100) / 2
+
+    p.msg.Headers[HEADER_REDELIVERED_AMOUNT] = DEFAULT_VALUE
+    p.msg.Headers[HEADER_DELAY_MESSAGE] = strconv.Itoa(int(delay))
   }
 
   go func(exchange, routing string, transationID interface{}, msg []byte, headers map[string]interface{}) {

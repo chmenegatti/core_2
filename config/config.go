@@ -124,6 +124,9 @@ type AmqpResourceValues struct {
   OkRoutingKey    string  `json:",omitempty"`
   ErrorExchange   string  `json:",omitempty"`
   ErrorRoutingKey string  `json:",omitempty"`
+  Expiration	  int32	  `json:",omitempty"`
+  Lock		  bool	  `json:",omitempty"`
+  Unlock	  bool	  `json:",omitempty"`
 }
 
 type Infos struct {
