@@ -295,15 +295,13 @@ func (c *Core) Run(ctx	context.Context, httpClient *HttpClient, fw NewWorker) {
 
 func lock(resource string, expiration int32) (string, bool, error) {
   var (
-    id	    uuid.UUID
+    id	    string
     err	    error
     exists  bool
     c	    cache.Cache
   )
 
-  if id, err = uuid.NewV4(); err != nil {
-    return "", exists, err
-  }
+  id = uuid.NewV4().String()
 
   if expiration == 0 {
     expiration = DEFAULT_EXPIRATION
@@ -313,12 +311,12 @@ func lock(resource string, expiration int32) (string, bool, error) {
     Key:    resource,
     Time:   expiration,
     Client: config.EnvSingletons.RedisConnection,
-    Value:  id.String(),
+    Value:  id,
   }
 
   exists, err = c.Set()
 
-  return id.String(), exists, err
+  return id, exists, err
 }
 
 func unlock(resource string, id string) error {
