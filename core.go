@@ -177,6 +177,7 @@ func (c *Core) Run(ctx	context.Context, httpClient *HttpClient, fw NewWorker) {
       queue	[]string
       resource	string
       action	string
+      rollback	string
     )
 
     config.EnvSingletons.Logger.Infof(log.TEMPLATE_LOAD, PACKAGE, "Load Queue", values.QueueName)
@@ -184,6 +185,7 @@ func (c *Core) Run(ctx	context.Context, httpClient *HttpClient, fw NewWorker) {
     queue = strings.Split(values.QueueName, ".")
     resource = strings.ToLower(queue[2])
     action = strings.ToLower(queue[len(queue) - 1])
+    rollback = strings.ToLower(queue[len(queue) - 2])
 
     go func(resource, action string, values config.AmqpResourceValues) {
       for {
@@ -277,7 +279,7 @@ func (c *Core) Run(ctx	context.Context, httpClient *HttpClient, fw NewWorker) {
 	    }
 	  }
 
-	  if msg.Error != log.EMPTY_STR && (sc.Status == COMPLETED || sc.Status == IN_PROGRESS) {
+	  if rollback == ERROR && msg.Error != log.EMPTY_STR && (sc.Status == COMPLETED || sc.Status == IN_PROGRESS) {
 	    if err = httpClient.Clients[resource].Update(msg.ID, &SetError{Error: sql.NullString{String: "", Valid: false}}, message.Headers); err != nil {
 	      config.EnvSingletons.Logger.Errorf(log.TEMPLATE_CORE, headers.TransactionID, PACKAGE, "Core", "Update", err.Error())
 	      p.sc = StatusConsumer{Status: ERROR, Error: err}
