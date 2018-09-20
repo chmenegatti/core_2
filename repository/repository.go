@@ -105,6 +105,12 @@ func (r *Repository) Update(condition, entity interface{}) error {
   return nil
 }
 
+func (r *Repository) Commit() error {
+  r.DB.Commit()
+
+  return r.DB.Error
+}
+
 func (r *Repository) marshalAndUnmarshal(src, dst interface{}) error {
   var (
     body  []byte

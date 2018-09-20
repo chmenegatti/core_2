@@ -241,7 +241,13 @@ func (wf *WorkerFactory) Wap(a Authenticate) (*gowapclient.WAP, error) {
 }
 
 func (wf *WorkerFactory) DB(a Authenticate) (*gorm.DB, error) {
-  return a.DB.Connection, nil
+  var tx *gorm.DB = a.DB.Connection.Begin()
+
+  if tx.Error != nil {
+    return a.DB.Connection, tx.Error
+  }
+
+  return tx, nil
 }
 
 func (wf *WorkerFactory) GetTransactionID() string {
