@@ -106,15 +106,11 @@ func (r *Repository) Update(condition, entity interface{}) error {
 }
 
 func (r *Repository) Commit() error {
-  r.DB.Commit()
-
-  return r.DB.Error
+  return r.DB.Commit().Error
 }
 
 func (r *Repository) Rollback() error {
-  r.DB.Rollback()
-
-  return r.DB.Error
+  return r.DB.Rollback().Error
 }
 
 func (r *Repository) marshalAndUnmarshal(src, dst interface{}) error {
