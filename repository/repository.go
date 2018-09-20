@@ -111,6 +111,12 @@ func (r *Repository) Commit() error {
   return r.DB.Error
 }
 
+func (r *Repository) Rollback() error {
+  r.DB.Rollback()
+
+  return r.DB.Error
+}
+
 func (r *Repository) marshalAndUnmarshal(src, dst interface{}) error {
   var (
     body  []byte
