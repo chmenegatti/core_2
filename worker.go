@@ -291,7 +291,13 @@ func (l *Log) Create(f Factorier, a Authenticate) StatusConsumer {
   if sc.Status == COMPLETED || sc.Status == IN_PROGRESS {
     config.EnvSingletons.Logger.Infof(log.TEMPLATE_LOG_CORE, f.GetTransactionID(), PACKAGE, "Create", "Log", log.DONE, l.Worker, log.EMPTY_STR)
   } else {
-    config.EnvSingletons.Logger.Errorf(log.TEMPLATE_LOG_CORE, f.GetTransactionID(), PACKAGE, "Create", "Log", log.DONE, l.Worker, sc.Error.Error())
+    var message = log.EMPTY_STR
+
+    if sc.Error != nil {
+      message = sc.Error.Error()
+    }
+
+    config.EnvSingletons.Logger.Errorf(log.TEMPLATE_LOG_CORE, f.GetTransactionID(), PACKAGE, "Create", "Log", log.DONE, l.Worker, message)
   }
 
   return sc
@@ -306,7 +312,13 @@ func (l *Log) Delete(f Factorier, a Authenticate) StatusConsumer {
   if sc.Status == COMPLETED || sc.Status == IN_PROGRESS {
     config.EnvSingletons.Logger.Infof(log.TEMPLATE_LOG_CORE, f.GetTransactionID(), PACKAGE, "Delete", "Log", log.DONE, l.Worker, log.EMPTY_STR)
   } else {
-    config.EnvSingletons.Logger.Errorf(log.TEMPLATE_LOG_CORE, f.GetTransactionID(), PACKAGE, "Delete", "Log", log.DONE, l.Worker, sc.Error.Error())
+    var message = log.EMPTY_STR
+
+    if sc.Error != nil {
+      message = sc.Error.Error()
+    }
+
+    config.EnvSingletons.Logger.Errorf(log.TEMPLATE_LOG_CORE, f.GetTransactionID(), PACKAGE, "Delete", "Log", log.DONE, l.Worker, message)
   }
 
   return sc
@@ -321,7 +333,13 @@ func (l *Log) Custom(f Factorier, a Authenticate) StatusConsumer {
   if sc.Status == COMPLETED || sc.Status == IN_PROGRESS {
     config.EnvSingletons.Logger.Infof(log.TEMPLATE_LOG_CORE, f.GetTransactionID(), PACKAGE, "Custom", "Log", log.DONE, l.Worker, log.EMPTY_STR)
   } else {
-    config.EnvSingletons.Logger.Errorf(log.TEMPLATE_LOG_CORE, f.GetTransactionID(), PACKAGE, "Custom", "Log", log.DONE, l.Worker, sc.Error.Error())
+    var message = log.EMPTY_STR
+
+    if sc.Error != nil {
+      message = sc.Error.Error()
+    }
+
+    config.EnvSingletons.Logger.Errorf(log.TEMPLATE_LOG_CORE, f.GetTransactionID(), PACKAGE, "Custom", "Log", log.DONE, l.Worker, message)
   }
 
   return sc

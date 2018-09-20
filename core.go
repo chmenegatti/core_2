@@ -44,7 +44,8 @@ type Client interface {
 }
 
 type Base struct {
-  Action  string  `json:"-"`
+  Action  string	  `json:"-"`
+  Error	  sql.NullString  `json:",omitempty"`
 }
 
 type HttpClient struct {
@@ -196,6 +197,7 @@ func (c *Core) Run(ctx	context.Context, httpClient *HttpClient, fw NewWorker) {
 	    w	    Worker
 	    p	    Publish
 	    worker  Worker
+	    key	    = resource
 	  )
 
 	  worker = fw(action)
@@ -209,7 +211,11 @@ func (c *Core) Run(ctx	context.Context, httpClient *HttpClient, fw NewWorker) {
 	      err     error
 	    )
 
-	    if id, set, err = lock(resource, values.Expiration); err != nil {
+	    if headers.LockTag != log.EMPTY_STR {
+	      key = headers.LockTag
+	    }
+
+	    if id, set, err = lock(key, values.Expiration); err != nil {
 	      config.EnvSingletons.Logger.Errorf(log.TEMPLATE_CORE, headers.TransactionID, PACKAGE, "Core", "lock", err.Error())
 	      p.sc = StatusConsumer{Status: ERROR, Error: err}
 	      c.publish(p)
@@ -271,8 +277,23 @@ func (c *Core) Run(ctx	context.Context, httpClient *HttpClient, fw NewWorker) {
 	    }
 	  }
 
+	  if msg.Error != log.EMPTY_STR && (sc.Status == COMPLETED || sc.Status == IN_PROGRESS) {
+	    if err = httpClient.Clients[resource].Update(msg.ID, &SetError{Error: sql.NullString{String: "", Valid: false}}, message.Headers); err != nil {
+	      config.EnvSingletons.Logger.Errorf(log.TEMPLATE_CORE, headers.TransactionID, PACKAGE, "Core", "Update", err.Error())
+	      p.sc = StatusConsumer{Status: ERROR, Error: err}
+	      c.publish(p)
+	      continue
+	    }
+
+	    msg.Error = log.EMPTY_STR
+	  }
+
 	  if values.Unlock {
-	    if err = unlock(resource, headers.LockID); err != nil {
+	    if headers.LockTag != log.EMPTY_STR {
+	      key = headers.LockTag
+	    }
+
+	    if err = unlock(key, headers.LockID); err != nil {
 	      config.EnvSingletons.Logger.Errorf(log.TEMPLATE_CORE, headers.TransactionID, PACKAGE, "Core", "unlock", err.Error())
 	      p.sc = StatusConsumer{Status: ERROR, Error: err}
 	      c.publish(p)
@@ -293,7 +314,7 @@ func (c *Core) Run(ctx	context.Context, httpClient *HttpClient, fw NewWorker) {
   <-ctx.Done()
 }
 
-func lock(resource string, expiration int32) (string, bool, error) {
+func lock(key string, expiration int32) (string, bool, error) {
   var (
     id	    string
     err	    error
@@ -308,7 +329,7 @@ func lock(resource string, expiration int32) (string, bool, error) {
   }
 
   c = cache.Cache{
-    Key:    resource,
+    Key:    key,
     Time:   expiration,
     Client: config.EnvSingletons.RedisConnection,
     Value:  id,
@@ -319,7 +340,7 @@ func lock(resource string, expiration int32) (string, bool, error) {
   return id, exists, err
 }
 
-func unlock(resource string, id string) error {
+func unlock(key string, id string) error {
   var (
     err	    error
     c	    cache.Cache
@@ -329,7 +350,7 @@ func unlock(resource string, id string) error {
 
   if id != "" {
     c = cache.Cache{
-      Key:    resource,
+      Key:    key,
       Client: config.EnvSingletons.RedisConnection,
     }
 

@@ -5,6 +5,7 @@ const (
   API_VERSION	  = "x-api-version"
   API_ACTION	  = "x-api-action"
   LOCK_ID	  = "x-lock-id"
+  LOCK_TAG	  = "x-lock-tag"
 )
 
 type Headers struct {
@@ -12,6 +13,7 @@ type Headers struct {
   Version	string
   Action	string
   LockID	string
+  LockTag	string
 }
 
 func GetHeader(infos map[string]interface{}) Headers {
@@ -21,6 +23,7 @@ func GetHeader(infos map[string]interface{}) Headers {
   h.Version = getHeader(API_VERSION, infos)
   h.Action = getHeader(API_ACTION, infos)
   h.LockID = getHeader(LOCK_ID, infos)
+  h.LockTag = getHeader(LOCK_TAG, infos)
 
   return h
 }
