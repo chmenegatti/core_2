@@ -279,7 +279,7 @@ func (c *Core) Run(ctx	context.Context, httpClient *HttpClient, fw NewWorker) {
 	    }
 	  }
 
-	  if rollback == ERROR && msg.Error != log.EMPTY_STR && (sc.Status == COMPLETED || sc.Status == IN_PROGRESS) {
+	  if rollback != ERROR && msg.Error != log.EMPTY_STR && (sc.Status == COMPLETED || sc.Status == IN_PROGRESS) {
 	    if err = httpClient.Clients[resource].Update(msg.ID, &SetError{Error: sql.NullString{String: "", Valid: false}}, message.Headers); err != nil {
 	      config.EnvSingletons.Logger.Errorf(log.TEMPLATE_CORE, headers.TransactionID, PACKAGE, "Core", "Update", err.Error())
 	      p.sc = StatusConsumer{Status: ERROR, Error: err}
