@@ -68,6 +68,7 @@ func loadConfCore() {
   config.EnvConfig.SyslogRaddr = "localhost:514"
   config.EnvConfig.SyslogTag = "core"
   config.EnvConfig.SyslogFacility = "local6"
+  config.EnvConfig.CheckURL = "v1/health:8090"
 
   config.EnvRedis.Hosts = map[string]string{"localhost": "127.0.0.1:6379"}
   config.EnvRedis.Timeout = 5

@@ -172,6 +172,13 @@ func clear(w interface{}) {
 func (c *Core) Run(ctx	context.Context, httpClient *HttpClient, fw NewWorker) {
   c.resources(ctx)
 
+  go func() {
+    if err := healthCheck(); err != nil {
+      config.EnvSingletons.Logger.Errorf(log.TEMPLATE_CORE, log.EMPTY_STR, PACKAGE, "Core", "healthCheck", err.Error())
+      os.Exit(1)
+    }
+  }()
+
   for _, values := range config.EnvAmqpResources {
     var (
       queue	[]string

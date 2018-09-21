@@ -70,6 +70,8 @@ type Config struct {
   WapSmaURL	string	`json:",omitempty" envDefault:"https://smawap.dbaas.dev.intera.local"`
   WapWsURL	string	`json:",omitempty" envDefault:"https://adminauthwap.dbaas.dev.intera.local"`
 
+  CheckURL	string	`json:",omitempty" envDefault:"v1/health"`
+
   NuageRulesProtocol  map[string]string	`json:",omitempty" envDefault:""`
 }
 
