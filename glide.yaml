@@ -11,7 +11,7 @@ import:
   version: b7b88fba33278d5c04a4ee753634e6fb0a38421c
 - package: gitlab-devops.totvs.com.br/golang/go-environment
   repo: https://gitlab-devops.totvs.com.br/golang/go-environment.git
-  version: v0.2.1
+  version: v0.2.2
 - package: github.com/Sirupsen/logrus
   version: 0.10.0
 - package: gitlab-devops.totvs.com.br/golang/go-singleton

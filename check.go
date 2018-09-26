@@ -23,9 +23,8 @@ func healthCheck() error {
     url = "/" + url
   }
 
-  if len(strings.Split(url, ":")) > 1 {
-    port = strings.Split(url, ":")[1]
-    url = strings.Split(url, ":")[0]
+  if config.EnvConfig.CheckPort != "" {
+    port = config.EnvConfig.CheckPort
   } else {
     port = PORT_DEFAULT
   }

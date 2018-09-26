@@ -71,6 +71,7 @@ type Config struct {
   WapWsURL	string	`json:",omitempty" envDefault:"https://adminauthwap.dbaas.dev.intera.local"`
 
   CheckURL	string	`json:",omitempty" envDefault:"v1/health"`
+  CheckPort	string	`json:",omitempty" envDefault:"80"`
 
   NuageRulesProtocol  map[string]string	`json:",omitempty" envDefault:""`
 }
