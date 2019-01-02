@@ -1,7 +1,7 @@
 package core
 
 import (
-  "gitlab-devops.totvs.com.br/microservices/core/config"
+  "git-devops.totvs.com.br/intera/core/config"
 
   "net/http"
   "strings"

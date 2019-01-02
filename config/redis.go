@@ -2,9 +2,9 @@ package config
 
 import (
   "time"
-  "gitlab-devops.totvs.com.br/golang/go-singleton"
-  "gitlab-devops.totvs.com.br/golang/go-cache/redis"
-  "gitlab-devops.totvs.com.br/microservices/core/log"
+  "git-devops.totvs.com.br/intera/go-singleton"
+  "git-devops.totvs.com.br/intera/go-cache/redis"
+  "git-devops.totvs.com.br/intera/core/log"
 )
 
 func LoadRedis() {

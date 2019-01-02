@@ -4,11 +4,11 @@ import (
   "os"
   _log "log"
   "strings"
-  "gitlab-devops.totvs.com.br/golang/johdin"
-  "gitlab-devops.totvs.com.br/golang/go-environment"
-  "gitlab-devops.totvs.com.br/microservices/core/log"
+  "git-devops.totvs.com.br/intera/johdin"
+  "git-devops.totvs.com.br/intera/go-environment"
+  "git-devops.totvs.com.br/intera/core/log"
   logrus "github.com/Sirupsen/logrus"
-  configMoiraiHttpClient "gitlab-devops.totvs.com.br/golang/moirai-http-client/config"
+  configMoiraiHttpClient "git-devops.totvs.com.br/intera/moirai-http-client/config"
 )
 
 const (

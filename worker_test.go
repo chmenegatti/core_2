@@ -1,9 +1,9 @@
 package core
 
 import (
-  "gitlab-devops.totvs.com.br/microservices/core/config"
-  "gitlab-devops.totvs.com.br/golang/openstack"
-  "gitlab-devops.totvs.com.br/golang/go-wap-client"
+  "git-devops.totvs.com.br/intera/core/config"
+  "git-devops.totvs.com.br/intera/openstack"
+  "git-devops.totvs.com.br/intera/go-wap-client"
   "encoding/json"
   "net/http/httptest"
   "net/http"

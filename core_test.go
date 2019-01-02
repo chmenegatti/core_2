@@ -1,8 +1,8 @@
 package core
 
 import (
-  configMoiraiHttpClient "gitlab-devops.totvs.com.br/golang/moirai-http-client/config"
-  "gitlab-devops.totvs.com.br/microservices/core/config"
+  configMoiraiHttpClient "git-devops.totvs.com.br/intera/moirai-http-client/config"
+  "git-devops.totvs.com.br/intera/core/config"
   "golang.org/x/net/context"
   "net/http/httptest"
   "os/signal"

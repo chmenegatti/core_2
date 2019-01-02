@@ -1,7 +1,7 @@
 package config
 
 import (
-  moiraicommonslogging "gitlab-devops.totvs.com.br/golang/moirai-commons-logging"
+  moiraicommonslogging "git-devops.totvs.com.br/intera/moirai-commons-logging"
   logrus "github.com/Sirupsen/logrus"
   _log "log"
 )

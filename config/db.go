@@ -4,7 +4,7 @@ import (
   "fmt"
   "time"
 
-  "gitlab-devops.totvs.com.br/microservices/core/log"
+  "git-devops.totvs.com.br/intera/core/log"
   _ "github.com/go-sql-driver/mysql"
   "github.com/jinzhu/gorm"
 )

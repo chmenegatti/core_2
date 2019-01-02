@@ -1,15 +1,15 @@
 package core
 
 import (
-  "gitlab-devops.totvs.com.br/golang/openstack"
-  "gitlab-devops.totvs.com.br/golang/nuage"
-  "gitlab-devops.totvs.com.br/golang/paloalto"
-  "gitlab-devops.totvs.com.br/golang/bigip"
-  "gitlab-devops.totvs.com.br/golang/go-wap-client"
-  "gitlab-devops.totvs.com.br/golang/go-singleton"
-  "gitlab-devops.totvs.com.br/golang/go-cache/redis"
-  "gitlab-devops.totvs.com.br/microservices/core/config"
-  "gitlab-devops.totvs.com.br/microservices/core/log"
+  "git-devops.totvs.com.br/intera/openstack"
+  "git-devops.totvs.com.br/intera/nuage"
+  "git-devops.totvs.com.br/intera/paloalto"
+  "git-devops.totvs.com.br/intera/bigip"
+  "git-devops.totvs.com.br/intera/go-wap-client"
+  "git-devops.totvs.com.br/intera/go-singleton"
+  "git-devops.totvs.com.br/intera/go-cache/redis"
+  "git-devops.totvs.com.br/intera/core/config"
+  "git-devops.totvs.com.br/intera/core/log"
 
   _ "github.com/go-sql-driver/mysql"
   "github.com/jinzhu/gorm"

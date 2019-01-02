@@ -1,36 +1,40 @@
-package: gitlab-devops.totvs.com.br/microservices/core
+package: git-devops.totvs.com.br/intera/core
 owners:
 - name: DevOps - Totvs
   email: sp.cloud.devops@totvs.com.br
 import:
-- package: gitlab-devops.totvs.com.br/golang/moirai-http-client
-  repo: https://gitlab-devops.totvs.com.br/golang/moirai-http-client.git
+- package: git-devops.totvs.com.br/intera/moirai-http-client
+  repo: https://git-devops.totvs.com.br/intera/moirai-http-client.git
   version: v1.0.0
-- package: gitlab-devops.totvs.com.br/golang/johdin
-  repo: https://gitlab-devops.totvs.com.br/golang/johdin.git
-  version: b7b88fba33278d5c04a4ee753634e6fb0a38421c
-- package: gitlab-devops.totvs.com.br/golang/go-environment
-  repo: https://gitlab-devops.totvs.com.br/golang/go-environment.git
+- package: git-devops.totvs.com.br/intera/johdin
+  repo: https://git-devops.totvs.com.br/intera/johdin.git
+  version: v1.0.0
+- package: git-devops.totvs.com.br/intera/go-environment
+  repo: https://git-devops.totvs.com.br/intera/go-environment.git
   version: v0.2.2
 - package: github.com/Sirupsen/logrus
   version: 0.10.0
-- package: gitlab-devops.totvs.com.br/golang/go-singleton
-  repo: https://gitlab-devops.totvs.com.br/golang/go-singleton.git
+- package: git-devops.totvs.com.br/intera/go-singleton
+  repo: https://git-devops.totvs.com.br/intera/go-singleton.git
   version: v0.4.0
-- package: gitlab-devops.totvs.com.br/golang/moirai-commons-logging
-  repo: https://gitlab-devops.totvs.com.br/golang/moirai-commons-logging.git
+- package: git-devops.totvs.com.br/intera/moirai-commons-logging
+  repo: https://git-devops.totvs.com.br/intera/moirai-commons-logging.git
   version: v0.2.0
-- package: gitlab-devops.totvs.com.br/golang/bigip
-  repo: https://gitlab-devops.totvs.com.br/golang/bigip.git
-- package: gitlab-devops.totvs.com.br/golang/openstack
-  repo: https://gitlab-devops.totvs.com.br/golang/openstack.git
-- package: gitlab-devops.totvs.com.br/golang/nuage
-  repo: https://gitlab-devops.totvs.com.br/golang/nuage.git
-- package: gitlab-devops.totvs.com.br/golang/paloalto
-  repo: https://gitlab-devops.totvs.com.br/golang/paloalto.git
-- package: gitlab-devops.totvs.com.br/golang/go-wap-client
-  repo: https://gitlab-devops.totvs.com.br/golang/go-wap-client.git
-  version: 3d50626f0603dff19445f926929fe66648b2ac1d
+- package: git-devops.totvs.com.br/intera/bigip
+  repo: https://git-devops.totvs.com.br/intera/bigip.git
+  version: v1.0.0
+- package: git-devops.totvs.com.br/intera/openstack
+  repo: https://git-devops.totvs.com.br/intera/openstack.git
+  version: v1.0.0
+- package: git-devops.totvs.com.br/intera/nuage
+  repo: https://git-devops.totvs.com.br/intera/nuage.git
+  version: v1.0.0
+- package: git-devops.totvs.com.br/intera/paloalto
+  repo: https://git-devops.totvs.com.br/intera/paloalto.git
+  version: v1.1.0
+- package: git-devops.totvs.com.br/intera/go-wap-client
+  repo: https://git-devops.totvs.com.br/intera/go-wap-client.git
+  version: v1.0.0
 - package: github.com/streadway/amqp
   version: 0e21704c3808b805ce3d6fbaf0943fceb1ba2855
 - package: github.com/jinzhu/gorm

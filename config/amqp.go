@@ -1,8 +1,8 @@
 package config
 
 import (
-  "gitlab-devops.totvs.com.br/golang/johdin"
-  "gitlab-devops.totvs.com.br/microservices/core/log"
+  "git-devops.totvs.com.br/intera/johdin"
+  "git-devops.totvs.com.br/intera/core/log"
 )
 
 func LoadAmqp() {
