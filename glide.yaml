@@ -8,7 +8,7 @@ import:
   version: v1.0.0
 - package: git-devops.totvs.com.br/intera/johdin
   repo: https://git-devops.totvs.com.br/intera/johdin.git
-  version: v1.0.0
+  version: v1.0.1
 - package: git-devops.totvs.com.br/intera/go-environment
   repo: https://git-devops.totvs.com.br/intera/go-environment.git
   version: v0.2.2
