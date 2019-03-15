@@ -9,4 +9,5 @@ const (
   INTEGRATION_WAP	  = "wap"
   INTEGRATION_CORE	  = "core"
   INTEGRATION_GORM	  = "gorm"
+  INTEGRATION_UNBOUND	  = "unbound"
 )
