@@ -73,6 +73,11 @@ type Config struct {
   CheckURL	string	`json:",omitempty" envDefault:"v1/health"`
   CheckPort	string	`json:",omitempty" envDefault:"80"`
 
+  UnboundAddress	      string  `json:",omitempty" envDefault:""`
+  UnboundCertificate	      string  `json:",omitempty" envDefault:""`
+  UnboundServerNameAuthority  string  `json:",omitempty" envDefault:""`
+  UnboundZoneDns	      string  `json:"omitempty" envDefault:""`
+
   NuageRulesProtocol  map[string]string	`json:",omitempty" envDefault:""`
 }
 
