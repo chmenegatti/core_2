@@ -1,6 +1,9 @@
 package core
 
 import (
+  "errors"
+  "sync"
+
   "git-devops.totvs.com.br/intera/openstack"
   "git-devops.totvs.com.br/intera/nuage"
   "git-devops.totvs.com.br/intera/paloalto"
@@ -20,10 +23,12 @@ const (
 )
 
 type Authenticate struct {
+  sync.RWMutex
+
   Openstack OpenstackAuthenticate
   Nuage	    NuageAuthenticate
   Paloalto  PaloaltoAuthenticate
-  Bigip	    BigipAuthenticate
+  Bigip	    map[string]BigipAuthenticate
   Wap	    WapAuthenticate
   DB	    DBAuthenticate
 }
@@ -201,16 +206,23 @@ func (wf *WorkerFactory) Paloalto(a Authenticate) (*paloalto.Paloalto, error) {
   return &pa, nil
 }
 
-func (wf *WorkerFactory) Bigip(a Authenticate) (*bigip.Bigip, error) {
-  var b bigip.Bigip
+func (wf *WorkerFactory) Bigip(a Authenticate, context string) (*bigip.Bigip, error) {
+  var (
+    b	bigip.Bigip
+    err	error
+  )
 
-  b = bigip.Init(bigip.Bigip{
-    Url:      a.Bigip.URL,
-    User:     a.Bigip.Username,
-    Password: a.Bigip.Password,
-  })
+  if _, ok := a.Bigip[context]; ok {
+    b = bigip.Init(bigip.Bigip{
+      Url:      a.Bigip[context].URL,
+      User:     a.Bigip[context].Username,
+      Password: a.Bigip[context].Password,
+    })
+  } else {
+    err = errors.New("Context not exists")
+  }
 
-  return &b, nil
+  return &b, err
 }
 
 func (wf *WorkerFactory) Wap(a Authenticate) (*gowapclient.WAP, error) {

@@ -16,6 +16,7 @@ const (
   MOIRAI_HTTP_ENDPOINT	= "/moirai-http-client/env-"
   REDIS_ENDPOINT	= "/redis/env-"
   AMQP_ENDPOINT		= "/amqp/env-"
+  BIGIP_ENDPOINT	= "/bigip"
   ETCD_TIMEOUT		= 5
 )
 
@@ -25,6 +26,7 @@ var (
   EnvSingletons	      Singletons
   EnvAmqp	      Amqp
   EnvDB		      DB
+  EnvBigip	      = make(map[string]BigIP)
   EnvMoiraiHttpClient configMoiraiHttpClient.Config
   EnvAmqpResources    []AmqpResourceValues
   parsed	      = false
@@ -102,6 +104,15 @@ type Amqp struct {
   SSL_Key	      string	`json:",omitempty" envDefault:"/etc/pki/rabbitmq/ssl/nuvem-intera.local.key"`
 }
 
+type BigIP struct {
+  BigIpUrl        string  `json:",omitempty" envDefault:""`
+  BigIpUser       string  `json:",omitempty" envDefault:""`
+  BigIpPassword   string  `json:",omitempty" envDefault:""`
+  RateLimit       int     `json:",omitempty" envDefault:""`
+  ConnectionLimit int     `json:",omitempty" envDefault:""`
+  PoolSnat        string  `json:",omitempty" envDefault:""`
+}
+
 type Redis struct {
   Hosts	    map[string]string `json:",omitempty" envDefault:"localhost"`
   DB	    int		      `json:",omitempty" envDefault:"0"`
@@ -154,8 +165,12 @@ func LoadConfig(infos Infos) {
 
 func loadEtcd(infos Infos) {
   if !parsed {
-    var etcdEnv EtcdEnv
-    var err error
+    var (
+      etcdEnv EtcdEnv
+      err     error
+      bigip   = make(map[string]interface{})
+      body    []byte
+    )
 
     etcdEnv.URL = getEnvironment("ETCD_URL", "http://127.0.0.1:2379")
     etcdEnv.Username = getEnvironment("ETCD_USERNAME", "root")
@@ -191,10 +206,27 @@ func loadEtcd(infos Infos) {
       _log.Fatalf("Error to get conf amqp resources in etcd: %s\n", err)
     }
 
+    if err = conf.Get(BIGIP_ENDPOINT, &bigip, false, false); err != nil {
+      _log.Fatalf("Error to get conf bigip in etcd: %s\n", err)
+    }
+
     if infos.DB {
       if err = conf.Get(infos.DBKey, &EnvDB, false, false); err != nil {
 	_log.Fatalf("Error to get conf db resources in etcd: %s\n", err)
       }
+    }
+
+    for key, value := range bigip {
+      if body, err = json.Marshal(value); err != nil {
+	_log.Fatalf("Error to Marshal infos of bigip: %s\n", err.Error())
+      }
+
+      var ebp BigIP
+      if err = json.Unmarshal(body, &ebp); err != nil {
+	_log.Fatalf("Error to Unmarshal infos of bigip: %s\n", err.Error())
+      }
+
+      EnvBigip[key] = ebp
     }
 
     parsed = true
