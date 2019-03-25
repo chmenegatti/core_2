@@ -4,6 +4,7 @@ import (
   "os"
   _log "log"
   "strings"
+  "encoding/json"
   "git-devops.totvs.com.br/intera/johdin"
   "git-devops.totvs.com.br/intera/go-environment"
   "git-devops.totvs.com.br/intera/core/log"

@@ -80,7 +80,7 @@ type Factorier interface {
   Openstack(Authenticate) (*openstack.Openstack, error)
   Nuage(Authenticate) (*nuage.Nuage, error)
   Paloalto(Authenticate) (*paloalto.Paloalto, error)
-  Bigip(Authenticate) (*bigip.Bigip, error)
+  Bigip(Authenticate, string) (*bigip.Bigip, error)
   Wap(Authenticate) (*gowapclient.WAP, error)
   DB(Authenticate) (*gorm.DB, error)
   GetTransactionID() string
@@ -101,7 +101,7 @@ func (f *Factory) Paloalto(a Authenticate) (*paloalto.Paloalto, error) {
   panic("Method Paloalto not implemented")
 }
 
-func (f *Factory) Bigip(a Authenticate) (*bigip.Bigip, error) {
+func (f *Factory) Bigip(a Authenticate, context string) (*bigip.Bigip, error) {
   panic("Method Bigip not implemented")
 }
 
