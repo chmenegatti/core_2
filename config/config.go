@@ -81,6 +81,10 @@ type Config struct {
   UnboundServerNameAuthority  string  `json:",omitempty" envDefault:""`
   UnboundZoneDns	      string  `json:"omitempty" envDefault:""`
 
+  RubrikURL	  string  `json:",omitempty" envDefault:""`
+  RubrikUsername  string  `json:",omitempty" envDefault:""`
+  RubrikPassword  string  `json:",omitempty" envDefault:""`
+
   NuageRulesProtocol  map[string]string	`json:",omitempty" envDefault:""`
 }
 
