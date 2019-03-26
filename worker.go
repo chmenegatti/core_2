@@ -8,6 +8,7 @@ import (
   "git-devops.totvs.com.br/intera/nuage"
   "git-devops.totvs.com.br/intera/paloalto"
   "git-devops.totvs.com.br/intera/bigip"
+  "git-devops.totvs.com.br/intera/rubrik-golang"
   "git-devops.totvs.com.br/intera/go-wap-client"
   "git-devops.totvs.com.br/intera/go-singleton"
   "git-devops.totvs.com.br/intera/go-cache/redis"
@@ -31,6 +32,7 @@ type Authenticate struct {
   Bigip	    map[string]BigipAuthenticate
   Wap	    WapAuthenticate
   DB	    DBAuthenticate
+  Rubrik    RubrikAuthenticate
 }
 
 type OpenstackAuthenticate struct {
@@ -72,6 +74,12 @@ type WapAuthenticate struct {
   WsURL	    string
 }
 
+type RubrikAuthenticate struct {
+  URL	    string
+  Username  string
+  Password  string
+}
+
 type DBAuthenticate struct {
   Connection  *gorm.DB
 }
@@ -83,6 +91,7 @@ type Factorier interface {
   Bigip(Authenticate, string) (*bigip.Bigip, error)
   Wap(Authenticate) (*gowapclient.WAP, error)
   DB(Authenticate) (*gorm.DB, error)
+  Rubrik(Authenticate) (*rubrik.Rubrik, error)
   GetTransactionID() string
   SetTransactionID(string)
 }
@@ -113,6 +122,10 @@ func (f *Factory) DB(a Authenticate) (*gorm.DB, error) {
   panic("Method DB not implemented")
 }
 
+func (f *Factory) Rubrik(a Authenticate) (*rubrik.Rubrik, error) {
+  panic("Method Rubrik not implemented")
+}
+
 func (f *Factory) GetTransactionID() string {
   panic("Method GetTransactionID not implemented")
 }
@@ -130,6 +143,7 @@ type WorkerFactory struct {
   bigip		*bigip.Bigip
   wap		*gowapclient.WAP
   db		*gorm.DB
+  rubrik	*rubrik.Rubrik
   transactionID	string
 }
 
@@ -250,6 +264,29 @@ func (wf *WorkerFactory) Wap(a Authenticate) (*gowapclient.WAP, error) {
   wap = client.(gowapclient.WAP)
 
   return &wap, nil
+}
+
+func (wf *WorkerFactory) Rubrik(a Authenticate) (*rubrik.Rubrik, error) {
+  var (
+    client  interface{}
+    err	    error
+    r	    *rubrik.Rubrik
+  )
+
+  if client, err = wf.authenticate(
+    rubrik.RubrikFields{
+      Cluster:	a.Rubrik.URL,
+      Username:	a.Rubrik.Username,
+      Password:	a.Rubrik.Password,
+    },
+    "rubrik",
+  ); err != nil {
+    return wf.rubrik, err
+  }
+
+  r = client.(*rubrik.Rubrik)
+
+  return r, nil
 }
 
 func (wf *WorkerFactory) DB(a Authenticate) (*gorm.DB, error) {

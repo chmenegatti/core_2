@@ -16,7 +16,7 @@ import:
   version: 0.10.0
 - package: git-devops.totvs.com.br/intera/go-singleton
   repo: https://git-devops.totvs.com.br/intera/go-singleton.git
-  version: v0.4.0
+  version: v0.4.1
 - package: git-devops.totvs.com.br/intera/moirai-commons-logging
   repo: https://git-devops.totvs.com.br/intera/moirai-commons-logging.git
   version: v0.2.0
@@ -42,3 +42,6 @@ import:
 - package: github.com/satori/go.uuid
   version: v1.2.0
 - package: github.com/erikstmartin/go-testdb
+- package: git-devops.totvs.com.br/intera/rubrik-golang
+  repo: https://git-devops.totvs.com.br/intera/rubrik-golang.git
+  version: v0.0.1
