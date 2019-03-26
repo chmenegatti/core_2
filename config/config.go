@@ -18,6 +18,7 @@ const (
   REDIS_ENDPOINT	= "/redis/env-"
   AMQP_ENDPOINT		= "/amqp/env-"
   BIGIP_ENDPOINT	= "/bigip"
+  RUBRIK_ENDPOINT	= "/rubrik"
   ETCD_TIMEOUT		= 5
 )
 
@@ -28,6 +29,7 @@ var (
   EnvAmqp	      Amqp
   EnvDB		      DB
   EnvBigip	      = make(map[string]BigIP)
+  EnvRubrik	      Rubrik
   EnvMoiraiHttpClient configMoiraiHttpClient.Config
   EnvAmqpResources    []AmqpResourceValues
   parsed	      = false
@@ -153,9 +155,25 @@ type AmqpResourceValues struct {
   Unlock	  bool	  `json:",omitempty"`
 }
 
+type Rubrik struct {
+  Product []RubrikProduct `json:",omitempty"`
+}
+
+type RubrikProduct struct {
+  Name	string	    `json:",omitempty"`
+  SO	[]RubrikSO  `json:",omitempty"`
+}
+
+type RubrikSO struct {
+  Type		      string  `json:",omitempty"`
+  SlaDomainName	      string  `json:",omitempty"`
+  FilesetTemplateName string  `json:",omitempty"`
+}
+
 type Infos struct {
   Microservice	string
   DB		bool
+  Rubrik	bool
   DBKey		string
 }
 
@@ -213,6 +231,12 @@ func loadEtcd(infos Infos) {
 
     if err = conf.Get(BIGIP_ENDPOINT, &bigip, false, false); err != nil {
       _log.Fatalf("Error to get conf bigip in etcd: %s\n", err)
+    }
+
+    if infos.Rubrik {
+      if err = conf.Get(RUBRIK_ENDPOINT, &EnvRubrik, false, false); err != nil {
+	_log.Fatalf("Error to get conf bigip in etcd: %s\n", err)
+      }
     }
 
     if infos.DB {
