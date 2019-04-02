@@ -50,30 +50,34 @@ type Config struct {
 
   OpenstackURL	    string  `json:",omitempty" envDefault:"https://services.nuvem-intera.local"`
   OpenstackUsername string  `json:",omitempty" envDefault:"admin"`
-  OpenstackPassword string  `json:",omitempty" envDefault:"7Jm&7iiq4zyW4TFu"`
+  OpenstackPassword string  `json:",omitempty" envDefault:""`
 
   NuageURL	    string  `json:",omitempty" envDefault:"https://cluster-vsd.nuvem-intera.local"`
-  NuageUsername	    string  `json:",omitempty" envDefault:"apiuser"`
-  NuagePassword	    string  `json:",omitempty" envDefault:"apiuser@123"`
+  NuageUsername	    string  `json:",omitempty" envDefault:""`
+  NuagePassword	    string  `json:",omitempty" envDefault:""`
   NuageOrganization string  `json:",omitempty" envDefault:"CSP"`
 
   PaloaltoURL	    string  `json:",omitempty" envDefault:"https://palo-alto-api.nuvem-intera.local"`
-  PaloaltoUsername  string  `json:",omitempty" envDefault:"apiuser"`
-  PaloaltoPassword  string  `json:",omitempty" envDefault:"apiuser@123"`
+  PaloaltoUsername  string  `json:",omitempty" envDefault:""`
+  PaloaltoPassword  string  `json:",omitempty" envDefault:""`
   PaloaltoVsys	    string  `json:",omitempty" envDefault:"vsys1"`
 
   BigipURL	string	`json:",omitempty" envDefault:"https:///bigip-api.nuvem-intera.local"`
-  BigipUsername	string	`json:",omitempty" envDefault:"apiuser"`
-  BigipPassword	string	`json:",omitempty" envDefault:"apiuser@123"`
+  BigipUsername	string	`json:",omitempty" envDefault:""`
+  BigipPassword	string	`json:",omitempty" envDefault:""`
 
-  WapAuthURL	string	`json:",omitempty" envDefault:"http://nemesis-auth-wap.dev.nuvem-intera.local"`
-  WapAdminURL	string	`json:",omitempty" envDefault:"https://adminapiwap.dbaas.dev.intera.local"`
-  WapTenantURL	string	`json:",omitempty" envDefault:"https://tenapiwap.dbaas.dev.intera.local"`
-  WapUsername	string	`json:",omitempty" envDefault:"wapapiuser"`
-  WapPassword	string	`json:",omitempty" envDefault:"hJblx*%w?%BQ=mFca/.o"`
-  WapPlanID	string	`json:",omitempty" envDefault:"PLANIiskudxsc"`
-  WapSmaURL	string	`json:",omitempty" envDefault:"https://smawap.dbaas.dev.intera.local"`
-  WapWsURL	string	`json:",omitempty" envDefault:"https://adminauthwap.dbaas.dev.intera.local"`
+  WapAuthURL	  string  `json:",omitempty" envDefault:"http://nemesis-auth-wap.dev.nuvem-intera.local"`
+  WapAdminURL	  string  `json:",omitempty" envDefault:"https://adminapiwap.dbaas.dev.intera.local"`
+  WapTenantURL	  string  `json:",omitempty" envDefault:"https://tenapiwap.dbaas.dev.intera.local"`
+  WapUsername	  string  `json:",omitempty" envDefault:""`
+  WapPassword	  string  `json:",omitempty" envDefault:""`
+  WapPlanID	  string  `json:",omitempty" envDefault:"PLANIiskudxsc"`
+  WapSmaURL	  string  `json:",omitempty" envDefault:"https://smawap.dbaas.dev.intera.local"`
+  WapWsURL	  string  `json:",omitempty" envDefault:"https://adminauthwap.dbaas.dev.intera.local"`
+  WapPortDBSize	  string  `json:",omitempty" envDefault:""`
+  WapPortSubUser  string  `json:",omitempty" envDefault:""`
+  WapPortDatabase string  `json:",omitempty" envDefault:""`
+  WapPortSMA	  string  `json:",omitempty" envDefault:""`
 
   CheckURL	string	`json:",omitempty" envDefault:"v1/health"`
   CheckPort	string	`json:",omitempty" envDefault:"80"`

@@ -64,14 +64,18 @@ type BigipAuthenticate struct {
 }
 
 type WapAuthenticate struct {
-  AuthURL   string
-  AdminURL  string
-  TenantURL string
-  Username  string
-  Password  string
-  PlanID    string
-  SmaURL    string
-  WsURL	    string
+  AuthURL	string
+  AdminURL	string
+  TenantURL	string
+  Username	string
+  Password	string
+  PlanID	string
+  SmaURL	string
+  WsURL		string
+  PortDBSize	string
+  PortSubUser	string
+  PortDatabase	string
+  PortSMA	string
 }
 
 type RubrikAuthenticate struct {
@@ -255,6 +259,10 @@ func (wf *WorkerFactory) Wap(a Authenticate) (*gowapclient.WAP, error) {
       WAPPassword:    a.Wap.Password,
       WAPPlanId:      a.Wap.PlanID,
       WAPSMAHost:     a.Wap.SmaURL,
+      PortDBSize:     a.Wap.PortDBSize,
+      PortSubUser:    a.Wap.PortSubUser,
+      PortDatabase:   a.Wap.PortDatabase,
+      PortSMA:	      a.Wap.PortSMA,
     },
     "wap",
   ); err != nil {
