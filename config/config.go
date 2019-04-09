@@ -79,6 +79,7 @@ type Config struct {
   WapPortDatabase string  `json:",omitempty" envDefault:""`
   WapPortSMA	  string  `json:",omitempty" envDefault:""`
 
+  CheckService	bool	`json:",omitempty" envDefault:"false"`
   CheckURL	string	`json:",omitempty" envDefault:"v1/health"`
   CheckPort	string	`json:",omitempty" envDefault:"80"`
 
