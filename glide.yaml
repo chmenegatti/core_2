@@ -45,3 +45,6 @@ import:
 - package: git-devops.totvs.com.br/intera/rubrik-golang
   repo: gogs@git-devops.totvs.com.br:intera/rubrik-golang.git
   version: v0.0.1
+- package: git-devops.totvs.com.br/intera/go-cache
+  repo: gogs@git-devops.totvs.com.br:intera/go-cache.git
+  version: v0.1.1
