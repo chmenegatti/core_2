@@ -3,37 +3,38 @@ owners:
 - name: DevOps - Totvs
   email: sp.cloud.devops@totvs.com.br
 import:
+  repo: gogs@git-devops.totvs.com.br:intera/core.git
 - package: git-devops.totvs.com.br/intera/moirai-http-client
-  repo: https://git-devops.totvs.com.br/intera/moirai-http-client.git
+  repo: gogs@git-devops.totvs.com.br:intera/moirai-http-client.git
   version: v1.0.1
 - package: git-devops.totvs.com.br/intera/johdin
-  repo: https://git-devops.totvs.com.br/intera/johdin.git
+  repo: gogs@git-devops.totvs.com.br:intera/johdin.git
   version: v1.0.1
 - package: git-devops.totvs.com.br/intera/go-environment
-  repo: https://git-devops.totvs.com.br/intera/go-environment.git
+  repo: gogs@git-devops.totvs.com.br:intera/go-environment.git
   version: v0.2.2
 - package: github.com/Sirupsen/logrus
   version: 0.10.0
 - package: git-devops.totvs.com.br/intera/go-singleton
-  repo: https://git-devops.totvs.com.br/intera/go-singleton.git
+  repo: gogs@git-devops.totvs.com.br:intera/go-singleton.git
   version: v0.4.1
 - package: git-devops.totvs.com.br/intera/moirai-commons-logging
-  repo: https://git-devops.totvs.com.br/intera/moirai-commons-logging.git
+  repo: gogs@git-devops.totvs.com.br:intera/moirai-commons-logging.git
   version: v0.2.0
 - package: git-devops.totvs.com.br/intera/bigip
-  repo: https://git-devops.totvs.com.br/intera/bigip.git
+  repo: gogs@git-devops.totvs.com.br:intera/bigip.git
   version: v1.0.0
 - package: git-devops.totvs.com.br/intera/openstack
-  repo: https://git-devops.totvs.com.br/intera/openstack.git
+  repo: gogs@git-devops.totvs.com.br:intera/openstack.git
   version: v1.0.0
 - package: git-devops.totvs.com.br/intera/nuage
-  repo: https://git-devops.totvs.com.br/intera/nuage.git
+  repo: gogs@git-devops.totvs.com.br:intera/nuage.git
   version: v1.0.0
 - package: git-devops.totvs.com.br/intera/paloalto
-  repo: https://git-devops.totvs.com.br/intera/paloalto.git
+  repo: gogs@git-devops.totvs.com.br:intera/paloalto.git
   version: v1.1.0
 - package: git-devops.totvs.com.br/intera/go-wap-client
-  repo: https://git-devops.totvs.com.br/intera/go-wap-client.git
+  repo: gogs@git-devops.totvs.com.br:intera/go-wap-client.git
   version: v1.0.1
 - package: github.com/streadway/amqp
   version: 0e21704c3808b805ce3d6fbaf0943fceb1ba2855
@@ -43,5 +44,5 @@ import:
   version: v1.2.0
 - package: github.com/erikstmartin/go-testdb
 - package: git-devops.totvs.com.br/intera/rubrik-golang
-  repo: https://git-devops.totvs.com.br/intera/rubrik-golang.git
+  repo: gogs@git-devops.totvs.com.br:intera/rubrik-golang.git
   version: v0.0.1
