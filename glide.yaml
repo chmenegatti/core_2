@@ -3,7 +3,6 @@ owners:
 - name: DevOps - Totvs
   email: sp.cloud.devops@totvs.com.br
 import:
-  repo: gogs@git-devops.totvs.com.br:intera/core.git
 - package: git-devops.totvs.com.br/intera/moirai-http-client
   repo: gogs@git-devops.totvs.com.br:intera/moirai-http-client.git
   version: v1.0.1
