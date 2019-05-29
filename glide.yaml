@@ -44,7 +44,7 @@ import:
 - package: github.com/erikstmartin/go-testdb
 - package: git-devops.totvs.com.br/intera/rubrik-golang
   repo: gogs@git-devops.totvs.com.br:intera/rubrik-golang.git
-  version: v0.0.1
+  version: v0.0.3
 - package: git-devops.totvs.com.br/intera/go-cache
   repo: gogs@git-devops.totvs.com.br:intera/go-cache.git
   version: v0.1.1

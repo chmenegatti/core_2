@@ -86,7 +86,7 @@ type Config struct {
   UnboundAddress	      string  `json:",omitempty" envDefault:""`
   UnboundCertificate	      string  `json:",omitempty" envDefault:""`
   UnboundServerNameAuthority  string  `json:",omitempty" envDefault:""`
-  UnboundZoneDns	      string  `json:"omitempty" envDefault:""`
+  UnboundZoneDns	      string  `json:",omitempty" envDefault:""`
 
   RubrikURL	  string  `json:",omitempty" envDefault:""`
   RubrikUsername  string  `json:",omitempty" envDefault:""`
