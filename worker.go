@@ -79,7 +79,7 @@ type WapAuthenticate struct {
 }
 
 type RubrikAuthenticate struct {
-  URL	    string
+  Clusters  []string
   Username  string
   Password  string
 }
@@ -283,7 +283,7 @@ func (wf *WorkerFactory) Rubrik(a Authenticate) (*rubrik.Rubrik, error) {
 
   if client, err = wf.authenticate(
     rubrik.RubrikFields{
-      Cluster:	a.Rubrik.URL,
+      Cluster:	a.Rubrik.Clusters,
       Username:	a.Rubrik.Username,
       Password:	a.Rubrik.Password,
     },
