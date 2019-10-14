@@ -5,7 +5,7 @@ owners:
 import:
 - package: git-devops.totvs.com.br/intera/moirai-http-client
   repo: gogs@git-devops.totvs.com.br:intera/moirai-http-client.git
-  version: v1.0.1
+  version: v1.0.3
 - package: git-devops.totvs.com.br/intera/johdin
   repo: gogs@git-devops.totvs.com.br:intera/johdin.git
   version: v1.0.1

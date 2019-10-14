@@ -17,7 +17,7 @@ const (
   MOIRAI_HTTP_ENDPOINT	= "/moirai-http-client/env-"
   REDIS_ENDPOINT	= "/redis/env-"
   AMQP_ENDPOINT		= "/amqp/env-"
-  BIGIP_ENDPOINT	= "/bigip"
+  BIGIP_ENDPOINT	= "/bigip/env-"
   RUBRIK_ENDPOINT	= "/rubrik"
   ETCD_TIMEOUT		= 5
 )
@@ -234,7 +234,7 @@ func loadEtcd(infos Infos) {
       _log.Fatalf("Error to get conf amqp resources in etcd: %s\n", err)
     }
 
-    if err = conf.Get(BIGIP_ENDPOINT, &bigip, false, false); err != nil {
+    if err = conf.Get(BIGIP_ENDPOINT + getEnvironment("ENV", "prod"), &bigip, false, false); err != nil {
       _log.Fatalf("Error to get conf bigip in etcd: %s\n", err)
     }
 
