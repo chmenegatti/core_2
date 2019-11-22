@@ -190,7 +190,7 @@ func Test_WorkerFactory_AuthenticateRubrik(t *testing.T) {
   server = startServerAuthenticate()
 
   a.Rubrik = RubrikAuthenticate{
-    URL:      server.URL + "/",
+    Clusters: []string{server.URL + "/"},
     Username: "MOCK",
     Password: "MOCK",
   }

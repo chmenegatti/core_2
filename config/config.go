@@ -8,8 +8,8 @@ import (
   "git-devops.totvs.com.br/intera/johdin"
   "git-devops.totvs.com.br/intera/go-environment"
   "git-devops.totvs.com.br/intera/core/log"
-  logrus "github.com/Sirupsen/logrus"
   configMoiraiHttpClient "git-devops.totvs.com.br/intera/moirai-http-client/config"
+  "git-devops.totvs.com.br/intera/moirai-commons-logging"
 )
 
 const (
@@ -96,9 +96,9 @@ type Config struct {
 }
 
 type Singletons struct {
-  Logger	  *logrus.Logger
+  Logger	  moiraicommonslogging.Logs
   AmqpConnection  *johdin.Amqp
-  RedisConnection  interface{}
+  RedisConnection interface{}
 }
 
 type Amqp struct {
