@@ -29,7 +29,7 @@ import:
   version: v1.0.0
 - package: git-devops.totvs.com.br/intera/paloalto
   repo: gogs@git-devops.totvs.com.br:intera/paloalto.git
-  version: v1.1.0
+  version: v1.1.1
 - package: git-devops.totvs.com.br/intera/go-wap-client
   repo: gogs@git-devops.totvs.com.br:intera/go-wap-client.git
   version: v1.0.1
