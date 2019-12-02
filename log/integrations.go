@@ -11,4 +11,5 @@ const (
   INTEGRATION_GORM	  = "gorm"
   INTEGRATION_UNBOUND	  = "unbound"
   INTEGRATION_RUBRIK	  = "rubrik"
+  INTEGRATION_DBAAS	  = "dbaas"
 )
