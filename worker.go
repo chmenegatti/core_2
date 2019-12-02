@@ -8,6 +8,7 @@ import (
   "git-devops.totvs.com.br/intera/nuage"
   "git-devops.totvs.com.br/intera/paloalto"
   "git-devops.totvs.com.br/intera/bigip"
+  "git-devops.totvs.com.br/intera/dbaas"
   "git-devops.totvs.com.br/intera/rubrik-golang"
   "git-devops.totvs.com.br/intera/go-wap-client"
   "git-devops.totvs.com.br/intera/go-singleton"
