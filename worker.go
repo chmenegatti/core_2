@@ -33,59 +33,64 @@ type Authenticate struct {
   Wap	    WapAuthenticate
   DB	    DBAuthenticate
   Rubrik    RubrikAuthenticate
+  Dbaas	    DbaasAuthenticate
 }
 
 type OpenstackAuthenticate struct {
-  URL      string
-  Username string
-  Password string
-  Project  string
+  URL      string `json:",omitempty"`
+  Username string `json:",omitempty"`
+  Password string `json:",omitempty"`
+  Project  string `json:",omitempty"`
 }
 
 type NuageAuthenticate struct {
-  URL		string
-  Organization	string
-  Username	string
-  Password	string
-  EnterpriseID	string
+  URL		string	`json:",omitempty"`
+  Organization	string	`json:",omitempty"`
+  Username	string	`json:",omitempty"`
+  Password	string	`json:",omitempty"`
+  EnterpriseID	string	`json:",omitempty"`
 }
 
 type PaloaltoAuthenticate struct {
-  URL	    string
-  Username  string
-  Password  string
-  Vsys	    string
+  URL	    string  `json:",omitempty"`
+  Username  string  `json:",omitempty"`
+  Password  string  `json:",omitempty"`
+  Vsys	    string  `json:",omitempty"`
 }
 
 type BigipAuthenticate struct {
-  URL	    string
-  Username  string
-  Password  string
+  URL	    string  `json:",omitempty"`
+  Username  string  `json:",omitempty"`
+  Password  string  `json:",omitempty"`
 }
 
 type WapAuthenticate struct {
-  AuthURL	string
-  AdminURL	string
-  TenantURL	string
-  Username	string
-  Password	string
-  PlanID	string
-  SmaURL	string
-  WsURL		string
-  PortDBSize	string
-  PortSubUser	string
-  PortDatabase	string
-  PortSMA	string
+  AuthURL	string	`json:",omitempty"`
+  AdminURL	string	`json:",omitempty"`
+  TenantURL	string	`json:",omitempty"`
+  Username	string	`json:",omitempty"`
+  Password	string	`json:",omitempty"`
+  PlanID	string	`json:",omitempty"`
+  SmaURL	string	`json:",omitempty"`
+  WsURL		string	`json:",omitempty"`
+  PortDBSize	string	`json:",omitempty"`
+  PortSubUser	string	`json:",omitempty"`
+  PortDatabase	string	`json:",omitempty"`
+  PortSMA	string	`json:",omitempty"`
 }
 
 type RubrikAuthenticate struct {
-  Clusters  []string
-  Username  string
-  Password  string
+  Clusters  []string  `json:",omitempty"`
+  Username  string    `json:",omitempty"`
+  Password  string    `json:",omitempty"`
 }
 
 type DBAuthenticate struct {
   Connection  *gorm.DB
+}
+
+type DbaasAuthenticate struct {
+  URL string
 }
 
 type Factorier interface {
@@ -96,6 +101,7 @@ type Factorier interface {
   Wap(Authenticate) (*gowapclient.WAP, error)
   DB(Authenticate) (*gorm.DB, error)
   Rubrik(Authenticate) (*rubrik.Rubrik, error)
+  Dbaas(Authenticate) (*dbaas.Dbaas, error)
   GetTransactionID() string
   SetTransactionID(string)
 }
@@ -130,6 +136,10 @@ func (f *Factory) Rubrik(a Authenticate) (*rubrik.Rubrik, error) {
   panic("Method Rubrik not implemented")
 }
 
+func (f *Factory) Dbaas(a Authenticate) (*dbaas.Dbaas, error) {
+  panic("Method Dbaas not implemented")
+}
+
 func (f *Factory) GetTransactionID() string {
   panic("Method GetTransactionID not implemented")
 }
@@ -148,7 +158,14 @@ type WorkerFactory struct {
   wap		*gowapclient.WAP
   db		*gorm.DB
   rubrik	*rubrik.Rubrik
+  dbaas		*dbaas.Dbaas
   transactionID	string
+}
+
+func (wf *WorkerFactory) Dbaas(a Authenticate) (*dbaas.Dbaas, error) {
+  return dbaas.Authenticate(dbaas.DbaasConfig{
+    URL:  a.Dbaas.URL,
+  })
 }
 
 func (wf *WorkerFactory) Openstack(a Authenticate) (*openstack.Openstack, error) {
