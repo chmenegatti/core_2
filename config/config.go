@@ -92,6 +92,7 @@ type Config struct {
   RubrikUsername  string    `json:",omitempty" envDefault:""`
   RubrikPassword  string    `json:",omitempty" envDefault:""`
 
+  DbaasURL	  string  `json:",omitempty" envDefault:""`
   NuageRulesProtocol  map[string]string	`json:",omitempty" envDefault:""`
 }
 
