@@ -46,3 +46,6 @@ import:
 - package: git-devops.totvs.com.br/intera/go-cache
   repo: gogs@git-devops.totvs.com.br:intera/go-cache.git
   version: v0.1.1
+- package: git-devops.totvs.com.br/intera/dbaas
+  repo: gogs@git-devops.totvs.com.br:intera/dbaas.git
+  version: v0.0.2
