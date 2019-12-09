@@ -32,7 +32,7 @@ import:
   version: v1.1.1
 - package: git-devops.totvs.com.br/intera/go-wap-client
   repo: gogs@git-devops.totvs.com.br:intera/go-wap-client.git
-  version: v1.0.1
+  version: v1.0.2
 - package: github.com/streadway/amqp
   version: 0e21704c3808b805ce3d6fbaf0943fceb1ba2855
 - package: github.com/jinzhu/gorm
