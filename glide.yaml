@@ -17,7 +17,7 @@ import:
   version: v0.4.1
 - package: git-devops.totvs.com.br/intera/moirai-commons-logging
   repo: gogs@git-devops.totvs.com.br:intera/moirai-commons-logging.git
-  version: v0.2.1
+  version: v0.2.2
 - package: git-devops.totvs.com.br/intera/bigip
   repo: gogs@git-devops.totvs.com.br:intera/bigip.git
   version: v1.0.0
