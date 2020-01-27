@@ -2,12 +2,12 @@
 
 
 [[projects]]
-  digest = "1:70e76895935bcd5f8475eef55f884807e83a865bdc2228f4096df59d62885a8b"
+  branch = "master"
+  digest = "1:0db44c095325513d0f816eb02b84db91a30e420c9b9d70468a67770d9e4176e1"
   name = "git-devops.totvs.com.br/ascenty/dtos"
   packages = ["."]
   pruneopts = "UT"
-  revision = "2b522dd844f195b86502c8dd4e09d2c65ba37056"
-  version = "v0.0.1"
+  revision = "e93e05b17b32dd6c8763b13ce6476bcba6a524dd"
 
 [[projects]]
   digest = "1:1b79ac02fd21f7e6f7d678514a14c8cfd943887f05f77ad76fb4bd7d0bab856c"
@@ -53,7 +53,8 @@
   version = "v0.0.1"
 
 [[projects]]
-  digest = "1:beed9378ca510cac778ec16a933fb35231fbd1c3b9e60a1d7e8a0a16a53debe0"
+  branch = "master"
+  digest = "1:7b249476a1522abf1a671941966ecc74dd6d811cb67140916f01f0ae81226152"
   name = "git-devops.totvs.com.br/ascenty/moirai-http-client"
   packages = [
     "clients",
@@ -66,8 +67,7 @@
     "handlers",
   ]
   pruneopts = "UT"
-  revision = "d382d789940510122b5cd1d1b2e589d839151c73"
-  version = "v0.0.1"
+  revision = "627ee81f134582dd918d2fd35d70d7576b138067"
 
 [[projects]]
   digest = "1:32f059581530ecd49cac5105c44dde405fbf1513c6ab7b75be8f1114fb2c3f64"
@@ -382,12 +382,12 @@
   revision = "bf48bf16ab8d622ce64ec6ce98d2c98f916b6303"
 
 [[projects]]
-  branch = "release-branch.go1.11"
-  digest = "1:33a43cb31975899cfcd81600d1390467db1778ae87102f80668a753fed8c663e"
+  branch = "master"
+  digest = "1:fea09edda033799f8e99ab9042bda910bf1e3bf088c03eaf2ba8aba3adbbc8bf"
   name = "golang.org/x/sys"
   packages = ["unix"]
   pruneopts = "UT"
-  revision = "98c5dad5d1a0e8a73845ecc8897d0bd56586511d"
+  revision = "9fbb57f87de9ccfe3a99d4e3270ce8a926ebba4f"
 
 [[projects]]
   digest = "1:8d8faad6b12a3a4c819a3f9618cb6ee1fa1cfc33253abeeea8b55336721e3405"
@@ -459,7 +459,7 @@
   name = "google.golang.org/genproto"
   packages = ["googleapis/rpc/status"]
   pruneopts = "UT"
-  revision = "0452cf42e150a6aeb2c8615de02e260ae83d9873"
+  revision = "2548664c049f60b1d6488978017f539ec300e34d"
 
 [[projects]]
   digest = "1:7bc116a2ccc363ff2d7df0d4fc3211254366dc4792d14685b0b4980becbed2f5"
