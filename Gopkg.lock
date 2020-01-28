@@ -45,11 +45,11 @@
   version = "v0.0.1"
 
 [[projects]]
-  digest = "1:e656dcb13da917c78cbcbd48cc146fcf146ef8ec65623d702b2d02b949520dc1"
+  digest = "1:d89496468ec06c08bb9dbbf148219e4afa7db2a19a6bb7c7b6dec9689831f536"
   name = "git-devops.totvs.com.br/ascenty/johdin"
   packages = ["."]
   pruneopts = "UT"
-  revision = "f44ed44724e52549d50d2762c9e2767578920eac"
+  revision = "418587f4ccc66a8131fdb3c23fb8543bcbf0274f"
   version = "v0.0.1"
 
 [[projects]]
@@ -353,22 +353,22 @@
   revision = "fdd1cda4f05fd1fd86124f0ef9ce31a0b72c8448"
 
 [[projects]]
-  branch = "release-branch.go1.10"
-  digest = "1:efb1c4b4957512c21681615a2208d979ac720831e88ccd1817722efa8a41d63d"
+  branch = "master"
+  digest = "1:12c0950371d7edbbe75d59a0be1a4f9879c53ffe3298b979d2302905fc559b6d"
   name = "golang.org/x/net"
   packages = [
     "context",
     "context/ctxhttp",
+    "http/httpguts",
     "http2",
     "http2/hpack",
     "idna",
     "internal/timeseries",
-    "lex/httplex",
     "publicsuffix",
     "trace",
   ]
   pruneopts = "UT"
-  revision = "0ed95abb35c445290478a5348a7b38bb154135fd"
+  revision = "6afb5195e5aab057fda82e27171243402346b0ad"
 
 [[projects]]
   branch = "master"
@@ -415,8 +415,8 @@
   version = "v0.3.2"
 
 [[projects]]
-  branch = "gopls-release-branch.0.1"
-  digest = "1:e38cf64d6837c3ab05c0100c9e9613bb4bedc8964691d0ba406c238d7923f91a"
+  branch = "master"
+  digest = "1:ad6636c5901bf1d20fffcb30d0b68a70466ca7ca4b3d70fd63b3221f16619812"
   name = "golang.org/x/tools"
   packages = [
     "go/analysis",
@@ -430,12 +430,10 @@
     "go/packages",
     "go/types/objectpath",
     "go/types/typeutil",
-    "internal/fastwalk",
-    "internal/gopathwalk",
-    "internal/semver",
+    "internal/packagesinternal",
   ]
   pruneopts = "UT"
-  revision = "5a1a302198881c976ade6ce691ceeea5c0702b2d"
+  revision = "345141a368593509252933bd1e146558314b6d0c"
 
 [[projects]]
   digest = "1:e0a1881f9e0564bebdeac98c75e59f07acdde6ed3a5396e0e613eaad31194866"
@@ -459,7 +457,7 @@
   name = "google.golang.org/genproto"
   packages = ["googleapis/rpc/status"]
   pruneopts = "UT"
-  revision = "2548664c049f60b1d6488978017f539ec300e34d"
+  revision = "58ce757ed39bbbe3bf3960b90ded218031b35389"
 
 [[projects]]
   digest = "1:7bc116a2ccc363ff2d7df0d4fc3211254366dc4792d14685b0b4980becbed2f5"
