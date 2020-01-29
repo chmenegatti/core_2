@@ -2,3 +2,5 @@
 .vscode
 *.swp
 vendor/
+Gopkg.lock
+glide.lock
