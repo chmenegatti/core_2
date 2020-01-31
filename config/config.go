@@ -4,12 +4,14 @@ import (
 	"os"
 	_log "log"
 	"strings"
+	"context"
 	"git-devops.totvs.com.br/ascenty/johdin"
 	"git-devops.totvs.com.br/ascenty/core/log"
 	configMoiraiHttpClient "git-devops.totvs.com.br/ascenty/moirai-http-client/config"
 	"git-devops.totvs.com.br/ascenty/go-log"
 	"git-devops.totvs.com.br/ascenty/go-etcd"
 	"github.com/vmware/go-vmware-nsxt"
+	"github.com/vmware/govmomi"
 )
 
 const (
@@ -53,6 +55,11 @@ type Config struct {
 	NsxtRetryMinDelay   int	    `json:",omitempty"`
 	NsxtInsecure	    bool    `json:",omitempty"`
 
+	VMWareURL	string	`json:",omitempty"`
+	VMWareUserName	string	`json:",omitempty"`
+	VMWarePassword	string	`json:",omitempty"`
+	VMWareInsecure	bool	`json:",omitempty"`
+
 	CheckService	bool	`json:",omitempty"`
 	CheckURL	string	`json:",omitempty"`
 	CheckPort	string	`json:",omitempty"`
@@ -75,6 +82,8 @@ type Singletons struct {
 	AmqpConnection  *johdin.Amqp
 	RedisConnection interface{}
 	Nsxt		*nsxt.APIClient
+	Context		context.Context
+	VMWare		*govmomi.Client
 }
 
 type Amqp struct {
@@ -131,6 +140,7 @@ type Infos struct {
 	Microservice  string
 	DB	      bool
 	Nsxt	      bool
+	VMWare	      bool
 	DBKey	      string
 }
 
@@ -189,6 +199,12 @@ func loadEtcd(infos Infos) {
 		if infos.Nsxt {
 			if err = LoadNsxt(); err != nil {
 				_log.Fatalf("Error to init nsxt: %s\n", err)
+			}
+		}
+
+		if infos.VMWare {
+			if err = LoadVMWare(); err != nil {
+				_log.Fatalf("Error to init vmware: %s\n", err)
 			}
 		}
 

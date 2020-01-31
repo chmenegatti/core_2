@@ -36,3 +36,4 @@ import:
   version: 1.2.0
 - package: github.com/vmware/go-vmware-nsxt
 - package: golang.org/x/net
+- package: github.com/vmware/govmomi
