@@ -8,4 +8,5 @@ const (
   INTEGRATION_RUBRIK	  = "rubrik"
   INTEGRATION_DBAAS	  = "dbaas"
   INTEGRATION_NSXT	  = "nsxt"
+  INTEGRATION_VMWARE	  = "vmware"
 )
