@@ -1,0 +1,37 @@
+{
+  "SyslogLevel": "DEBUG",
+  "SyslogNetwork": "udp",
+  "SyslogRaddr": "127.0.0.1:514",
+  "SyslogTag": "core",
+  "SyslogFacility": "local6",
+  "CheckURL": "v1/health",
+  "CheckPort": "8043",
+  "UnboundAddress": "172.18.158.14:5226",
+  "UnboundCertificate": "/app/cacert.pem",
+  "UnboundServerNameAuthority": "core.nuvem-intera.local",
+  "UnboundZoneDns": "bkp.nuvem-intera.local",
+  "RubrikClusters": ["https://172.18.134.27"],
+  "RubrikUsername": "cloud.infra",
+  "RubrikPassword": "QCfAmdv6pkFx",
+  "NsxtBasePath": "https://172.18.137.235/api/v1",
+  "NsxtUserName": "admin",
+  "NsxtPassword": "Totvs@123Totvs@123",
+  "NsxtRetryMaxDelay": 1000,
+  "NsxtMaxRetries": 3,
+  "NsxtRetryMinDelay": 300,
+  "NsxtInsecure": true,
+  "VMWareURL": "https://vcsa-nsx.datacenter.local/sdk",
+  "VMWareUserName": "Administrator@vsphere.local",
+  "VMWarePassword": "Totvs@123",
+  "VMWareInsecure": true,
+  "VMWareAuthVirtualMachine": {
+	  "OS-LINUX": {
+		  "Username": "admin",
+		  "Password": "totvs@123"
+	  },
+	  "OS-WINDOWS": {
+		  "Username": "Administrator",
+		  "Password": "totvs@123"
+	  }
+  }
+}

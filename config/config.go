@@ -55,10 +55,11 @@ type Config struct {
 	NsxtRetryMinDelay   int	    `json:",omitempty"`
 	NsxtInsecure	    bool    `json:",omitempty"`
 
-	VMWareURL	string	`json:",omitempty"`
-	VMWareUserName	string	`json:",omitempty"`
-	VMWarePassword	string	`json:",omitempty"`
-	VMWareInsecure	bool	`json:",omitempty"`
+	VMWareURL		  string	  `json:",omitempty"`
+	VMWareUserName		  string	  `json:",omitempty"`
+	VMWarePassword		  string	  `json:",omitempty"`
+	VMWareInsecure		  bool		  `json:",omitempty"`
+	VMWareAuthVirtualMachine  map[string]Auth `json:",omitempty"`
 
 	CheckService	bool	`json:",omitempty"`
 	CheckURL	string	`json:",omitempty"`
@@ -75,6 +76,11 @@ type Config struct {
 	RubrikExpiration  int32	    `json:",omitempty"`
 
 	DbaasURL  string  `json:",omitempty"`
+}
+
+type Auth struct {
+	Username  string  `json:",omitempty"`
+	Password  string  `json:",omitempty"`
 }
 
 type Singletons struct {
