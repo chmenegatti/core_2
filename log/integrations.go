@@ -9,4 +9,5 @@ const (
   INTEGRATION_DBAAS	  = "dbaas"
   INTEGRATION_NSXT	  = "nsxt"
   INTEGRATION_VMWARE	  = "vmware"
+  INTEGRATION_PALOALTO	  = "paloalto"
 )
