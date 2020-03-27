@@ -10,6 +10,7 @@ import (
 	configMoiraiHttpClient "git-devops.totvs.com.br/ascenty/moirai-http-client/config"
 	"git-devops.totvs.com.br/ascenty/go-log"
 	"git-devops.totvs.com.br/ascenty/go-etcd"
+	"git-devops.totvs.com.br/ascenty/paloalto"
 	"github.com/vmware/go-vmware-nsxt"
 	"github.com/vmware/govmomi"
 )
@@ -19,6 +20,7 @@ const (
 	MOIRAI_HTTP_ENDPOINT	= "/moirai-http-client/env-"
 	REDIS_ENDPOINT		= "/redis/env-"
 	AMQP_ENDPOINT		= "/amqp/env-"
+	PALOALTO_ENDPOINT	= "/paloalto/env-"
 	RUBRIK_ENDPOINT		= "/rubrik"
 	ETCD_TIMEOUT		= 5
 )
@@ -26,6 +28,7 @@ const (
 var (
 	EnvConfig	    Config
 	EnvRedis	    Redis
+	EnvPaloalto	    map[string]Paloalto
 	EnvSingletons	    Singletons
 	EnvAmqp		    Amqp
 	EnvDB		    DB
@@ -90,6 +93,7 @@ type Singletons struct {
 	Nsxt		*nsxt.APIClient
 	Context		context.Context
 	VMWare		*govmomi.Client
+	Paloalto	map[string]paloalto.Paloalto
 }
 
 type Amqp struct {
@@ -105,6 +109,13 @@ type Amqp struct {
 	SSL_Cacert	      string	`json:",omitempty"`
 	SSL_Cert	      string	`json:",omitempty"`
 	SSL_Key		      string	`json:",omitempty"`
+}
+
+type Paloalto struct {
+	URL	  string  `json:",omitempty"`
+	Username  string  `json:",omitempty"`
+	Password  string  `json:",omitempty"`
+	Vsys	  string  `json:",omitempty"`
 }
 
 type Redis struct {
@@ -147,6 +158,7 @@ type Infos struct {
 	DB	      bool
 	Nsxt	      bool
 	VMWare	      bool
+	Paloalto      bool
 	DBKey	      string
 }
 
@@ -192,6 +204,10 @@ func loadEtcd(infos Infos) {
 			_log.Fatalf("Error to get conf moirai http client in etcd: %s\n", err)
 		}
 
+		if err = c.Get(PALOALTO_ENDPOINT + getEnvironment("ENV", "prod"), &EnvPaloalto); err != nil {
+			_log.Fatalf("Error to get conf paloalto in etcd: %s\n", err)
+		}
+
 		if err = c.Get(infos.Microservice, &EnvAmqpResources); err != nil {
 			_log.Fatalf("Error to get conf amqp resources in etcd: %s\n", err)
 		}
@@ -211,6 +227,12 @@ func loadEtcd(infos Infos) {
 		if infos.VMWare {
 			if err = LoadVMWare(); err != nil {
 				_log.Fatalf("Error to init vmware: %s\n", err)
+			}
+		}
+
+		if infos.Paloalto {
+			if err = LoadPaloalto(); err != nil {
+				_log.Fatalf("Error to init paloalto: %s\n", err)
 			}
 		}
 
