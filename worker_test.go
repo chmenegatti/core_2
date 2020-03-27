@@ -43,9 +43,9 @@ func loadConfWorker() {
 
 func Test_WorkerFactory_AuthenticateRubrik(t *testing.T) {
 	var (
-		server  *httptest.Server
-		wf	    WorkerFactory
-		a	    Authenticate
+		server	*httptest.Server
+		wf	WorkerFactory
+		a	Authenticate
 	)
 
 	loadConfWorker()

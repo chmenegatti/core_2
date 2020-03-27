@@ -5,6 +5,7 @@ import (
 
 	"git-devops.totvs.com.br/intera/dbaas"
 	"git-devops.totvs.com.br/intera/rubrik-golang"
+	"git-devops.totvs.com.br/ascenty/paloalto"
 	"git-devops.totvs.com.br/ascenty/go-singleton"
 	"git-devops.totvs.com.br/ascenty/go-cache/redis"
 	"git-devops.totvs.com.br/ascenty/core/config"
@@ -21,9 +22,10 @@ const (
 type Authenticate struct {
 	sync.RWMutex
 
-	DB	DBAuthenticate
-	Rubrik	RubrikAuthenticate
-	Dbaas	DbaasAuthenticate
+	DB	  DBAuthenticate
+	Rubrik	  RubrikAuthenticate
+	Dbaas	  DbaasAuthenticate
+	Paloalto  PaloaltoAuthenticate
 }
 
 type RubrikAuthenticate struct {
@@ -40,10 +42,18 @@ type DbaasAuthenticate struct {
 	URL string
 }
 
+type PaloaltoAuthenticate struct {
+	URL	  string  `json:",omitempty"`
+	Username  string  `json:"-"`
+	Password  string  `json:"-"`
+	Vsys	  string  `json:"-"`
+}
+
 type Factorier interface {
 	DB(Authenticate) (*gorm.DB, error)
 	Rubrik(Authenticate) (*rubrik.Rubrik, error)
 	Dbaas(Authenticate) (*dbaas.Dbaas, error)
+	Paloalto(Authenticate) (paloalto.Paloalto, error)
 	GetTransactionID() string
 	SetTransactionID(string)
 }
@@ -60,6 +70,10 @@ func (f *Factory) Rubrik(a Authenticate) (*rubrik.Rubrik, error) {
 
 func (f *Factory) Dbaas(a Authenticate) (*dbaas.Dbaas, error) {
 	panic("Method Dbaas not implemented")
+}
+
+func (f *Factory) Paloalto(a Authenticate) (paloalto.Paloalto, error) {
+	panic("Method Paloalto not implemented")
 }
 
 func (f *Factory) GetTransactionID() string {
@@ -116,6 +130,22 @@ func (wf *WorkerFactory) DB(a Authenticate) (*gorm.DB, error) {
 	}
 
 	return tx, nil
+}
+
+func (wf *WorkerFactory) Paloalto(a Authenticate) (paloalto.Paloalto, error) {
+	var (
+		p   paloalto.Paloalto
+		err error
+	)
+
+	p, err = paloalto.NewClient(paloalto.PaloaltoConfig{
+		URL:	  a.Paloalto.URL,
+		Username: a.Paloalto.Username,
+		Password: a.Paloalto.Password,
+		Vsys:	  a.Paloalto.Vsys,
+	})
+
+	return p, err
 }
 
 func (wf *WorkerFactory) GetTransactionID() string {
