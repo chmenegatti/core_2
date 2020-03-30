@@ -231,6 +231,8 @@ func loadEtcd(infos Infos) {
 		}
 
 		if infos.Paloalto {
+			EnvSingletons.Paloalto = make(map[string]paloalto.Paloalto)
+
 			if err = LoadPaloalto(); err != nil {
 				_log.Fatalf("Error to init paloalto: %s\n", err)
 			}
