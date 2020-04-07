@@ -29,9 +29,10 @@ type Authenticate struct {
 }
 
 type RubrikAuthenticate struct {
-	Clusters  []string  `json:",omitempty"`
-	Username  string    `json:",omitempty"`
-	Password  string    `json:",omitempty"`
+	Clusters    []string  `json:",omitempty"`
+	Username    string    `json:",omitempty"`
+	Password    string    `json:",omitempty"`
+	Expiration  int32     `json:",omitempty"`
 }
 
 type DBAuthenticate struct {
@@ -108,9 +109,10 @@ func (wf *WorkerFactory) Rubrik(a Authenticate) (*rubrik.Rubrik, error) {
 
 	if client, err = wf.authenticate(
 		rubrik.RubrikFields{
-			Cluster:  a.Rubrik.Clusters,
-			Username: a.Rubrik.Username,
-			Password: a.Rubrik.Password,
+			Cluster:    a.Rubrik.Clusters,
+			Username:   a.Rubrik.Username,
+			Password:   a.Rubrik.Password,
+			Expiration: a.Rubrik.Expiration,
 		},
 		"rubrik",
 	); err != nil {
