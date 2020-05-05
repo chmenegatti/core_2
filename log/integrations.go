@@ -10,4 +10,5 @@ const (
   INTEGRATION_NSXT	  = "nsxt"
   INTEGRATION_VMWARE	  = "vmware"
   INTEGRATION_PALOALTO	  = "paloalto"
+  INTEGRATION_JCSTACK	  = "jcstack"
 )
