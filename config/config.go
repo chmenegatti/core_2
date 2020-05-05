@@ -78,6 +78,10 @@ type Config struct {
 	RubrikPassword	  string    `json:",omitempty"`
 	RubrikExpiration  int32	    `json:",omitempty"`
 
+	JCStackURL	string	`json:",omitempty"`
+	JCStackUsername	string	`json:",omitempty"`
+	JCStackPassword	string	`json:",omitempty"`
+
 	DbaasURL  string  `json:",omitempty"`
 }
 
