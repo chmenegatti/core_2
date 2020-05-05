@@ -15,7 +15,6 @@ import:
   version: 0.0.1
 - package: git-devops.totvs.com.br/ascenty/go-singleton
   repo: gogs@git-devops.totvs.com.br:ascenty/go-singleton.git
-  version: 0.0.1
 - package: git-devops.totvs.com.br/ascenty/johdin
   repo: gogs@git-devops.totvs.com.br:ascenty/johdin.git
   version: 0.0.1

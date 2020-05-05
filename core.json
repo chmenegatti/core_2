@@ -15,7 +15,7 @@
   "RubrikPassword": "QCfAmdv6pkFx",
   "NsxtBasePath": "https://172.18.137.235/api/v1",
   "NsxtUserName": "admin",
-  "NsxtPassword": "Totvs@123Totvs@123",
+  "NsxtPassword": "Totvs@123Totvs@123!",
   "NsxtRetryMaxDelay": 1000,
   "NsxtMaxRetries": 3,
   "NsxtRetryMinDelay": 300,
@@ -26,12 +26,15 @@
   "VMWareInsecure": true,
   "VMWareAuthVirtualMachine": {
 	  "OS-LINUX": {
-		  "Username": "admin",
+		  "Username": "root",
 		  "Password": "totvs@123"
 	  },
 	  "OS-WINDOWS": {
 		  "Username": "Administrator",
 		  "Password": "totvs@123"
 	  }
-  }
+  },
+  "JCStackURL":	"http://mockdb-2",
+  "JCStackUsername": "admin",
+  "JCStackPassword": "password"
 }
