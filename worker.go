@@ -8,6 +8,7 @@ import (
 	"git-devops.totvs.com.br/ascenty/paloalto"
 	"git-devops.totvs.com.br/ascenty/go-singleton"
 	"git-devops.totvs.com.br/ascenty/go-cache/redis"
+	"git-devops.totvs.com.br/ascenty/go-jcstack"
 	"git-devops.totvs.com.br/ascenty/core/config"
 	"git-devops.totvs.com.br/ascenty/core/log"
 
@@ -26,6 +27,7 @@ type Authenticate struct {
 	Rubrik	  RubrikAuthenticate
 	Dbaas	  DbaasAuthenticate
 	Paloalto  PaloaltoAuthenticate
+	JCStack	  JCStackAuthenticate
 }
 
 type RubrikAuthenticate struct {
@@ -50,11 +52,18 @@ type PaloaltoAuthenticate struct {
 	Vsys	  string  `json:"-"`
 }
 
+type JCStackAuthenticate struct {
+	URL	  string  `json:",omitempty"`
+	Username  string  `json:",omitempty"`
+	Password  string  `json:",omitempty"`
+}
+
 type Factorier interface {
 	DB(Authenticate) (*gorm.DB, error)
 	Rubrik(Authenticate) (*rubrik.Rubrik, error)
 	Dbaas(Authenticate) (*dbaas.Dbaas, error)
 	Paloalto(Authenticate) (paloalto.Paloalto, error)
+	JCStack(Authenticate) (*jcstack.JCStack, error)
 	GetTransactionID() string
 	SetTransactionID(string)
 }
@@ -77,6 +86,10 @@ func (f *Factory) Paloalto(a Authenticate) (paloalto.Paloalto, error) {
 	panic("Method Paloalto not implemented")
 }
 
+func (f *Factory) JCStack(a Authenticate) (*jcstack.JCStack, error) {
+	panic("Method Paloalto not implemented")
+}
+
 func (f *Factory) GetTransactionID() string {
 	panic("Method GetTransactionID not implemented")
 }
@@ -91,6 +104,7 @@ type WorkerFactory struct {
 	db		*gorm.DB
 	rubrik		*rubrik.Rubrik
 	dbaas		*dbaas.Dbaas
+	jcstack		*jcstack.JCStack
 	transactionID	string
 }
 
@@ -103,8 +117,8 @@ func (wf *WorkerFactory) Dbaas(a Authenticate) (*dbaas.Dbaas, error) {
 func (wf *WorkerFactory) Rubrik(a Authenticate) (*rubrik.Rubrik, error) {
 	var (
 		client  interface{}
-		err	    error
-		r	    *rubrik.Rubrik
+		err	error
+		r	*rubrik.Rubrik
 	)
 
 	if client, err = wf.authenticate(
@@ -122,6 +136,29 @@ func (wf *WorkerFactory) Rubrik(a Authenticate) (*rubrik.Rubrik, error) {
 	r = client.(*rubrik.Rubrik)
 
 	return r, nil
+}
+
+func (wf WorkerFactory) JCStack(a Authenticate) (*jcstack.JCStack, error) {
+	var (
+		client	interface{}
+		err	error
+		jc	*jcstack.JCStack
+	)
+
+	if client, err = wf.authenticate(
+		jcstack.JCStackConfig{
+			URL:  a.JCStack.URL,
+			Username: a.JCStack.Username,
+			Password: a.JCStack.Password,
+		},
+		"jcstack",
+	); err != nil {
+		return wf.jcstack, err
+	}
+
+	jc = client.(*jcstack.JCStack)
+
+	return jc, nil
 }
 
 func (wf *WorkerFactory) DB(a Authenticate) (*gorm.DB, error) {
