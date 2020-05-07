@@ -6,6 +6,6 @@ import (
 
 func LoadAddressManager() {
 	EnvSingletons.AddressManager = goam.NewAddressManager(goam.Config{
-		Address:  Env.AddressManagerURL,
+		Address:  EnvConfig.AddressManagerURL,
 	})
 }
