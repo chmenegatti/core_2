@@ -8,6 +8,7 @@ import (
 	"git-devops.totvs.com.br/ascenty/johdin"
 	"git-devops.totvs.com.br/ascenty/core/log"
 	configMoiraiHttpClient "git-devops.totvs.com.br/ascenty/moirai-http-client/config"
+	goam "git-devops.totvs.com.br/ascenty/go-address-manager"
 	"git-devops.totvs.com.br/ascenty/go-log"
 	"git-devops.totvs.com.br/ascenty/go-etcd"
 	"git-devops.totvs.com.br/ascenty/paloalto"
@@ -78,6 +79,8 @@ type Config struct {
 	RubrikPassword	  string    `json:",omitempty"`
 	RubrikExpiration  int32	    `json:",omitempty"`
 
+	AddressManagerURL string  `json:",omitempty"`
+
 	JCStackURL	string	`json:",omitempty"`
 	JCStackUsername	string	`json:",omitempty"`
 	JCStackPassword	string	`json:",omitempty"`
@@ -98,6 +101,7 @@ type Singletons struct {
 	Context		context.Context
 	VMWare		*govmomi.Client
 	Paloalto	map[string]paloalto.Paloalto
+	AddressManager	*goam.Client
 }
 
 type Amqp struct {
@@ -158,12 +162,13 @@ type AmqpResourceValues struct {
 }
 
 type Infos struct {
-	Microservice  string
-	DB	      bool
-	Nsxt	      bool
-	VMWare	      bool
-	Paloalto      bool
-	DBKey	      string
+	Microservice	string
+	DB		bool
+	Nsxt		bool
+	VMWare		bool
+	Paloalto	bool
+	AddressManager	bool
+	DBKey		string
 }
 
 func LoadConfig(infos Infos) {
@@ -240,6 +245,10 @@ func loadEtcd(infos Infos) {
 			if err = LoadPaloalto(); err != nil {
 				_log.Fatalf("Error to init paloalto: %s\n", err)
 			}
+		}
+
+		if infos.AddressManager {
+			LoadAddressManager()
 		}
 
 		parsed = true

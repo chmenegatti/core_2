@@ -25,11 +25,13 @@ import:
   version: 0.0.2
 - package: git-devops.totvs.com.br/intera/rubrik-golang
   repo: gogs@git-devops.totvs.com.br:intera/rubrik-golang.git
-  version: 0.1.0
+  version: v0.1.0
 - package: git-devops.totvs.com.br/ascenty/paloalto
   repo: gogs@git-devops.totvs.com.br:ascenty/paloalto.git
 - package: git-devops.totvs.com.br/ascenty/go-jcstack
   repo: gogs@git-devops.totvs.com.br:ascenty/go-jcstack.git
+- package: git-devops.totvs.com.br/ascenty/go-address-manager
+  repo: gogs@git-devops.totvs.com.br:ascenty/go-address-manager.git
 - package: github.com/erikstmartin/go-testdb 
 - package: github.com/go-sql-driver/mysql 
   version: 1.5.0
