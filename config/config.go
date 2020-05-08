@@ -94,7 +94,6 @@ type Unbound struct {
 	Address		    string  `json:",omitempty"`
 	Certificate	    string  `json:",omitempty"`
 	ServerNameAuthority string  `json:",omitempty"`
-	Zone		    string  `json:",omitempty"`
 }
 
 type Auth struct {
