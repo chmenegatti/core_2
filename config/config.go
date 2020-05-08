@@ -86,6 +86,15 @@ type Config struct {
 	JCStackPassword	string	`json:",omitempty"`
 
 	DbaasURL  string  `json:",omitempty"`
+
+	Unbound	map[string]Unbound  `json:",omitempty"`
+}
+
+type Unbound struct {
+	Address		    string  `json:",omitempty"`
+	Certificate	    string  `json:",omitempty"`
+	ServerNameAuthority string  `json:",omitempty"`
+	Zone		    string  `json:",omitempty"`
 }
 
 type Auth struct {
