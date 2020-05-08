@@ -11,5 +11,4 @@ const (
   INTEGRATION_VMWARE	  = "vmware"
   INTEGRATION_PALOALTO	  = "paloalto"
   INTEGRATION_JCSTACK	  = "jcstack"
-  INTEGRATION_UNBOUND	  = "unbound"
 )
