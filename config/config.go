@@ -167,6 +167,7 @@ type AmqpResourceValues struct {
 	Expiration	int32	`json:",omitempty"`
 	Lock		bool	`json:",omitempty"`
 	Unlock		bool	`json:",omitempty"`
+	DelayMessage	string	`json:",omitempty"`
 }
 
 type Infos struct {

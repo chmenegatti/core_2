@@ -449,7 +449,12 @@ func (c *Core) publish(p Publish) {
     routing = p.values.BindingKey
 
     p.msg.Headers[HEADER_REDELIVERED_AMOUNT] = DEFAULT_VALUE
-    p.msg.Headers[HEADER_DELAY_MESSAGE] = config.EnvAmqp.DelayRequeueMessage
+
+    if p.values.DelayMessage != "" {
+      p.msg.Headers[HEADER_DELAY_MESSAGE] = p.values.DelayMessage
+    } else {
+      p.msg.Headers[HEADER_DELAY_MESSAGE] = config.EnvAmqp.DelayRequeueMessage
+    }
   case REDELIVERE_LOCK:
     var delay = p.values.Expiration
 

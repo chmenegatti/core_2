@@ -27,7 +27,8 @@ var maps = map[string]func(*MockProject, Factorier, Authenticate) StatusConsumer
 
 func (mp *MockProject) Create(f Factorier, a Authenticate) StatusConsumer {
 	fmt.Printf("Transaction ID: %s, Args: %s\n", f.GetTransactionID(), mp)
-	return StatusConsumer{Status: COMPLETED}
+	//return StatusConsumer{Status: COMPLETED}
+	return StatusConsumer{Status: IN_PROGRESS}
 }
 
 func (mp *MockProject) Delete(f Factorier, a Authenticate) StatusConsumer {
@@ -82,8 +83,8 @@ func loadConfCore() {
 	config.EnvAmqp.DeliveryMode = 2
 	config.EnvAmqp.ExchangeType = "x-delayed-message"
 	config.EnvAmqp.ExchangeRouting = "topic"
-	config.EnvAmqp.DelayErrorMessage = "100"
-	config.EnvAmqp.DelayRequeueMessage = "100"
+	config.EnvAmqp.DelayErrorMessage = "1000"
+	config.EnvAmqp.DelayRequeueMessage = "1000"
 
 	config.EnvAmqpResources = []config.AmqpResourceValues{
 		{
@@ -94,8 +95,9 @@ func loadConfCore() {
 			OkRoutingKey:	  "v1.1.organization.create.get",
 			ErrorExchange:	  "broker.topic.organization.create",
 			ErrorRoutingKey:  "v1.1.organization.createerror",
-			Lock:		  true,
-			Expiration:	  10,
+			//Lock:		  true,
+			//Expiration:	  10,
+			//DelayMessage:	  "20000",
 		},
 		{
 			Exchange:	"broker.topic.organization.create",
