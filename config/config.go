@@ -12,7 +12,7 @@ import (
 	"git-devops.totvs.com.br/ascenty/go-log"
 	"git-devops.totvs.com.br/ascenty/go-etcd"
 	"git-devops.totvs.com.br/ascenty/paloalto"
-	"github.com/vmware/go-vmware-nsxt"
+	"git-devops.totvs.com.br/ascenty/go-nsxt"
 	"github.com/vmware/govmomi"
 )
 
@@ -105,7 +105,7 @@ type Singletons struct {
 	Logger		golog.Logs
 	AmqpConnection  *johdin.Amqp
 	RedisConnection interface{}
-	Nsxt		*nsxt.APIClient
+	Nsxt		*nsxt.NSXTClient
 	Context		context.Context
 	VMWare		*govmomi.Client
 	Paloalto	map[string]paloalto.Paloalto

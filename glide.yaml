@@ -32,6 +32,8 @@ import:
   repo: gogs@git-devops.totvs.com.br:ascenty/go-jcstack.git
 - package: git-devops.totvs.com.br/ascenty/go-address-manager
   repo: gogs@git-devops.totvs.com.br:ascenty/go-address-manager.git
+- package: git-devops.totvs.com.br/ascenty/go-nsxt
+  repo: gogs@git-devops.totvs.com.br:ascenty/go-nsxt.git
 - package: github.com/erikstmartin/go-testdb 
 - package: github.com/go-sql-driver/mysql 
   version: 1.5.0
@@ -39,6 +41,5 @@ import:
   version: 1.9.12
 - package: github.com/satori/go.uuid
   version: 1.2.0
-- package: github.com/vmware/go-vmware-nsxt
 - package: golang.org/x/net
 - package: github.com/vmware/govmomi

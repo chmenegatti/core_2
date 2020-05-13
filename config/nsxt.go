@@ -1,20 +1,20 @@
 package config
 
 import (
-	"github.com/vmware/go-vmware-nsxt"
+	"git-devops.totvs.com.br/ascenty/go-nsxt"
 )
 
 func LoadNsxt() (err error) {
-	EnvSingletons.Nsxt, err = nsxt.NewAPIClient(&nsxt.Configuration{
+	EnvSingletons.Nsxt, err = nsxt.NewNSXTClient(nsxt.Configuration{
 		BasePath:             EnvConfig.NsxtBasePath,
-		UserName:             EnvConfig.NsxtUserName,
+		Username:             EnvConfig.NsxtUserName,
 		Password:             EnvConfig.NsxtPassword,
 		Insecure:             EnvConfig.NsxtInsecure,
-		RetriesConfiguration: nsxt.ClientRetriesConfiguration{
+		/*RetriesConfiguration: nsxt.ClientRetriesConfiguration{
 			RetryMaxDelay:  EnvConfig.NsxtRetryMaxDelay,
 			MaxRetries:     EnvConfig.NsxtMaxRetries,
 			RetryMinDelay:  EnvConfig.NsxtRetryMinDelay,
-		},
+		},*/
 	})
 
 	return
