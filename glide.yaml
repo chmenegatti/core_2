@@ -20,6 +20,7 @@ import:
   version: 0.0.1
 - package: git-devops.totvs.com.br/ascenty/moirai-http-client
   repo: gogs@git-devops.totvs.com.br:ascenty/moirai-http-client.git
+  version: update_nsxt
 - package: git-devops.totvs.com.br/intera/dbaas
   repo: gogs@git-devops.totvs.com.br:intera/dbaas.git
   version: 0.0.2
