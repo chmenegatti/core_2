@@ -10,10 +10,10 @@
 	"UnboundCertificate": "/app/cacert.pem",
 	"UnboundServerNameAuthority": "core.nuvem-intera.local",
 	"UnboundZoneDns": "bkp.nuvem-intera.local",
-	"RubrikClusters": ["https://172.18.134.27"],
+	"RubrikClusters": ["https://172.18.134.20"],
 	"RubrikUsername": "cloud.infra",
 	"RubrikPassword": "QCfAmdv6pkFx",
-	"NsxtBasePath": "https://172.18.137.235/api/v1",
+	"NsxtBasePath": "https://172.18.137.235",
 	"NsxtUserName": "admin",
 	"NsxtPassword": "Totvs@123Totvs@123!",
 	"NsxtRetryMaxDelay": 1000,
@@ -39,14 +39,14 @@
 	"JCStackPassword": "password",
 	"AddressManagerURL": "http://127.0.0.1:5222",
 	"Unbound": {
-		"vm": {
+		"vm.nuvem-intera.local": {
 			"Address": "127.0.0.1:5226",
 			"Certificate": "/app/cacert.pem",
 			"ServerNameAuthority": "core.nuvem-intera.local",
 			"Zone":	"vm.nuvem-intera.local"
 		},
 		"rubrik": {
-			"Address": "127.0.0.1:5226",
+			"Address": "172.18.158.14:5226",
 			"Certificate": "/app/cacert.pem",
 			"ServerNameAuthority": "core.nuvem-intera.local",
 			"Zone":	"bkp.nuvem-intera.local"
