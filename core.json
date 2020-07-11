@@ -1,0 +1,55 @@
+{
+	"SyslogLevel": "DEBUG",
+	"SyslogNetwork": "udp",
+	"SyslogRaddr": "127.0.0.1:514",
+	"SyslogTag": "core",
+	"SyslogFacility": "local6",
+	"CheckURL": "v1/health",
+	"CheckPort": "8043",
+	"UnboundAddress": "172.18.158.14:5226",
+	"UnboundCertificate": "/app/cacert.pem",
+	"UnboundServerNameAuthority": "core.nuvem-intera.local",
+	"UnboundZoneDns": "bkp.tesp2.local",
+	"RubrikClusters": ["https://172.18.234.11"],
+	"RubrikUsername": "cloud.infra",
+	"RubrikPassword": "QCfAmdv6pkFx",
+	"NsxtBasePath": "https://172.18.137.235",
+	"NsxtUserName": "admin",
+	"NsxtPassword": "Totvs@123Totvs@123!",
+	"NsxtRetryMaxDelay": 1000,
+	"NsxtMaxRetries": 3,
+	"NsxtRetryMinDelay": 300,
+	"NsxtInsecure": true,
+	"VMWareURL": "https://vcsa-nsx.datacenter.local/sdk",
+	"VMWareUserName": "Administrator@vsphere.local",
+	"VMWarePassword": "Totvs@123",
+	"VMWareInsecure": true,
+	"VMWareAuthVirtualMachine": {
+		"OS-LINUX": {
+			"Username": "root",
+			"Password": "totvs@123"
+		},
+		"OS-WINDOWS": {
+			"Username": "Administrator",
+			"Password": "totvs@123"
+		}
+	},
+	"VMWareDefaultDatacenter": "NSX-DATACENTER",
+	"JCStackURL": "https://172.18.204.10",
+	"JCStackUsername": "nemesis",
+	"JCStackPassword": "xKBG}Lu8?{3.?mxc",
+	"JCStackServer": "jcstack",
+	"AddressManagerURL": "http://127.0.0.1:5222",
+	"Unbound": {
+		"vm": {
+			"Address": "127.0.0.1:5226",
+			"Certificate": "/app/cacert.pem",
+			"ServerNameAuthority": "core.nuvem-intera.local",
+			"Zone":	"vm.nuvem-intera.local"
+		},
+		"rubrik": {
+			"Address": "172.18.209.14:5226",
+			"Zone":	"bkp.tesp2.local"
+		}
+	}
+}

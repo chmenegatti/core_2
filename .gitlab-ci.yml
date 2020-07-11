@@ -1,0 +1,30 @@
+before_script:
+ - docker info
+
+
+
+docker-build:
+    stage: .pre
+    tags: 
+    - build-intera-teste
+    script: 
+    - docker build  --build-arg repo=/ascenty/core   -t registry.gitlab.com/ascenty/core .
+
+
+docker-push:
+    stage: build
+    dependencies:
+    - docker-build
+    tags: 
+    - build-intera-teste
+    script: 
+    - docker  push registry.gitlab.com/ascenty/core
+    
+image-test:
+    stage: test
+    dependencies:
+    - docker-push
+    tags: 
+    - build-intera-teste
+    script: 
+    - docker info
