@@ -23,10 +23,10 @@ import:
   repo: git@gitlab.com:ascenty/moirai-http-client.git
 - package: gitlab.com/ascenty/dbaas
   repo: git@gitlab.com:ascenty/dbaas.git
-  version: 0.0.2-gitlab1
+  version: 0.0.2-gitlab2
 - package: gitlab.com/ascenty/rubrik-golang
   repo: git@gitlab.com:ascenty/rubrik-golang.git
-  version: 0.1.2-gitlab2
+  version: 0.1.2-gitlab3
 - package: gitlab.com/ascenty/paloalto
   repo: git@gitlab.com:ascenty/paloalto.git
 - package: gitlab.com/ascenty/go-jcstack
