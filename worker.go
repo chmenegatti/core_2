@@ -5,8 +5,8 @@ import (
 	"net/url"
 	"sync"
 
-	"gitlab.com/intera/dbaas"
-	"gitlab.com/intera/rubrik-golang"
+	"gitlab.com/ascenty/dbaas"
+	"gitlab.com/ascenty/rubrik-golang"
 	"gitlab.com/ascenty/paloalto"
 	"gitlab.com/ascenty/go-singleton"
 	"gitlab.com/ascenty/go-cache/redis"
