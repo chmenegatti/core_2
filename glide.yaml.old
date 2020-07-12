@@ -5,37 +5,37 @@ owners:
   email: sp.cloud.devops@totvs.com.br
 import:
 - package: gitlab.com/ascenty/go-cache
-  repo: git@gitlab.com:ascenty/go-cache.git
+  repo: gogs@gitlab.com:ascenty/go-cache.git
   version: 0.0.1
 - package: gitlab.com/ascenty/go-etcd
-  repo: git@gitlab.com:ascenty/go-etcd.git
+  repo: gogs@gitlab.com:ascenty/go-etcd.git
   version: 0.0.1
 - package: gitlab.com/ascenty/go-log
-  repo: git@gitlab.com:ascenty/go-log.git
+  repo: gogs@gitlab.com:ascenty/go-log.git
   version: 0.0.1
 - package: gitlab.com/ascenty/go-singleton
-  repo: git@gitlab.com:ascenty/go-singleton.git
+  repo: gogs@gitlab.com:ascenty/go-singleton.git
   version: 0.0.2
 - package: gitlab.com/ascenty/johdin
-  repo: git@gitlab.com:ascenty/johdin.git
+  repo: gogs@gitlab.com:ascenty/johdin.git
   version: 0.0.1
 - package: gitlab.com/ascenty/moirai-http-client
-  repo: git@gitlab.com:ascenty/moirai-http-client.git
+  repo: gogs@gitlab.com:ascenty/moirai-http-client.git
 - package: gitlab.com/intera/dbaas
-  repo: git@gitlab.com:intera/dbaas.git
+  repo: gogs@gitlab.com:intera/dbaas.git
   version: 0.0.2
 - package: gitlab.com/intera/rubrik-golang
-  repo: git@gitlab.com:intera/rubrik-golang.git
+  repo: gogs@gitlab.com:intera/rubrik-golang.git
   version: 0.1.2
 - package: gitlab.com/ascenty/paloalto
-  repo: git@gitlab.com:ascenty/paloalto.git
+  repo: gogs@gitlab.com:ascenty/paloalto.git
 - package: gitlab.com/ascenty/go-jcstack
-  repo: git@gitlab.com:ascenty/go-jcstack.git
+  repo: gogs@gitlab.com:ascenty/go-jcstack.git
   version: 0.0.1
 - package: gitlab.com/ascenty/go-address-manager
-  repo: git@gitlab.com:ascenty/go-address-manager.git
+  repo: gogs@gitlab.com:ascenty/go-address-manager.git
 - package: gitlab.com/ascenty/go-nsxt
-  repo: git@gitlab.com:ascenty/go-nsxt.git
+  repo: gogs@gitlab.com:ascenty/go-nsxt.git
 - package: github.com/erikstmartin/go-testdb 
 - package: github.com/go-sql-driver/mysql 
   version: 1.5.0

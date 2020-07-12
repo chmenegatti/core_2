@@ -1,7 +1,7 @@
 package config
 
 import (
-	"git-devops.totvs.com.br/ascenty/go-log"
+	"gitlab.com/ascenty/go-log"
 	"log"
 )
 

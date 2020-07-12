@@ -1,8 +1,8 @@
 package config
 
 import (
-	"git-devops.totvs.com.br/ascenty/johdin"
-	"git-devops.totvs.com.br/ascenty/core/log"
+	"gitlab.com/ascenty/johdin"
+	"gitlab.com/ascenty/core/log"
 )
 
 const (

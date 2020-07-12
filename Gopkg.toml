@@ -26,35 +26,35 @@
 
 
 [[constraint]]
-  name = "git-devops.totvs.com.br/ascenty/go-cache"
+  name = "gitlab.com/ascenty/go-cache"
   version = "0.0.1"
 
 [[constraint]]
-  name = "git-devops.totvs.com.br/ascenty/go-etcd"
+  name = "gitlab.com/ascenty/go-etcd"
   version = "0.0.1"
 
 [[constraint]]
-  name = "git-devops.totvs.com.br/ascenty/go-log"
+  name = "gitlab.com/ascenty/go-log"
   version = "0.0.1"
 
 [[constraint]]
-  name = "git-devops.totvs.com.br/ascenty/go-singleton"
+  name = "gitlab.com/ascenty/go-singleton"
   version = "0.0.1"
 
 [[constraint]]
-  name = "git-devops.totvs.com.br/ascenty/johdin"
+  name = "gitlab.com/ascenty/johdin"
   version = "0.0.1"
 
 [[constraint]]
   branch = "master"
-  name = "git-devops.totvs.com.br/ascenty/moirai-http-client"
+  name = "gitlab.com/ascenty/moirai-http-client"
 
 [[constraint]]
-  name = "git-devops.totvs.com.br/intera/dbaas"
+  name = "gitlab.com/intera/dbaas"
   version = "0.0.2"
 
 [[constraint]]
-  name = "git-devops.totvs.com.br/intera/rubrik-golang"
+  name = "gitlab.com/intera/rubrik-golang"
   version = "0.0.9"
 
 [[constraint]]

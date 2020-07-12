@@ -1,8 +1,8 @@
 package core
 
 import (
-	configMoiraiHttpClient "git-devops.totvs.com.br/ascenty/moirai-http-client/config"
-	"git-devops.totvs.com.br/ascenty/core/config"
+	configMoiraiHttpClient "gitlab.com/ascenty/moirai-http-client/config"
+	"gitlab.com/ascenty/core/config"
 	"golang.org/x/net/context"
 	"net/http/httptest"
 	"os/signal"

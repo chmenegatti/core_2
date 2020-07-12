@@ -1,7 +1,7 @@
 package core
 
 import (
-	"git-devops.totvs.com.br/ascenty/core/config"
+	"gitlab.com/ascenty/core/config"
 
 	"net/http"
 	"strings"

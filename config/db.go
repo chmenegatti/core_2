@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"git-devops.totvs.com.br/ascenty/core/log"
+	"gitlab.com/ascenty/core/log"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
 )
