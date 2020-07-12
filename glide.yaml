@@ -15,7 +15,7 @@ import:
   version: 0.0.1-gitlab
 - package: gitlab.com/ascenty/go-singleton
   repo: git@gitlab.com:ascenty/go-singleton.git
-  version: 0.0.2-gitlab
+  version: 0.0.2-gitlab2
 - package: gitlab.com/ascenty/johdin
   repo: git@gitlab.com:ascenty/johdin.git
   version: 0.0.1-gitlab
@@ -23,15 +23,15 @@ import:
   repo: git@gitlab.com:ascenty/moirai-http-client.git
 - package: gitlab.com/ascenty/dbaas
   repo: git@gitlab.com:ascenty/dbaas.git
-  version: 0.0.2-gitlab
+  version: 0.0.2-gitlab1
 - package: gitlab.com/ascenty/rubrik-golang
   repo: git@gitlab.com:ascenty/rubrik-golang.git
-  version: 0.1.2-gitlab
+  version: 0.1.2-gitlab2
 - package: gitlab.com/ascenty/paloalto
   repo: git@gitlab.com:ascenty/paloalto.git
 - package: gitlab.com/ascenty/go-jcstack
   repo: git@gitlab.com:ascenty/go-jcstack.git
-  version: 0.0.1-gitlab
+  version: 0.0.1-gitlab1
 - package: gitlab.com/ascenty/go-address-manager
   repo: git@gitlab.com:ascenty/go-address-manager.git
 - package: gitlab.com/ascenty/go-nsxt
