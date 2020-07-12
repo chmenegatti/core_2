@@ -21,11 +21,11 @@ import:
   version: 0.0.1
 - package: gitlab.com/ascenty/moirai-http-client
   repo: git@gitlab.com:ascenty/moirai-http-client.git
-- package: gitlab.com/intera/dbaas
-  repo: git@gitlab.com:intera/dbaas.git
+- package: gitlab.com/ascenty/dbaas
+  repo: git@gitlab.com:ascenty/dbaas.git
   version: 0.0.2
-- package: gitlab.com/intera/rubrik-golang
-  repo: git@gitlab.com:intera/rubrik-golang.git
+- package: gitlab.com/ascenty/rubrik-golang
+  repo: git@gitlab.com:ascenty/rubrik-golang.git
   version: 0.1.2
 - package: gitlab.com/ascenty/paloalto
   repo: git@gitlab.com:ascenty/paloalto.git
