@@ -6,7 +6,7 @@ owners:
 import:
 - package: gitlab.com/ascenty/go-cache
   repo: git@gitlab.com:ascenty/go-cache.git
-  #  version: 0.0.1
+  version: 0.0.1-gitlab
 - package: gitlab.com/ascenty/go-etcd
   repo: git@gitlab.com:ascenty/go-etcd.git
   #  version: 0.0.1
