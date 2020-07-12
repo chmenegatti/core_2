@@ -9,7 +9,7 @@ import:
   version: 0.0.1-gitlab
 - package: gitlab.com/ascenty/go-etcd
   repo: git@gitlab.com:ascenty/go-etcd.git
-  #  version: 0.0.1
+  version: 0.0.1-gitlab
 - package: gitlab.com/ascenty/go-log
   repo: git@gitlab.com:ascenty/go-log.git
   #  version: 0.0.1
