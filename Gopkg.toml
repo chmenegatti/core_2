@@ -50,11 +50,11 @@
   name = "gitlab.com/ascenty/moirai-http-client"
 
 [[constraint]]
-  name = "gitlab.com/intera/dbaas"
+  name = "gitlab.com/ascenty/dbaas"
   version = "0.0.2"
 
 [[constraint]]
-  name = "gitlab.com/intera/rubrik-golang"
+  name = "gitlab.com/ascenty/rubrik-golang"
   version = "0.0.9"
 
 [[constraint]]
