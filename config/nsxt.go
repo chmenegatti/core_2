@@ -1,7 +1,7 @@
 package config
 
 import (
-	"git-devops.totvs.com.br/ascenty/go-nsxt"
+	"gitlab.com/ascenty/go-nsxt"
 )
 
 func LoadNsxt() (err error) {

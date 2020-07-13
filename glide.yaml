@@ -1,40 +1,40 @@
-package: git-devops.totvs.com.br/ascenty/core
-homepage: https://git-devops.totvs.com.br/ascenty/core
+package: gitlab.com/ascenty/core
+homepage: https://gitlab.com/ascenty/core
 owners:
 - name: DevOps - Totvs
   email: sp.cloud.devops@totvs.com.br
 import:
-- package: git-devops.totvs.com.br/ascenty/go-cache
-  repo: gogs@git-devops.totvs.com.br:ascenty/go-cache.git
+- package: gitlab.com/ascenty/go-cache
+  repo: git@gitlab.com:ascenty/go-cache.git
   version: 0.0.1
-- package: git-devops.totvs.com.br/ascenty/go-etcd
-  repo: gogs@git-devops.totvs.com.br:ascenty/go-etcd.git
+- package: gitlab.com/ascenty/go-etcd
+  repo: git@gitlab.com:ascenty/go-etcd.git
   version: 0.0.1
-- package: git-devops.totvs.com.br/ascenty/go-log
-  repo: gogs@git-devops.totvs.com.br:ascenty/go-log.git
+- package: gitlab.com/ascenty/go-log
+  repo: git@gitlab.com:ascenty/go-log.git
   version: 0.0.1
-- package: git-devops.totvs.com.br/ascenty/go-singleton
-  repo: gogs@git-devops.totvs.com.br:ascenty/go-singleton.git
-- package: git-devops.totvs.com.br/ascenty/johdin
-  repo: gogs@git-devops.totvs.com.br:ascenty/johdin.git
+- package: gitlab.com/ascenty/go-singleton
+  repo: git@gitlab.com:ascenty/go-singleton.git
+- package: gitlab.com/ascenty/johdin
+  repo: git@gitlab.com:ascenty/johdin.git
   version: 0.0.1
-- package: git-devops.totvs.com.br/ascenty/moirai-http-client
-  repo: gogs@git-devops.totvs.com.br:ascenty/moirai-http-client.git
+- package: gitlab.com/ascenty/moirai-http-client
+  repo: git@gitlab.com:ascenty/moirai-http-client.git
   version: update_nsxt
-- package: git-devops.totvs.com.br/intera/dbaas
-  repo: gogs@git-devops.totvs.com.br:intera/dbaas.git
+- package: gitlab.com/intera/dbaas
+  repo: git@gitlab.com:intera/dbaas.git
   version: 0.0.2
-- package: git-devops.totvs.com.br/intera/rubrik-golang
-  repo: gogs@git-devops.totvs.com.br:intera/rubrik-golang.git
+- package: gitlab.com/intera/rubrik-golang
+  repo: git@gitlab.com:intera/rubrik-golang.git
   version: v0.1.0
-- package: git-devops.totvs.com.br/ascenty/paloalto
-  repo: gogs@git-devops.totvs.com.br:ascenty/paloalto.git
-- package: git-devops.totvs.com.br/ascenty/go-jcstack
-  repo: gogs@git-devops.totvs.com.br:ascenty/go-jcstack.git
-- package: git-devops.totvs.com.br/ascenty/go-address-manager
-  repo: gogs@git-devops.totvs.com.br:ascenty/go-address-manager.git
-- package: git-devops.totvs.com.br/ascenty/go-nsxt
-  repo: gogs@git-devops.totvs.com.br:ascenty/go-nsxt.git
+- package: gitlab.com/ascenty/paloalto
+  repo: git@gitlab.com:ascenty/paloalto.git
+- package: gitlab.com/ascenty/go-jcstack
+  repo: git@gitlab.com:ascenty/go-jcstack.git
+- package: gitlab.com/ascenty/go-address-manager
+  repo: git@gitlab.com:ascenty/go-address-manager.git
+- package: gitlab.com/ascenty/go-nsxt
+  repo: git@gitlab.com:ascenty/go-nsxt.git
 - package: github.com/erikstmartin/go-testdb 
 - package: github.com/go-sql-driver/mysql 
   version: 1.5.0

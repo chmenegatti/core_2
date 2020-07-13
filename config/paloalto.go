@@ -1,7 +1,7 @@
 package config
 
 import (
-	"git-devops.totvs.com.br/ascenty/paloalto"
+	"gitlab.com/ascenty/paloalto"
 )
 
 func LoadPaloalto() (err error) {

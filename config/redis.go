@@ -2,9 +2,9 @@ package config
 
 import (
 	"time"
-	"git-devops.totvs.com.br/ascenty/go-singleton"
-	"git-devops.totvs.com.br/ascenty/go-cache/redis"
-	"git-devops.totvs.com.br/ascenty/core/log"
+	"gitlab.com/ascenty/go-singleton"
+	"gitlab.com/ascenty/go-cache/redis"
+	"gitlab.com/ascenty/core/log"
 )
 
 func LoadRedis() {

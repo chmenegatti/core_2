@@ -1,7 +1,7 @@
 package config
 
 import (
-	goam "git-devops.totvs.com.br/ascenty/go-address-manager"
+	goam "gitlab.com/ascenty/go-address-manager"
 )
 
 func LoadAddressManager() {

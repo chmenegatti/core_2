@@ -3,14 +3,14 @@ package core
 import (
 	"sync"
 
-	"git-devops.totvs.com.br/intera/dbaas"
-	"git-devops.totvs.com.br/intera/rubrik-golang"
-	"git-devops.totvs.com.br/ascenty/paloalto"
-	"git-devops.totvs.com.br/ascenty/go-singleton"
-	"git-devops.totvs.com.br/ascenty/go-cache/redis"
-	"git-devops.totvs.com.br/ascenty/go-jcstack"
-	"git-devops.totvs.com.br/ascenty/core/config"
-	"git-devops.totvs.com.br/ascenty/core/log"
+	"gitlab.com/intera/dbaas"
+	"gitlab.com/intera/rubrik-golang"
+	"gitlab.com/ascenty/paloalto"
+	"gitlab.com/ascenty/go-singleton"
+	"gitlab.com/ascenty/go-cache/redis"
+	"gitlab.com/ascenty/go-jcstack"
+	"gitlab.com/ascenty/core/config"
+	"gitlab.com/ascenty/core/log"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
