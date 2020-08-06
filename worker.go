@@ -5,7 +5,6 @@ import (
 	"net/url"
 	"sync"
 
-	"gitlab.com/ascenty/dbaas"
 	"gitlab.com/ascenty/rubrik-golang"
 	"gitlab.com/ascenty/paloalto"
 	"gitlab.com/ascenty/go-singleton"
@@ -66,7 +65,6 @@ type JCStackAuthenticate struct {
 type Factorier interface {
 	DB(Authenticate) (*gorm.DB, error)
 	Rubrik(Authenticate) (*rubrik.Rubrik, error)
-	Dbaas(Authenticate) (*dbaas.Dbaas, error)
 	Paloalto(Authenticate) (paloalto.Paloalto, error)
 	JCStack(Authenticate) (*jcstack.JCStack, error)
 	VMWare() (*govmomi.Client, error)
@@ -82,10 +80,6 @@ func (f *Factory) DB(a Authenticate) (*gorm.DB, error) {
 
 func (f *Factory) Rubrik(a Authenticate) (*rubrik.Rubrik, error) {
 	panic("Method Rubrik not implemented")
-}
-
-func (f *Factory) Dbaas(a Authenticate) (*dbaas.Dbaas, error) {
-	panic("Method Dbaas not implemented")
 }
 
 func (f *Factory) Paloalto(a Authenticate) (paloalto.Paloalto, error) {
@@ -113,16 +107,9 @@ type WorkerFactory struct {
 
 	db		*gorm.DB
 	rubrik		*rubrik.Rubrik
-	dbaas		*dbaas.Dbaas
 	jcstack		*jcstack.JCStack
 	vmware		*govmomi.Client
 	transactionID	string
-}
-
-func (wf *WorkerFactory) Dbaas(a Authenticate) (*dbaas.Dbaas, error) {
-	return dbaas.Authenticate(dbaas.DbaasConfig{
-		URL:  a.Dbaas.URL,
-	})
 }
 
 func (wf *WorkerFactory) Rubrik(a Authenticate) (*rubrik.Rubrik, error) {
