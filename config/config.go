@@ -90,6 +90,9 @@ type Config struct {
 	DbaasURL  string  `json:",omitempty"`
 
 	Unbound	map[string]Unbound  `json:",omitempty"`
+
+	EnableTelescop  bool    `json:",omitempty"`
+	TelescopAddress string  `json:",omitempty"`
 }
 
 type Unbound struct {
