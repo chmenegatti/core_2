@@ -28,7 +28,7 @@ import:
   repo: git@gitlab.com:ascenty/paloalto.git
 - package: gitlab.com/ascenty/go-jcstack
   repo: git@gitlab.com:ascenty/go-jcstack.git
-  version: 0.0.2
+  version: 0.0.3
 - package: gitlab.com/ascenty/go-address-manager
   repo: git@gitlab.com:ascenty/go-address-manager.git
 - package: gitlab.com/ascenty/go-nsxt
