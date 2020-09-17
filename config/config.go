@@ -13,6 +13,7 @@ import (
 	"gitlab.com/ascenty/go-etcd"
 	"gitlab.com/ascenty/paloalto"
 	"gitlab.com/ascenty/go-nsxt"
+	"gitlab.com/ascenty/go-ontap"
 	"github.com/vmware/govmomi"
 )
 
@@ -93,6 +94,10 @@ type Config struct {
 
 	EnableTelescop  bool    `json:",omitempty"`
 	TelescopAddress string  `json:",omitempty"`
+
+	OntapAddress  string  `json:",omitempty"`
+	OntapUsername string  `json:",omitempty"`
+	OntapPassword string  `json:",omitempty"`
 }
 
 type Unbound struct {
@@ -115,6 +120,7 @@ type Singletons struct {
 	VMWare		*govmomi.Client
 	Paloalto	map[string]paloalto.Paloalto
 	AddressManager	*goam.Client
+	Ontap		*ontap.OntapClient
 }
 
 type Amqp struct {
@@ -182,6 +188,7 @@ type Infos struct {
 	VMWare		bool
 	Paloalto	bool
 	AddressManager	bool
+	Ontap		bool
 	DBKey		string
 }
 
@@ -258,6 +265,12 @@ func loadEtcd(infos Infos) {
 
 			if err = LoadPaloalto(); err != nil {
 				_log.Fatalf("Error to init paloalto: %s\n", err)
+			}
+		}
+
+		if infos.Ontap {
+			if err = LoadOntap(); err != nil {
+				_log.Fatalf("Error to init ontap: %s\n", err)
 			}
 		}
 

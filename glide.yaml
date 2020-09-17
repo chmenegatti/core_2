@@ -42,3 +42,5 @@ import:
   version: 1.2.0
 - package: golang.org/x/net
 - package: github.com/vmware/govmomi
+- package: gitlab.com/ascenty/go-ontap
+  repo: git@gitlab.com:ascenty/go-ontap.git
