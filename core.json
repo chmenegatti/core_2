@@ -20,7 +20,7 @@
 	"NsxtMaxRetries": 3,
 	"NsxtRetryMinDelay": 300,
 	"NsxtInsecure": true,
-	"VMWareURL": "https://vcsa-nsx.datacenter.local/sdk",
+	"VMWareURL": "https://172.18.137.231/sdk",
 	"VMWareUserName": "Administrator@vsphere.local",
 	"VMWarePassword": "Totvs@123",
 	"VMWareInsecure": true,
@@ -38,7 +38,7 @@
 	"JCStackURL": "https://172.18.204.10",
 	"JCStackUsername": "nemesis",
 	"JCStackPassword": "xKBG}Lu8?{3.?mxc",
-	"JCStackServer": "jcstack",
+	"JCStackServer": "nostromo",
 	"AddressManagerURL": "http://127.0.0.1:5222",
 	"Unbound": {
 		"vm": {
@@ -51,5 +51,9 @@
 			"Address": "172.18.209.14:5226",
 			"Zone":	"bkp.tesp2.local"
 		}
-	}
+	},
+	"OntapAddress": "https://172.16.96.146",
+	"OntapUsername": "admin",
+	"OntapPassword": "1234Qwer."
 }
+
