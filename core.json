@@ -35,6 +35,7 @@
 		}
 	},
 	"VMWareDefaultDatacenter": "NSX-DATACENTER",
+	"VMWareVirtualMachineTimeout": 1200,
 	"JCStackURL": "https://172.18.204.10",
 	"JCStackUsername": "nemesis",
 	"JCStackPassword": "xKBG}Lu8?{3.?mxc",
@@ -52,8 +53,8 @@
 			"Zone":	"bkp.tesp2.local"
 		}
 	},
-	"OntapAddress": "https://172.16.96.146",
-	"OntapUsername": "admin",
-	"OntapPassword": "1234Qwer."
+	"OntapAddress": "https://172.18.153.24",
+	"OntapUsername": "gateway-api",
+	"OntapPassword": "^g3z*!$UM3vp"
 }
 
