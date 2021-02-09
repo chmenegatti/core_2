@@ -23,7 +23,6 @@ const (
 	REDIS_ENDPOINT		= "/redis/env-"
 	AMQP_ENDPOINT		= "/amqp/env-"
 	PALOALTO_ENDPOINT	= "/paloalto/env-"
-	RUBRIK_ENDPOINT		= "/rubrik"
 	ETCD_TIMEOUT		= 5
 )
 
@@ -99,6 +98,10 @@ type Config struct {
 	OntapAddress  string  `json:",omitempty"`
 	OntapUsername string  `json:",omitempty"`
 	OntapPassword string  `json:",omitempty"`
+
+	GetMyfilesURL	    string  `json:",omitempty"`
+	GetMyfilesUsername  string  `json:",omitempty"`
+	GetMyfilesPassword  string  `json:",omitempty"`
 }
 
 type Unbound struct {
