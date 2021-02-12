@@ -99,6 +99,7 @@ type Config struct {
 	OntapUsername string  `json:",omitempty"`
 	OntapPassword string  `json:",omitempty"`
 
+	EnableGetMyfiles    bool    `json:",omitempty"`
 	GetMyfilesURL	    string  `json:",omitempty"`
 	GetMyfilesUsername  string  `json:",omitempty"`
 	GetMyfilesPassword  string  `json:",omitempty"`
