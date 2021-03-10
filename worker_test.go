@@ -63,14 +63,12 @@ func Test_WorkerFactory_AuthenticateRubrik(t *testing.T) {
 	server = startServerAuthenticate()
 
 	a.Rubrik = RubrikAuthenticate{
-		Clusters: map[string][]string{
-			"tesp2": []string{server.URL + "/"},
-		},
+		Clusters: []string{server.URL + "/"},
 		Username: "MOCK",
 		Password: "MOCK",
 	}
 
-	wf.Rubrik(a, "tesp2")
+	wf.Rubrik(a)
 }
 
 func Test_WorkerFactory_VMWare(t *testing.T) {

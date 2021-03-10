@@ -76,10 +76,10 @@ type Config struct {
 	UnboundServerNameAuthority    string  `json:",omitempty"`
 	UnboundZoneDns		      string  `json:",omitempty"`
 
-	RubrikClusters	  map[string][]string `json:",omitempty"`
-	RubrikUsername	  string	      `json:",omitempty"`
-	RubrikPassword	  string	      `json:",omitempty"`
-	RubrikExpiration  int32		      `json:",omitempty"`
+	RubrikClusters	  []string  `json:",omitempty"`
+	RubrikUsername	  string    `json:",omitempty"`
+	RubrikPassword	  string    `json:",omitempty"`
+	RubrikExpiration  int32	    `json:",omitempty"`
 
 	AddressManagerURL string  `json:",omitempty"`
 

@@ -3,9 +3,7 @@ package core
 import (
 	"context"
 	"net/url"
-	"errors"
 	"sync"
-	"fmt"
 
 	"gitlab.com/ascenty/rubrik-golang"
 	"gitlab.com/ascenty/paloalto"
@@ -36,10 +34,10 @@ type Authenticate struct {
 }
 
 type RubrikAuthenticate struct {
-	Clusters    map[string][]string `json:",omitempty"`
-	Username    string		`json:",omitempty"`
-	Password    string		`json:",omitempty"`
-	Expiration  int32		`json:",omitempty"`
+	Clusters    []string  `json:",omitempty"`
+	Username    string    `json:",omitempty"`
+	Password    string    `json:",omitempty"`
+	Expiration  int32     `json:",omitempty"`
 }
 
 type DBAuthenticate struct {
@@ -66,7 +64,7 @@ type JCStackAuthenticate struct {
 
 type Factorier interface {
 	DB(Authenticate) (*gorm.DB, error)
-	Rubrik(Authenticate, string) (*rubrik.Rubrik, error)
+	Rubrik(Authenticate) (*rubrik.Rubrik, error)
 	Paloalto(Authenticate) (paloalto.Paloalto, error)
 	JCStack(Authenticate) (*jcstack.JCStack, error)
 	VMWare() (*govmomi.Client, error)
@@ -80,7 +78,7 @@ func (f *Factory) DB(a Authenticate) (*gorm.DB, error) {
 	panic("Method DB not implemented")
 }
 
-func (f *Factory) Rubrik(a Authenticate, datacenter string) (*rubrik.Rubrik, error) {
+func (f *Factory) Rubrik(a Authenticate) (*rubrik.Rubrik, error) {
 	panic("Method Rubrik not implemented")
 }
 
@@ -114,30 +112,21 @@ type WorkerFactory struct {
 	transactionID	string
 }
 
-func (wf *WorkerFactory) Rubrik(a Authenticate, datacenter string) (*rubrik.Rubrik, error) {
+func (wf *WorkerFactory) Rubrik(a Authenticate) (*rubrik.Rubrik, error) {
 	var (
 		client  interface{}
 		err	error
 		r	*rubrik.Rubrik
-		ok	bool
 	)
-
-	if datacenter == "" {
-		return r, errors.New("Datacenter cannot be empty")
-	}
-
-	if _, ok = a.Rubrik.Clusters[datacenter]; !ok {
-		return r, errors.New(fmt.Sprintf("Datacenter %s not exists", datacenter))
-	}
 
 	if client, err = wf.authenticate(
 		rubrik.RubrikFields{
-			Cluster:    a.Rubrik.Clusters[datacenter],
+			Cluster:    a.Rubrik.Clusters,
 			Username:   a.Rubrik.Username,
 			Password:   a.Rubrik.Password,
 			Expiration: a.Rubrik.Expiration,
 		},
-		fmt.Sprintf("rubrik-%s", datacenter),
+		"rubrik",
 	); err != nil {
 		return wf.rubrik, err
 	}
