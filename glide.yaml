@@ -23,7 +23,7 @@ import:
   repo: git@gitlab.com:ascenty/moirai-http-client.git
 - package: gitlab.com/ascenty/rubrik-golang
   repo: git@gitlab.com:ascenty/rubrik-golang.git
-  version: 0.1.5
+  version: 0.1.9
 - package: gitlab.com/ascenty/paloalto
   repo: git@gitlab.com:ascenty/paloalto.git
 - package: gitlab.com/ascenty/go-jcstack

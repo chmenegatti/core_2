@@ -10,7 +10,9 @@
 	"UnboundCertificate": "/app/cacert.pem",
 	"UnboundServerNameAuthority": "core.nuvem-intera.local",
 	"UnboundZoneDns": "bkp.tesp2.local",
-	"RubrikClusters": ["https://172.18.234.11"],
+	"RubrikClusters": {
+		"tesp2": ["https://172.18.234.11"]
+	},
 	"RubrikUsername": "cloud.infra",
 	"RubrikPassword": "QCfAmdv6pkFx",
 	"NsxtBasePath": "https://172.18.137.235",
@@ -55,6 +57,8 @@
 	},
 	"OntapAddress": "https://172.18.153.24",
 	"OntapUsername": "gateway-api",
-	"OntapPassword": "^g3z*!$UM3vp"
+	"OntapPassword": "^g3z*!$UM3vp",
+	"GetMyfilesURL": "http://127.0.0.1:3001",
+	"GetMyfilesUsername": "lucas",
+	"GetMyfilesPassword": "!@lucas@286768"
 }
-
