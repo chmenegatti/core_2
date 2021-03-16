@@ -103,6 +103,9 @@ type Config struct {
 	GetMyfilesURL	    string  `json:",omitempty"`
 	GetMyfilesUsername  string  `json:",omitempty"`
 	GetMyfilesPassword  string  `json:",omitempty"`
+	GetMyfilesEnableSSL bool    `json:",omitempty"`
+	GetMyfilesCertFile  string  `json:",omitempty"`
+	GetMyfilesKeyFile   string  `json:",omitempty"`
 }
 
 type Unbound struct {
