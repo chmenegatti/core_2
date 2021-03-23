@@ -443,6 +443,10 @@ func (c *Core) publish(p Publish) {
       p.msg.Headers[HEADER_DELAY_MESSAGE] = config.EnvAmqp.DelayRequeueMessage
       p.msg.Headers[HEADER_REDELIVERED_AMOUNT] = DEFAULT_VALUE
 
+      if p.values.DelayRequeueMessage != "" {
+	p.msg.Headers[HEADER_DELAY_MESSAGE] = p.values.DelayRequeueMessage
+      }
+
       if p.id != 0 {
 	if err = p.httpClient.Clients[p.resource].Update(p.id, &SetError{Error: sql.NullString{String: p.sc.Error.Error(), Valid: true}}, p.msg.Headers); err != nil {
 	  config.EnvSingletons.Logger.Errorf(log.TEMPLATE_CORE, p.headers.TransactionID, PACKAGE, "publish", "Update", err.Error())

@@ -36,15 +36,23 @@ func loadConfWorker() {
 	config.EnvRedis.Heartbeat = 60
 	config.EnvRedis.Expire = 3000
 
-	config.EnvConfig.VMWareURL = "https://vcsa-nsx.datacenter.local/sdk"
-	config.EnvConfig.VMWareUserName = "Administrator@vsphere.local"
-	config.EnvConfig.VMWarePassword = "Totvs@123"
-	config.EnvConfig.VMWareInsecure = true
+	config.EnvConfig.VMWare = map[string]config.VMWare{
+		"tesp2": {
+			URL:	  "https://vcsa-nsx.datacenter.local/sdk",
+			Username: "Administrator@vsphere.local",
+			Password: "Totvs@123",
+			Insecure: true,
+		},
+	}
 
-	config.EnvConfig.JCStackURL = "https://172.18.204.10"
-	config.EnvConfig.JCStackUsername = "nemesis"
-	config.EnvConfig.JCStackPassword = "xKBG}Lu8?{3.?mxc"
-	config.EnvConfig.JCStackServer = "nostromo"
+	config.EnvConfig.JCStack = map[string]config.JCStack{
+		"tesp2": {
+			URL:	  "https://172.18.204.10",
+			Username: "nemesis",
+			Password: "xKBG}Lu8?{3.?mxc",
+			Server:	  "nostromo",
+		},
+	}
 
 	config.EnvAmqp.Hosts = []string{"amqp://"}
 
@@ -56,19 +64,20 @@ func Test_WorkerFactory_AuthenticateRubrik(t *testing.T) {
 	var (
 		server	*httptest.Server
 		wf	WorkerFactory
-		a	Authenticate
 	)
 
 	loadConfWorker()
 	server = startServerAuthenticate()
 
-	a.Rubrik = RubrikAuthenticate{
-		Clusters: []string{server.URL + "/"},
-		Username: "MOCK",
-		Password: "MOCK",
+	config.EnvConfig.Rubrik = map[string]config.Rubrik{
+		"mock": {
+			Cluster:  []string{server.URL + "/"},
+			Username: "MOCK",
+			Password: "MOCK",
+		},
 	}
 
-	wf.Rubrik(a)
+	wf.Rubrik("mock")
 }
 
 func Test_WorkerFactory_VMWare(t *testing.T) {
@@ -77,23 +86,14 @@ func Test_WorkerFactory_VMWare(t *testing.T) {
 	)
 
 	loadConfWorker()
-	fmt.Println(wf.VMWare())
+	fmt.Println(wf.VMWare("tesp2"))
 }
 
 func Test_WorkerFactory_JCStack(t *testing.T) {
 	var (
 		wf	WorkerFactory
-		a	Authenticate
 	)
 
 	loadConfWorker()
-
-	a.JCStack = JCStackAuthenticate{
-		URL:	  config.EnvConfig.JCStackURL,
-		Username: config.EnvConfig.JCStackUsername,
-		Password: config.EnvConfig.JCStackPassword,
-		Server:	  config.EnvConfig.JCStackServer,
-	}
-
-	fmt.Println(wf.JCStack(a))
+	fmt.Println(wf.JCStack("tesp2"))
 }

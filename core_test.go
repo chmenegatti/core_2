@@ -133,7 +133,6 @@ func Test_Core_Run(t *testing.T) {
 		sigs		  = make(chan os.Signal, 1)
 	)
 
-	fmt.Println("PORRA")
 	ctx, done = context.WithCancel(context.Background())
 	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
 

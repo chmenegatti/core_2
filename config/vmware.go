@@ -1,6 +1,6 @@
 package config
 
-import (
+/*import (
 	"github.com/vmware/govmomi"
 	"github.com/vmware/govmomi/vim25/soap"
 	"context"
@@ -22,4 +22,4 @@ func LoadVMWare() (err error) {
 
 	EnvSingletons.VMWare, err = govmomi.NewClient(EnvSingletons.Context, u, EnvConfig.VMWareInsecure)
 	return
-}
+}*/

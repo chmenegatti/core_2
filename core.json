@@ -6,26 +6,69 @@
 	"SyslogFacility": "local6",
 	"CheckURL": "v1/health",
 	"CheckPort": "8043",
-	"UnboundAddress": "172.18.158.14:5226",
-	"UnboundCertificate": "/app/cacert.pem",
-	"UnboundServerNameAuthority": "core.nuvem-intera.local",
-	"UnboundZoneDns": "bkp.tesp2.local",
-	"RubrikClusters": {
-		"tesp2": ["https://172.18.234.11"]
+	"Unbound": {
+		"tesp2": {
+			"Address": "172.18.158.14:5226",
+			"Certificate": "/app/cacert.pem",
+			"ServerNameAuthority": "core.nuvem-intera.local",
+			"ZoneDns": "bkp.tesp2.local"
+		}
 	},
-	"RubrikUsername": "cloud.infra",
-	"RubrikPassword": "QCfAmdv6pkFx",
-	"NsxtBasePath": "https://172.18.137.235",
-	"NsxtUserName": "admin",
-	"NsxtPassword": "Totvs@123Totvs@123!",
-	"NsxtRetryMaxDelay": 1000,
-	"NsxtMaxRetries": 3,
-	"NsxtRetryMinDelay": 300,
-	"NsxtInsecure": true,
-	"VMWareURL": "https://172.18.137.231/sdk",
-	"VMWareUserName": "Administrator@vsphere.local",
-	"VMWarePassword": "Totvs@123",
-	"VMWareInsecure": true,
+	"Rubrik": {
+		"tesp2": {
+			"Clusters": ["https://172.18.234.11"],
+			"Username": "cloud.infra",
+			"Password": "QCfAmdv6pkFx"
+		}
+	},
+	"Nsxt": {
+		"tesp2": {
+			"Path": "https://172.18.137.235",
+			"Username": "admin",
+			"Password": "Totvs@123Totvs@123!",
+			"RetryMaxDelay": 1000,
+			"MaxRetries": 3,
+			"RetryMinDelay": 300,
+			"Insecure": true
+		}
+	},
+	"VMWare": {
+		"tesp2": {
+			"URL": "https://172.18.137.231/sdk",
+			"Username": "Administrator@vsphere.local",
+			"Password": "Totvs@123",
+			"Insecure": true,
+			"DatacenterDefault": "NSX-DATACENTER",
+			"VirtualMachineTimeout": 1200
+		}
+	},
+	"JCStack": {
+		"tesp2": {
+			"URL": "https://172.18.204.10",
+			"Username": "nemesis",
+			"Password": "xKBG}Lu8?{3.?mxc",
+			"Server": "nostromo"
+		}
+	},
+	"AddressManagerURL": "http://127.0.0.1:5222",
+	"Ontap": {
+		"tesp2": {
+			"Address": "https://172.18.153.24",
+			"Username": "gateway-api",
+			"Password": "^g3z*!$UM3vp"
+		}
+	},
+	"GetMyfile": {
+		"tesp2": {
+			"URL": "http://127.0.0.1:3001",
+			"Username": "lucas",
+			"Password": "!@lucas@286768",
+			"EnableSSL": false,
+			"CertFile": "",
+			"KeyFile": "",
+			"Enable": false
+		}
+	},
 	"VMWareAuthVirtualMachine": {
 		"OS-LINUX": {
 			"Username": "root",
@@ -36,29 +79,18 @@
 			"Password": "totvs@123"
 		}
 	},
-	"VMWareDefaultDatacenter": "NSX-DATACENTER",
-	"VMWareVirtualMachineTimeout": 1200,
-	"JCStackURL": "https://172.18.204.10",
-	"JCStackUsername": "nemesis",
-	"JCStackPassword": "xKBG}Lu8?{3.?mxc",
-	"JCStackServer": "nostromo",
-	"AddressManagerURL": "http://127.0.0.1:5222",
-	"Unbound": {
-		"vm": {
-			"Address": "127.0.0.1:5226",
-			"Certificate": "/app/cacert.pem",
-			"ServerNameAuthority": "core.nuvem-intera.local",
-			"Zone":	"vm.nuvem-intera.local"
-		},
-		"rubrik": {
-			"Address": "172.18.209.14:5226",
-			"Zone":	"bkp.tesp2.local"
+	"UnboundZone": {
+		"tesp2": {
+			"vm": {
+				"Address": "127.0.0.1:5226",
+				"Certificate": "/app/cacert.pem",
+				"ServerNameAuthority": "core.nuvem-intera.local",
+				"Zone":	"vm.nuvem-intera.local"
+			},
+			"rubrik": {
+				"Address": "172.18.209.14:5226",
+				"Zone":	"bkp.tesp2.local"
+			}
 		}
-	},
-	"OntapAddress": "https://172.18.153.24",
-	"OntapUsername": "gateway-api",
-	"OntapPassword": "^g3z*!$UM3vp",
-	"GetMyfilesURL": "http://127.0.0.1:3001",
-	"GetMyfilesUsername": "lucas",
-	"GetMyfilesPassword": "!@lucas@286768"
+	}
 }

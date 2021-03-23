@@ -5,17 +5,20 @@ import (
 )
 
 func LoadNsxt() (err error) {
-	EnvSingletons.Nsxt, err = nsxt.NewNSXTClient(nsxt.Configuration{
-		BasePath:             EnvConfig.NsxtBasePath,
-		Username:             EnvConfig.NsxtUserName,
-		Password:             EnvConfig.NsxtPassword,
-		Insecure:             EnvConfig.NsxtInsecure,
-		/*RetriesConfiguration: nsxt.ClientRetriesConfiguration{
-			RetryMaxDelay:  EnvConfig.NsxtRetryMaxDelay,
-			MaxRetries:     EnvConfig.NsxtMaxRetries,
-			RetryMinDelay:  EnvConfig.NsxtRetryMinDelay,
-		},*/
-	})
+	for key, values := range EnvConfig.Nsxt {
+		var n *nsxt.NSXTClient
+
+		if n, err = nsxt.NewNSXTClient(nsxt.Configuration{
+			BasePath: values.Path,
+			Username: values.Username,
+			Password: values.Password,
+			Insecure: values.Insecure,
+		}); err != nil {
+			return
+		}
+
+		EnvSingletons.Nsxt[key] = n
+	}
 
 	return
 }

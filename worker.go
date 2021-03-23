@@ -3,10 +3,11 @@ package core
 import (
 	"context"
 	"net/url"
+	"errors"
 	"sync"
+	"fmt"
 
 	"gitlab.com/ascenty/rubrik-golang"
-	"gitlab.com/ascenty/paloalto"
 	"gitlab.com/ascenty/go-singleton"
 	"gitlab.com/ascenty/go-cache/redis"
 	"gitlab.com/ascenty/go-jcstack"
@@ -27,17 +28,7 @@ type Authenticate struct {
 	sync.RWMutex
 
 	DB	  DBAuthenticate
-	Rubrik	  RubrikAuthenticate
 	Dbaas	  DbaasAuthenticate
-	Paloalto  PaloaltoAuthenticate
-	JCStack	  JCStackAuthenticate
-}
-
-type RubrikAuthenticate struct {
-	Clusters    []string  `json:",omitempty"`
-	Username    string    `json:",omitempty"`
-	Password    string    `json:",omitempty"`
-	Expiration  int32     `json:",omitempty"`
 }
 
 type DBAuthenticate struct {
@@ -48,26 +39,11 @@ type DbaasAuthenticate struct {
 	URL string
 }
 
-type PaloaltoAuthenticate struct {
-	URL	  string  `json:",omitempty"`
-	Username  string  `json:"-"`
-	Password  string  `json:"-"`
-	Vsys	  string  `json:"-"`
-}
-
-type JCStackAuthenticate struct {
-	URL	  string  `json:",omitempty"`
-	Username  string  `json:",omitempty"`
-	Password  string  `json:",omitempty"`
-	Server	  string  `json:",omitempty"`
-}
-
 type Factorier interface {
 	DB(Authenticate) (*gorm.DB, error)
-	Rubrik(Authenticate) (*rubrik.Rubrik, error)
-	Paloalto(Authenticate) (paloalto.Paloalto, error)
-	JCStack(Authenticate) (*jcstack.JCStack, error)
-	VMWare() (*govmomi.Client, error)
+	Rubrik(string) (*rubrik.Rubrik, error)
+	JCStack(string) (*jcstack.JCStack, error)
+	VMWare(string) (*govmomi.Client, error)
 	GetTransactionID() string
 	SetTransactionID(string)
 }
@@ -78,19 +54,15 @@ func (f *Factory) DB(a Authenticate) (*gorm.DB, error) {
 	panic("Method DB not implemented")
 }
 
-func (f *Factory) Rubrik(a Authenticate) (*rubrik.Rubrik, error) {
+func (f *Factory) Rubrik(cluster string) (*rubrik.Rubrik, error) {
 	panic("Method Rubrik not implemented")
 }
 
-func (f *Factory) Paloalto(a Authenticate) (paloalto.Paloalto, error) {
-	panic("Method Paloalto not implemented")
-}
-
-func (f *Factory) JCStack(a Authenticate) (*jcstack.JCStack, error) {
+func (f *Factory) JCStack(cluster string) (*jcstack.JCStack, error) {
 	panic("Method JCStack not implemented")
 }
 
-func (f *Factory) VMWare() (*govmomi.Client, error) {
+func (f *Factory) VMWare(cluster string) (*govmomi.Client, error) {
 	panic("Method VMWare not implemented")
 }
 
@@ -112,21 +84,26 @@ type WorkerFactory struct {
 	transactionID	string
 }
 
-func (wf *WorkerFactory) Rubrik(a Authenticate) (*rubrik.Rubrik, error) {
+func (wf *WorkerFactory) Rubrik(cluster string) (*rubrik.Rubrik, error) {
 	var (
 		client  interface{}
 		err	error
 		r	*rubrik.Rubrik
+		ok	bool
 	)
+
+	if _, ok = config.EnvConfig.Rubrik[cluster]; !ok {
+		return nil, errors.New(fmt.Sprintf("%s is not mapped", cluster))
+	}
 
 	if client, err = wf.authenticate(
 		rubrik.RubrikFields{
-			Cluster:    a.Rubrik.Clusters,
-			Username:   a.Rubrik.Username,
-			Password:   a.Rubrik.Password,
-			Expiration: a.Rubrik.Expiration,
+			Cluster:    config.EnvConfig.Rubrik[cluster].Cluster,
+			Username:   config.EnvConfig.Rubrik[cluster].Username,
+			Password:   config.EnvConfig.Rubrik[cluster].Password,
+			Expiration: config.EnvConfig.Rubrik[cluster].Expiration,
 		},
-		"rubrik",
+		fmt.Sprintf("rubrik-%s", cluster),
 	); err != nil {
 		return wf.rubrik, err
 	}
@@ -136,21 +113,26 @@ func (wf *WorkerFactory) Rubrik(a Authenticate) (*rubrik.Rubrik, error) {
 	return r, nil
 }
 
-func (wf WorkerFactory) JCStack(a Authenticate) (*jcstack.JCStack, error) {
+func (wf WorkerFactory) JCStack(cluster string) (*jcstack.JCStack, error) {
 	var (
 		client	interface{}
 		err	error
 		jc	*jcstack.JCStack
+		ok	bool
 	)
+
+	if _, ok = config.EnvConfig.JCStack[cluster]; !ok {
+		return nil, errors.New(fmt.Sprintf("%s is not mapped", cluster))
+	}
 
 	if client, err = wf.authenticate(
 		jcstack.JCStackConfig{
-			URL:	  a.JCStack.URL,
-			Username: a.JCStack.Username,
-			Password: a.JCStack.Password,
-			Server:	  a.JCStack.Server,
+			URL:	  config.EnvConfig.JCStack[cluster].URL,
+			Username: config.EnvConfig.JCStack[cluster].Username,
+			Password: config.EnvConfig.JCStack[cluster].Password,
+			Server:	  config.EnvConfig.JCStack[cluster].Server,
 		},
-		"jcstack",
+		fmt.Sprintf("jcstack-%s", cluster),
 	); err != nil {
 		return wf.jcstack, err
 	}
@@ -170,38 +152,27 @@ func (wf *WorkerFactory) DB(a Authenticate) (*gorm.DB, error) {
 	return tx, nil
 }
 
-func (wf *WorkerFactory) Paloalto(a Authenticate) (paloalto.Paloalto, error) {
-	var (
-		p   paloalto.Paloalto
-		err error
-	)
-
-	p, err = paloalto.NewClient(paloalto.PaloaltoConfig{
-		URL:	  a.Paloalto.URL,
-		Username: a.Paloalto.Username,
-		Password: a.Paloalto.Password,
-		Vsys:	  a.Paloalto.Vsys,
-	})
-
-	return p, err
-}
-
-func (wf *WorkerFactory) VMWare() (*govmomi.Client, error) {
+func (wf *WorkerFactory) VMWare(cluster string) (*govmomi.Client, error) {
 	var (
 		u	*url.URL
 		client	*govmomi.Client
 		err	error
+		ok	bool
 	)
 
-	if u, err = soap.ParseURL(config.EnvConfig.VMWareURL); err != nil {
+	if _, ok = config.EnvConfig.VMWare[cluster]; !ok {
+		return nil, errors.New(fmt.Sprintf("%s is not mapped", cluster))
+	}
+
+	if u, err = soap.ParseURL(config.EnvConfig.VMWare[cluster].URL); err != nil {
 		return nil, err
 	}
 
-	u.User = url.User(config.EnvConfig.VMWareUserName)
-	u.User = url.UserPassword(u.User.Username(), config.EnvConfig.VMWarePassword)
-	config.EnvSingletons.Context = context.WithValue(context.Background(), "datacenter", config.EnvConfig.VMWareDefaultDatacenter)
+	u.User = url.User(config.EnvConfig.VMWare[cluster].Username)
+	u.User = url.UserPassword(u.User.Username(), config.EnvConfig.VMWare[cluster].Password)
+	config.EnvSingletons.Context = context.WithValue(context.Background(), "datacenter", config.EnvConfig.VMWare[cluster].DatacenterDefault)
 
-	client, err = govmomi.NewClient(config.EnvSingletons.Context, u, config.EnvConfig.VMWareInsecure)
+	client, err = govmomi.NewClient(config.EnvSingletons.Context, u, config.EnvConfig.VMWare[cluster].Insecure)
 
 	return client, err
 }

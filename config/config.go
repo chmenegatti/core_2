@@ -51,64 +51,82 @@ type Config struct {
 	SyslogTag	  string  `json:",omitempty"`
 	SyslogFacility	  string  `json:",omitempty"`
 
-	NsxtBasePath	    string  `json:",omitempty"`
-	NsxtUserName	    string  `json:",omitempty"`
-	NsxtPassword	    string  `json:",omitempty"`
-	NsxtRetryMaxDelay   int	    `json:",omitempty"`
-	NsxtMaxRetries	    int	    `json:",omitempty"`
-	NsxtRetryMinDelay   int	    `json:",omitempty"`
-	NsxtInsecure	    bool    `json:",omitempty"`
-
-	VMWareURL		    string	    `json:",omitempty"`
-	VMWareUserName		    string	    `json:",omitempty"`
-	VMWarePassword		    string	    `json:",omitempty"`
-	VMWareInsecure		    bool	    `json:",omitempty"`
-	VMWareAuthVirtualMachine    map[string]Auth `json:",omitempty"`
-	VMWareDefaultDatacenter	    string	    `json:",omitempty"`
-	VMWareVirtualMachineTimeout int		    `json:",omitempty"`
+	Unbound	    map[string]Unbound		      `json:",omitempty"`
+	Rubrik	    map[string]Rubrik		      `json:",omitempty"`
+	Nsxt	    map[string]Nsxt		      `json:",omitempty"`
+	VMWare	    map[string]VMWare		      `json:",omitempty"`
+	JCStack	    map[string]JCStack		      `json:",omitempty"`
+	Ontap	    map[string]Ontap		      `json:",omitempty"`
+	GetMyfile   map[string]GetMyfile	      `json:",omitempty"`
+	UnboundZone map[string]map[string]UnboundZone `json:",omitempty"`
 
 	CheckService	bool	`json:",omitempty"`
 	CheckURL	string	`json:",omitempty"`
 	CheckPort	string	`json:",omitempty"`
 
-	UnboundAddress		      string  `json:",omitempty"`
-	UnboundCertificate	      string  `json:",omitempty"`
-	UnboundServerNameAuthority    string  `json:",omitempty"`
-	UnboundZoneDns		      string  `json:",omitempty"`
-
-	RubrikClusters	  []string  `json:",omitempty"`
-	RubrikUsername	  string    `json:",omitempty"`
-	RubrikPassword	  string    `json:",omitempty"`
-	RubrikExpiration  int32	    `json:",omitempty"`
-
 	AddressManagerURL string  `json:",omitempty"`
-
-	JCStackURL	string	`json:",omitempty"`
-	JCStackUsername	string	`json:",omitempty"`
-	JCStackPassword	string	`json:",omitempty"`
-	JCStackServer	string	`json:",omitempty"`
-
-	DbaasURL  string  `json:",omitempty"`
-
-	Unbound	map[string]Unbound  `json:",omitempty"`
 
 	EnableTelescop  bool    `json:",omitempty"`
 	TelescopAddress string  `json:",omitempty"`
-
-	OntapAddress  string  `json:",omitempty"`
-	OntapUsername string  `json:",omitempty"`
-	OntapPassword string  `json:",omitempty"`
-
-	EnableGetMyfiles    bool    `json:",omitempty"`
-	GetMyfilesURL	    string  `json:",omitempty"`
-	GetMyfilesUsername  string  `json:",omitempty"`
-	GetMyfilesPassword  string  `json:",omitempty"`
-	GetMyfilesEnableSSL bool    `json:",omitempty"`
-	GetMyfilesCertFile  string  `json:",omitempty"`
-	GetMyfilesKeyFile   string  `json:",omitempty"`
 }
 
 type Unbound struct {
+	Address		    string  `json:",omitempty"`
+	Certificate	    string  `json:",omitempty"`
+	ServerNameAuthority string  `json:",omitempty"`
+	ZoneDns		    string  `json:",omitempty"`
+}
+
+type Rubrik struct {
+	Cluster	    []string  `json:",omitempty"`
+	Username    string    `json:",omitempty"`
+	Password    string    `json:",omitempty"`
+	Expiration  int32     `json:",omitempty"`
+}
+
+type Nsxt struct {
+	Path	      string  `json:",omitempty"`
+	Username      string  `json:",omitempty"`
+	Password      string  `json:",omitempty"`
+	RetryMaxDelay int     `json:",omitempty"`
+	MaxRetries    int     `json:",omitempty"`
+	RetryMinDelay int     `json:",omitempty"`
+	Insecure      bool    `json:",omitempty"`
+}
+
+type VMWare struct {
+	URL		      string  `json:",omitempty"`
+	Username	      string  `json:",omitempty"`
+	Password	      string  `json:",omitempty"`
+	Insecure	      bool    `json:",omitempty"`
+	DatacenterDefault     string  `json:",omitempty"`
+	VirtualMachineTimeout int     `json:",omitempty"`
+}
+
+type JCStack struct {
+	URL	  string  `json:",omitempty"`
+	Username  string  `json:",omitempty"`
+	Password  string  `json:",omitempty"`
+	Server	  string  `json:",omitempty"`
+}
+
+type Ontap struct {
+	Address	  string  `json:",omitempty"`
+	Username  string  `json:",omitempty"`
+	Password  string  `json:",omitempty"`
+}
+
+type GetMyfile struct {
+	URL	  string  `json:",omitempty"`
+	Username  string  `json:",omitempty"`
+	Password  string  `json:",omitempty"`
+	EnableSSL bool	  `json:",omitempty"`
+	CertFile  string  `json:",omitempty"`
+	KeyFile	  string  `json:",omitempty"`
+	Enable	  bool	  `json:",omitempty"`
+}
+
+type UnboundZone struct {
 	Address		    string  `json:",omitempty"`
 	Certificate	    string  `json:",omitempty"`
 	ServerNameAuthority string  `json:",omitempty"`
@@ -123,12 +141,12 @@ type Singletons struct {
 	Logger		golog.Logs
 	AmqpConnection  *johdin.Amqp
 	RedisConnection interface{}
-	Nsxt		*nsxt.NSXTClient
+	Nsxt		map[string]*nsxt.NSXTClient
 	Context		context.Context
 	VMWare		*govmomi.Client
 	Paloalto	map[string]paloalto.Paloalto
 	AddressManager	*goam.Client
-	Ontap		*ontap.OntapClient
+	Ontap		map[string]*ontap.OntapClient
 }
 
 type Amqp struct {
@@ -176,17 +194,18 @@ type DB struct {
 }
 
 type AmqpResourceValues struct {
-	Exchange        string  `json:",omitempty"`
-	BindingKey      string  `json:",omitempty"`
-	QueueName       string  `json:",omitempty"`
-	OkExchange      string  `json:",omitempty"`
-	OkRoutingKey    string  `json:",omitempty"`
-	ErrorExchange   string  `json:",omitempty"`
-	ErrorRoutingKey	string  `json:",omitempty"`
-	Expiration	int32	`json:",omitempty"`
-	Lock		bool	`json:",omitempty"`
-	Unlock		bool	`json:",omitempty"`
-	DelayMessage	string	`json:",omitempty"`
+	Exchange	    string  `json:",omitempty"`
+	BindingKey	    string  `json:",omitempty"`
+	QueueName	    string  `json:",omitempty"`
+	OkExchange	    string  `json:",omitempty"`
+	OkRoutingKey	    string  `json:",omitempty"`
+	ErrorExchange	    string  `json:",omitempty"`
+	ErrorRoutingKey	    string  `json:",omitempty"`
+	Expiration	    int32   `json:",omitempty"`
+	Lock		    bool    `json:",omitempty"`
+	Unlock		    bool    `json:",omitempty"`
+	DelayMessage	    string  `json:",omitempty"`
+	DelayRequeueMessage string  `json:",omitempty"`
 }
 
 type Infos struct {
@@ -257,16 +276,18 @@ func loadEtcd(infos Infos) {
 		}
 
 		if infos.Nsxt {
+			EnvSingletons.Nsxt = make(map[string]*nsxt.NSXTClient)
+
 			if err = LoadNsxt(); err != nil {
 				_log.Fatalf("Error to init nsxt: %s\n", err)
 			}
 		}
 
-		if infos.VMWare {
+		/*if infos.VMWare {
 			if err = LoadVMWare(); err != nil {
 				_log.Fatalf("Error to init vmware: %s\n", err)
 			}
-		}
+		}*/
 
 		if infos.Paloalto {
 			EnvSingletons.Paloalto = make(map[string]paloalto.Paloalto)
@@ -277,6 +298,8 @@ func loadEtcd(infos Infos) {
 		}
 
 		if infos.Ontap {
+			EnvSingletons.Ontap = make(map[string]*ontap.OntapClient)
+
 			if err = LoadOntap(); err != nil {
 				_log.Fatalf("Error to init ontap: %s\n", err)
 			}
