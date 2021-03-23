@@ -51,14 +51,15 @@ type Config struct {
 	SyslogTag	  string  `json:",omitempty"`
 	SyslogFacility	  string  `json:",omitempty"`
 
-	Unbound	    map[string]Unbound		      `json:",omitempty"`
-	Rubrik	    map[string]Rubrik		      `json:",omitempty"`
-	Nsxt	    map[string]Nsxt		      `json:",omitempty"`
-	VMWare	    map[string]VMWare		      `json:",omitempty"`
-	JCStack	    map[string]JCStack		      `json:",omitempty"`
-	Ontap	    map[string]Ontap		      `json:",omitempty"`
-	GetMyfile   map[string]GetMyfile	      `json:",omitempty"`
-	UnboundZone map[string]map[string]UnboundZone `json:",omitempty"`
+	Unbound			  map[string]Unbound		    `json:",omitempty"`
+	Rubrik			  map[string]Rubrik		    `json:",omitempty"`
+	Nsxt			  map[string]Nsxt		    `json:",omitempty"`
+	VMWare			  map[string]VMWare		    `json:",omitempty"`
+	JCStack			  map[string]JCStack		    `json:",omitempty"`
+	Ontap			  map[string]Ontap		    `json:",omitempty"`
+	GetMyfile		  map[string]GetMyfile		    `json:",omitempty"`
+	UnboundZone		  map[string]map[string]UnboundZone `json:",omitempty"`
+	VMWareAuthVirtualMachine  map[string]map[string]Auth	    `json:",omitempty"`
 
 	CheckService	bool	`json:",omitempty"`
 	CheckURL	string	`json:",omitempty"`
