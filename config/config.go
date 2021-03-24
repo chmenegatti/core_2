@@ -57,7 +57,6 @@ type Config struct {
 	VMWare			  map[string]VMWare		    `json:",omitempty"`
 	JCStack			  map[string]JCStack		    `json:",omitempty"`
 	Ontap			  map[string]Ontap		    `json:",omitempty"`
-	GetMyfile		  map[string]GetMyfile		    `json:",omitempty"`
 	UnboundZone		  map[string]map[string]UnboundZone `json:",omitempty"`
 	VMWareAuthVirtualMachine  map[string]map[string]Auth	    `json:",omitempty"`
 
@@ -69,6 +68,15 @@ type Config struct {
 
 	EnableTelescop  bool    `json:",omitempty"`
 	TelescopAddress string  `json:",omitempty"`
+
+	EnableGetMyfiles    bool    `json:",omitempty"`
+	GetMyfilesURL	    string  `json:",omitempty"`
+	GetMyfilesUsername  string  `json:",omitempty"`
+	GetMyfilesPassword  string  `json:",omitempty"`
+	GetMyfilesEnableSSL bool    `json:",omitempty"`
+	GetMyfilesCertFile  string  `json:",omitempty"`
+	GetMyfilesKeyFile   string  `json:",omitempty"`
+
 }
 
 type Unbound struct {
@@ -115,16 +123,6 @@ type Ontap struct {
 	Address	  string  `json:",omitempty"`
 	Username  string  `json:",omitempty"`
 	Password  string  `json:",omitempty"`
-}
-
-type GetMyfile struct {
-	URL	  string  `json:",omitempty"`
-	Username  string  `json:",omitempty"`
-	Password  string  `json:",omitempty"`
-	EnableSSL bool	  `json:",omitempty"`
-	CertFile  string  `json:",omitempty"`
-	KeyFile	  string  `json:",omitempty"`
-	Enable	  bool	  `json:",omitempty"`
 }
 
 type UnboundZone struct {
