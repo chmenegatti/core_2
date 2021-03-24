@@ -13,22 +13,29 @@ const (
 	DBTemplate = "%s:%s@tcp(%s:%s)/%s?parseTime=true&timeout=%s"
 )
 
-func LoadDB() (*gorm.DB, error) {
+func LoadDB() (map[string]*gorm.DB, error) {
 	var (
-		db	*gorm.DB
+		mdb	= make(map[string]*gorm.DB)
 		err	error
 	)
 
 	EnvSingletons.Logger.Infof(log.TEMPLATE_LOAD, PACKAGE, "LoadDB", INIT)
 
-	if db, err = gorm.Open("mysql", fmt.Sprintf(DBTemplate, EnvDB.Username, EnvDB.Password, EnvDB.Host, EnvDB.Port, EnvDB.DBName, EnvDB.Timeout)); err != nil {
-		return db, err
+	for key, values := range EnvDB {
+		var db *gorm.DB
+
+		if db, err = gorm.Open("mysql", fmt.Sprintf(DBTemplate, values.Username, values.Password, values.Host, values.Port, values.DBName, values.Timeout)); err != nil {
+			return mdb, err
+		}
+
+		db.LogMode(values.Debug)
+		db.DB().SetMaxIdleConns(values.ConnsMaxIdle)
+		db.DB().SetMaxOpenConns(values.ConnsMaxOpen)
+		db.DB().SetConnMaxLifetime(time.Duration(values.ConnsMaxLifetime))
+
+		mdb[key] = db
+
 	}
 
-	db.LogMode(EnvDB.Debug)
-	db.DB().SetMaxIdleConns(EnvDB.ConnsMaxIdle)
-	db.DB().SetMaxOpenConns(EnvDB.ConnsMaxOpen)
-	db.DB().SetConnMaxLifetime(time.Duration(EnvDB.ConnsMaxLifetime))
-
-	return db, nil
+	return mdb, nil
 }

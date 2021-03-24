@@ -27,7 +27,7 @@ const (
 type Authenticate struct {
 	sync.RWMutex
 
-	DB	  DBAuthenticate
+	DB	  map[string]DBAuthenticate
 	Dbaas	  DbaasAuthenticate
 }
 
@@ -40,7 +40,7 @@ type DbaasAuthenticate struct {
 }
 
 type Factorier interface {
-	DB(Authenticate) (*gorm.DB, error)
+	DB(string, Authenticate) (*gorm.DB, error)
 	Rubrik(string) (*rubrik.Rubrik, error)
 	JCStack(string) (*jcstack.JCStack, error)
 	VMWare(string) (*govmomi.Client, error)
@@ -50,7 +50,7 @@ type Factorier interface {
 
 type Factory struct {}
 
-func (f *Factory) DB(a Authenticate) (*gorm.DB, error) {
+func (f *Factory) DB(cluster string, a Authenticate) (*gorm.DB, error) {
 	panic("Method DB not implemented")
 }
 
@@ -142,11 +142,15 @@ func (wf WorkerFactory) JCStack(cluster string) (*jcstack.JCStack, error) {
 	return jc, nil
 }
 
-func (wf *WorkerFactory) DB(a Authenticate) (*gorm.DB, error) {
-	var tx *gorm.DB = a.DB.Connection.Begin()
+func (wf *WorkerFactory) DB(cluster string, a Authenticate) (*gorm.DB, error) {
+	if _, ok := a.DB[cluster]; !ok {
+		return nil, errors.New(fmt.Sprintf("%s is not mapped", cluster))
+	}
+
+	var tx *gorm.DB = a.DB[cluster].Connection.Begin()
 
 	if tx.Error != nil {
-		return a.DB.Connection, tx.Error
+		return a.DB[cluster].Connection, tx.Error
 	}
 
 	return tx, nil

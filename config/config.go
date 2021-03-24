@@ -32,7 +32,7 @@ var (
 	EnvPaloalto	    map[string]Paloalto
 	EnvSingletons	    Singletons
 	EnvAmqp		    Amqp
-	EnvDB		    DB
+	EnvDB		    map[string]DB
 	EnvMoiraiHttpClient configMoiraiHttpClient.Config
 	EnvAmqpResources    []AmqpResourceValues
 	parsed		    = false

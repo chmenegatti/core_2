@@ -70,13 +70,15 @@
 		}
 	},
 	"VMWareAuthVirtualMachine": {
-		"OS-LINUX": {
-			"Username": "root",
-			"Password": "totvs@123"
-		},
-		"OS-WINDOWS": {
-			"Username": "Administrator",
-			"Password": "totvs@123"
+		"tesp2": {
+			"OS-LINUX": {
+				"Username": "root",
+				"Password": "totvs@123"
+			},
+			"OS-WINDOWS": {
+				"Username": "Administrator",
+				"Password": "totvs@123"
+			}
 		}
 	},
 	"UnboundZone": {
