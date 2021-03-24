@@ -27,12 +27,12 @@ const (
 type Authenticate struct {
 	sync.RWMutex
 
-	DB	  map[string]DBAuthenticate
+	DB	  DBAuthenticate
 	Dbaas	  DbaasAuthenticate
 }
 
 type DBAuthenticate struct {
-	Connection  *gorm.DB
+	Connection  map[string]*gorm.DB
 }
 
 type DbaasAuthenticate struct {
@@ -143,14 +143,14 @@ func (wf WorkerFactory) JCStack(cluster string) (*jcstack.JCStack, error) {
 }
 
 func (wf *WorkerFactory) DB(cluster string, a Authenticate) (*gorm.DB, error) {
-	if _, ok := a.DB[cluster]; !ok {
+	if _, ok := a.DB.Connection[cluster]; !ok {
 		return nil, errors.New(fmt.Sprintf("%s is not mapped", cluster))
 	}
 
-	var tx *gorm.DB = a.DB[cluster].Connection.Begin()
+	var tx *gorm.DB = a.DB.Connection[cluster].Begin()
 
 	if tx.Error != nil {
-		return a.DB[cluster].Connection, tx.Error
+		return a.DB.Connection[cluster], tx.Error
 	}
 
 	return tx, nil
