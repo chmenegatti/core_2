@@ -1,9 +1,11 @@
 package core
 
 import (
+	"errors"
 	"context"
 	"net/url"
 	"sync"
+	"fmt"
 
 	"gitlab.com/ascenty/rubrik-golang"
 	"gitlab.com/ascenty/paloalto"

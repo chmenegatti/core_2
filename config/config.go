@@ -191,6 +191,7 @@ type AmqpResourceValues struct {
 	Lock		bool	`json:",omitempty"`
 	Unlock		bool	`json:",omitempty"`
 	DelayMessage	string	`json:",omitempty"`
+	DelayRequeueMessage string  `json:",omitempty"`
 }
 
 type Infos struct {
