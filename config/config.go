@@ -76,10 +76,7 @@ type Config struct {
 	UnboundServerNameAuthority    string  `json:",omitempty"`
 	UnboundZoneDns		      string  `json:",omitempty"`
 
-	RubrikClusters	  []string  `json:",omitempty"`
-	RubrikUsername	  string    `json:",omitempty"`
-	RubrikPassword	  string    `json:",omitempty"`
-	RubrikExpiration  int32	    `json:",omitempty"`
+	Rubrik	map[string]Rubrik `json:",omitempty"`
 
 	AddressManagerURL string  `json:",omitempty"`
 
@@ -106,6 +103,13 @@ type Config struct {
 	GetMyfilesEnableSSL bool    `json:",omitempty"`
 	GetMyfilesCertFile  string  `json:",omitempty"`
 	GetMyfilesKeyFile   string  `json:",omitempty"`
+}
+
+type Rubrik struct {
+	Cluster     []string  `json:",omitempty"`
+	Username    string    `json:",omitempty"`
+	Password    string    `json:",omitempty"`
+	Expiration  int32     `json:",omitempty"`
 }
 
 type Unbound struct {

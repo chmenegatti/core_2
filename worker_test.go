@@ -54,21 +54,22 @@ func loadConfWorker() {
 
 func Test_WorkerFactory_AuthenticateRubrik(t *testing.T) {
 	var (
-		server	*httptest.Server
-		wf	WorkerFactory
-		a	Authenticate
+		server  *httptest.Server
+		wf  WorkerFactory
 	)
 
 	loadConfWorker()
 	server = startServerAuthenticate()
 
-	a.Rubrik = RubrikAuthenticate{
-		Clusters: []string{server.URL + "/"},
-		Username: "MOCK",
-		Password: "MOCK",
+	config.EnvConfig.Rubrik = map[string]config.Rubrik{
+		"mock": {
+			Cluster:  []string{server.URL + "/"},
+			Username: "MOCK",
+			Password: "MOCK",
+		},
 	}
 
-	wf.Rubrik(a)
+	wf.Rubrik("mock")
 }
 
 func Test_WorkerFactory_VMWare(t *testing.T) {

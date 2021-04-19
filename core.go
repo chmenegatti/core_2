@@ -431,6 +431,10 @@ func (c *Core) publish(p Publish) {
 
       p.msg.Headers[HEADER_DELAY_MESSAGE] = config.EnvAmqp.DelayErrorMessage
       p.msg.Headers[HEADER_REDELIVERED_AMOUNT] = strconv.Itoa(retry + 1)
+
+      if p.values.DelayRequeueMessage != "" {
+	p.msg.Headers[HEADER_DELAY_MESSAGE] = p.values.DelayRequeueMessage
+      }
     } else {
       if p.values.ErrorExchange == "" || p.values.ErrorRoutingKey == "" {
 	return
@@ -442,6 +446,10 @@ func (c *Core) publish(p Publish) {
       p.msg.Body = setErrorPublish(p.msg.Body, p.sc.Error)
       p.msg.Headers[HEADER_DELAY_MESSAGE] = config.EnvAmqp.DelayRequeueMessage
       p.msg.Headers[HEADER_REDELIVERED_AMOUNT] = DEFAULT_VALUE
+
+      if p.values.DelayRequeueMessage != "" {
+	p.msg.Headers[HEADER_DELAY_MESSAGE] = p.values.DelayRequeueMessage
+      }
 
       if p.id != 0 {
 	if err = p.httpClient.Clients[p.resource].Update(p.id, &SetError{Error: sql.NullString{String: p.sc.Error.Error(), Valid: true}}, p.msg.Headers); err != nil {
