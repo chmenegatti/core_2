@@ -10,11 +10,22 @@
 	"UnboundCertificate": "/app/cacert.pem",
 	"UnboundServerNameAuthority": "core.nuvem-intera.local",
 	"UnboundZoneDns": "bkp.tesp2.local",
-	"RubrikClusters": {
-		"tesp2": ["https://172.18.234.11"]
+	"Rubrik": {
+		"bkp-pd-0001": {
+			"URL": ["https://172.18.234.11"],
+			"Username": "cloud.infra",
+			"Password": "QCfAmdv6pkFx",
+			"kExpiration": 43200,
+			"Enable": true
+		},
+		"bkp-pd-0004": {
+			"URL": ["https://bkp-pd-0004.tbsp1.local"],
+			"Username": "cloud.infra",
+			"Password": "V4!P4$$4rM4u",
+			"kExpiration": 43200,
+			"Enable": true
+		}
 	},
-	"RubrikUsername": "cloud.infra",
-	"RubrikPassword": "QCfAmdv6pkFx",
 	"NsxtBasePath": "https://172.18.137.235",
 	"NsxtUserName": "admin",
 	"NsxtPassword": "Totvs@123Totvs@123!",
@@ -62,3 +73,4 @@
 	"GetMyfilesUsername": "lucas",
 	"GetMyfilesPassword": "!@lucas@286768"
 }
+

@@ -6,6 +6,7 @@ const (
   API_ACTION	  = "x-api-action"
   LOCK_ID	  = "x-lock-id"
   LOCK_TAG	  = "x-lock-tag"
+  AUTO_UPDATE	  = "x-auto-update"
 )
 
 type Headers struct {
@@ -14,6 +15,7 @@ type Headers struct {
   Action	string
   LockID	string
   LockTag	string
+  AutoUpdate	string
 }
 
 func GetHeader(infos map[string]interface{}) Headers {

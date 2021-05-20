@@ -108,10 +108,11 @@ func (a *AmqpBroker) Consume(infos johdin.Infos, prefetch int,  err chan<- error
 }
 
 type StatusConsumer struct {
-  Status  string
-  Error	  error
-  Update  bool
-  Delete  bool
+  Status      string
+  Error	      error
+  Update      bool
+  Delete      bool
+  AutoUpdate  bool
 }
 
 type Signature func(f Factorier, a Authenticate) StatusConsumer
@@ -272,6 +273,10 @@ func (c *Core) Run(ctx	context.Context, httpClient *HttpClient, fw NewWorker) {
 	  }
 
 	  if sc.Update {
+	    if sc.AutoUpdate {
+	      message.Headers[utils.AUTO_UPDATE] = "true"
+	    }
+
 	    if err = httpClient.Clients[resource].Update(msg.ID, worker, message.Headers); err != nil {
 	      config.EnvSingletons.Logger.Errorf(log.TEMPLATE_CORE, headers.TransactionID, PACKAGE, "Core", "Update", err.Error())
 	      p.sc = StatusConsumer{Status: ERROR, Error: err}
