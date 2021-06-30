@@ -79,6 +79,7 @@ type Config struct {
 	Rubrik	map[string]Rubrik `json:",omitempty"`
 
 	AddressManagerURL string  `json:",omitempty"`
+	CloudInitUserDataURL  string  `json:",omitempty"`
 
 	JCStackURL	string	`json:",omitempty"`
 	JCStackUsername	string	`json:",omitempty"`
