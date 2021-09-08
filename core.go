@@ -253,6 +253,11 @@ func (c *Core) Run(ctx	context.Context, httpClient *HttpClient, fw NewWorker) {
 
 	  p.id = msg.ID
 
+	  if _, ok := httpClient.Clients[resource]; !ok {
+	    config.EnvSingletons.Logger.Errorf(log.TEMPLATE_CORE, headers.TransactionID, PACKAGE, "Core", "httpClient.Clients", fmt.Sprintf("Resource %s is not mapped in httpClient", resource))
+	    os.Exit(1)
+	  }
+
 	  if err = httpClient.Clients[resource].Read(msg.ID, message.Headers, worker); err != nil {
 	    config.EnvSingletons.Logger.Errorf(log.TEMPLATE_CORE, headers.TransactionID, PACKAGE, "Core", "Read", err.Error())
 	    p.sc = StatusConsumer{Status: ERROR, Error: err}
