@@ -76,7 +76,7 @@ func (r *Repository) ReadByConditions(entity, conditions interface{}) (bool, err
 		return false, errors.New("The target struct is required to be a pointer")
 	}
 
-	var operation *gorm.DB = r.DB.First(entity, conditions)
+	var operation *gorm.DB = r.DB.Find(entity, conditions)
 
 	if operation.RecordNotFound() {
 		return false, nil

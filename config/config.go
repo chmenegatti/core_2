@@ -97,6 +97,8 @@ type Config struct {
 	OntapUsername string  `json:",omitempty"`
 	OntapPassword string  `json:",omitempty"`
 
+	Fortinet  map[string]Fortinet `json:",omitempty"`
+
 	EnableGetMyfiles    bool    `json:",omitempty"`
 	GetMyfilesURL	    string  `json:",omitempty"`
 	GetMyfilesUsername  string  `json:",omitempty"`
@@ -104,6 +106,11 @@ type Config struct {
 	GetMyfilesEnableSSL bool    `json:",omitempty"`
 	GetMyfilesCertFile  string  `json:",omitempty"`
 	GetMyfilesKeyFile   string  `json:",omitempty"`
+}
+
+type Fortinet struct {
+	URL	    string  `json:",omitempty"`
+	AccessToken string  `json:",omitempty"`
 }
 
 type Rubrik struct {

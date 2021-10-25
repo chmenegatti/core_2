@@ -99,7 +99,7 @@ func Test_Read(t *testing.T) {
 
 func Test_ReadByConditions(t *testing.T) {
 	var (
-		s   = Src{}
+		s   = []Src{}
 		r   Repository
 		err error
 	)
