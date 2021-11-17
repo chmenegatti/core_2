@@ -12,7 +12,7 @@ import:
   version: 0.0.1
 - package: gitlab.com/ascenty/go-log
   repo: git@gitlab.com:ascenty/go-log.git
-  version: 0.0.1
+  version: 0.0.2
 - package: gitlab.com/ascenty/go-singleton
   repo: git@gitlab.com:ascenty/go-singleton.git
   version: 0.0.3
