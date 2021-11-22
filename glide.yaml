@@ -12,7 +12,7 @@ import:
   version: 0.0.1
 - package: gitlab.com/ascenty/go-log
   repo: git@gitlab.com:ascenty/go-log.git
-  version: 0.0.2
+  version: v0.0.2
 - package: gitlab.com/ascenty/go-singleton
   repo: git@gitlab.com:ascenty/go-singleton.git
   version: 0.0.3
@@ -23,7 +23,7 @@ import:
   repo: git@gitlab.com:ascenty/moirai-http-client.git
 - package: gitlab.com/ascenty/rubrik-golang
   repo: git@gitlab.com:ascenty/rubrik-golang.git
-  version: 0.1.9
+  version: v0.3.0
 - package: gitlab.com/ascenty/paloalto
   repo: git@gitlab.com:ascenty/paloalto.git
 - package: gitlab.com/ascenty/go-jcstack
@@ -44,3 +44,5 @@ import:
 - package: github.com/vmware/govmomi
 - package: gitlab.com/ascenty/go-ontap
   repo: git@gitlab.com:ascenty/go-ontap.git
+- package: github.com/slack-go/slack
+  version: 0.10.0

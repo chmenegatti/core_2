@@ -21,6 +21,7 @@ import (
   "github.com/satori/go.uuid"
   "github.com/streadway/amqp"
   "golang.org/x/net/context"
+  "github.com/slack-go/slack"
 )
 
 const (
@@ -112,6 +113,7 @@ type StatusConsumer struct {
   Error	      error
   Update      bool
   Delete      bool
+  Slack				bool
   AutoUpdate  bool
 }
 
@@ -200,132 +202,147 @@ func (c *Core) Run(ctx	context.Context, httpClient *HttpClient, fw NewWorker) {
 
     go func(resource, action string, values config.AmqpResourceValues) {
       for {
-	select {
-	case message := <-c.amqp.AmqpResourceDelivery[values.Exchange][values.BindingKey]:
-	  var (
-	    err	    error
-	    msg	    Message
-	    sc	    StatusConsumer
-	    headers utils.Headers
-	    w	    Worker
-	    p	    Publish
-	    worker  Worker
-	    key	    = resource
-	  )
+				select {
+				case message := <-c.amqp.AmqpResourceDelivery[values.Exchange][values.BindingKey]:
+	  			var (
+	    			err	    error
+	    			msg	    Message
+	    			sc	    StatusConsumer
+	    			headers utils.Headers
+	    			w	    Worker
+	    			p	    Publish
+	    			worker  Worker
+	    			key	    = resource
+	  			)
 
-	  worker = fw(action)
-	  headers = utils.GetHeader(message.Headers)
-	  p = Publish{msg: message, headers: headers, values: values, httpClient: httpClient, resource: resource}
+	  			worker = fw(action)
+	  			headers = utils.GetHeader(message.Headers)
+	  			p = Publish{msg: message, headers: headers, values: values, httpClient: httpClient, resource: resource}
 
-	  if values.Lock {
-	    var (
-	      id      string
-	      set     bool
-	      err     error
-	    )
+	  			if values.Lock {
+	    			var (
+	      			id      string
+	      			set     bool
+	      			err     error
+	    			)
 
-	    if headers.LockTag != log.EMPTY_STR {
-	      key = headers.LockTag
-	    }
+	    			if headers.LockTag != log.EMPTY_STR {
+	      			key = headers.LockTag
+	    			}
 
-	    if id, set, err = lock(key, values.Expiration); err != nil {
-	      config.EnvSingletons.Logger.Errorf(log.TEMPLATE_CORE, headers.TransactionID, PACKAGE, "Core", "lock", err.Error())
-	      p.sc = StatusConsumer{Status: ERROR, Error: err}
-	      c.publish(p)
-	      continue
-	    }
+	    			if id, set, err = lock(key, values.Expiration); err != nil {
+	      			config.EnvSingletons.Logger.Errorf(log.TEMPLATE_CORE, headers.TransactionID, PACKAGE, "Core", "lock", err.Error())
+	      			p.sc = StatusConsumer{Status: ERROR, Error: err}
+	      			c.publish(p)
+	      			continue
+	    			}
 
-	    if !set {
-	      p.sc = StatusConsumer{Status: REDELIVERE_LOCK}
-	      c.publish(p)
-	      continue
-	    }
+	    			if !set {
+	      			p.sc = StatusConsumer{Status: REDELIVERE_LOCK}
+	      			c.publish(p)
+	      			continue
+	    			}
 
-	    p.msg.Headers[utils.LOCK_ID] = id
-	  }
+	    			p.msg.Headers[utils.LOCK_ID] = id
+	  			}
 
-	  if err = json.Unmarshal(message.Body, &msg); err != nil {
-	    config.EnvSingletons.Logger.Errorf(log.TEMPLATE_CORE, headers.TransactionID, PACKAGE, "Core", "json.Unmarshal", err.Error())
-	    p.sc = StatusConsumer{Status: ERROR, Error: err}
-	    c.publish(p)
-	    continue
-	  }
+	  			if err = json.Unmarshal(message.Body, &msg); err != nil {
+	    			config.EnvSingletons.Logger.Errorf(log.TEMPLATE_CORE, headers.TransactionID, PACKAGE, "Core", "json.Unmarshal", err.Error())
+	    			p.sc = StatusConsumer{Status: ERROR, Error: err}
+	    			c.publish(p)
+	    			continue
+	  			}
 
-	  p.id = msg.ID
+	  			p.id = msg.ID
 
-	  if _, ok := httpClient.Clients[resource]; !ok {
-	    config.EnvSingletons.Logger.Errorf(log.TEMPLATE_CORE, headers.TransactionID, PACKAGE, "Core", "httpClient.Clients", fmt.Sprintf("Resource %s is not mapped in httpClient", resource))
-	    os.Exit(1)
-	  }
+	  			if _, ok := httpClient.Clients[resource]; !ok {
+	    			config.EnvSingletons.Logger.Errorf(log.TEMPLATE_CORE, headers.TransactionID, PACKAGE, "Core", "httpClient.Clients", fmt.Sprintf("Resource %s is not mapped in httpClient", resource))
+	    			os.Exit(1)
+	  			}
 
-	  if err = httpClient.Clients[resource].Read(msg.ID, message.Headers, worker); err != nil {
-	    config.EnvSingletons.Logger.Errorf(log.TEMPLATE_CORE, headers.TransactionID, PACKAGE, "Core", "Read", err.Error())
-	    p.sc = StatusConsumer{Status: ERROR, Error: err}
-	    c.publish(p)
-	    continue
-	  }
+	  			if err = httpClient.Clients[resource].Read(msg.ID, message.Headers, worker); err != nil {
+	    			config.EnvSingletons.Logger.Errorf(log.TEMPLATE_CORE, headers.TransactionID, PACKAGE, "Core", "Read", err.Error())
+	    			p.sc = StatusConsumer{Status: ERROR, Error: err}
+	    			c.publish(p)
+	    			continue
+	  			}
 
-	  c.Factorier.SetTransactionID(headers.TransactionID)
-	  w = NewLog(worker)
+	  			c.Factorier.SetTransactionID(headers.TransactionID)
+	  			w = NewLog(worker)
 
-	  switch action {
-	  case "create":
-	    sc = w.Create(c.Factorier, c.Authenticate)
-	  case "delete":
-	    sc = w.Delete(c.Factorier, c.Authenticate)
-	  default:
-	    sc = w.Custom(c.Factorier, c.Authenticate)
-	  }
+	  			switch action {
+	  			case "create":
+	    			sc = w.Create(c.Factorier, c.Authenticate)
+	  			case "delete":
+	    			sc = w.Delete(c.Factorier, c.Authenticate)
+	  			default:
+	    			sc = w.Custom(c.Factorier, c.Authenticate)
+	  			}
 
-	  if sc.Update {
-	    if sc.AutoUpdate {
-	      message.Headers[utils.AUTO_UPDATE] = "true"
-	    }
+	  			if sc.Update {
+	    			if sc.AutoUpdate {
+	      			message.Headers[utils.AUTO_UPDATE] = "true"
+	    			}
 
-	    if err = httpClient.Clients[resource].Update(msg.ID, worker, message.Headers); err != nil {
-	      config.EnvSingletons.Logger.Errorf(log.TEMPLATE_CORE, headers.TransactionID, PACKAGE, "Core", "Update", err.Error())
-	      p.sc = StatusConsumer{Status: ERROR, Error: err}
-	      c.publish(p)
-	      continue
-	    }
-	  }
+	    			if err = httpClient.Clients[resource].Update(msg.ID, worker, message.Headers); err != nil {
+	      			config.EnvSingletons.Logger.Errorf(log.TEMPLATE_CORE, headers.TransactionID, PACKAGE, "Core", "Update", err.Error())
+	      			p.sc = StatusConsumer{Status: ERROR, Error: err}
+	      			c.publish(p)
+	      			continue
+	    			}
+	  			}
 
-	  if sc.Delete {
-	    if err = httpClient.Clients[resource].Delete(msg.ID, message.Headers); err != nil {
-	      config.EnvSingletons.Logger.Errorf(log.TEMPLATE_CORE, headers.TransactionID, PACKAGE, "Core", "Delete", err.Error())
-	      p.sc = StatusConsumer{Status: ERROR, Error: err}
-	      c.publish(p)
-	      continue
-	    }
-	  }
+					if sc.Slack && sc.Error != nil {
+						var attachment = slack.Attachment{
+							Text:   fmt.Sprintf("Erro no recurso %s - Action: %s, Edge: %s", resource, action, config.EnvConfig.Edge),
+							Color:  "#cc0000",
+							Fields: []slack.AttachmentField{{
+							  Title:  headers.TransactionID,
+							  Value:  sc.Error.Error(),
+							}},
+						}
 
-	  if rollback != ERROR && msg.Error != log.EMPTY_STR && (sc.Status == COMPLETED || sc.Status == IN_PROGRESS) {
-	    msg.Error = log.EMPTY_STR
-	  }
+						if _, _, err = config.EnvSingletons.Slack.PostMessage(config.EnvConfig.SlackChannel, slack.MsgOptionAttachments(attachment)); err != nil {
+							config.EnvSingletons.Logger.Errorf(log.TEMPLATE_CORE, headers.TransactionID, PACKAGE, "Core", "Slack", err.Error())
+						}
+					}
 
-	  if values.Unlock {
-	    if headers.LockTag != log.EMPTY_STR {
-	      key = headers.LockTag
-	    }
+	  			if sc.Delete {
+	    			if err = httpClient.Clients[resource].Delete(msg.ID, message.Headers); err != nil {
+	      			config.EnvSingletons.Logger.Errorf(log.TEMPLATE_CORE, headers.TransactionID, PACKAGE, "Core", "Delete", err.Error())
+	      			p.sc = StatusConsumer{Status: ERROR, Error: err}
+	      			c.publish(p)
+	      			continue
+	    			}
+	  			}
 
-	    if err = unlock(key, headers.LockID); err != nil {
-	      config.EnvSingletons.Logger.Errorf(log.TEMPLATE_CORE, headers.TransactionID, PACKAGE, "Core", "unlock", err.Error())
-	      p.sc = StatusConsumer{Status: ERROR, Error: err}
-	      c.publish(p)
-	      continue
-	    }
-	  }
+	  			if rollback != ERROR && msg.Error != log.EMPTY_STR && (sc.Status == COMPLETED || sc.Status == IN_PROGRESS) {
+	    			msg.Error = log.EMPTY_STR
+	  			}
 
-	  if sc.Error != nil && sc.Error.Error() == log.EMPTY_STR {
-		  sc.Error = errors.New("Unknown error!")
-	  }
+	  			if values.Unlock {
+	    			if headers.LockTag != log.EMPTY_STR {
+	      			key = headers.LockTag
+	    			}
 
-	  p.sc = sc
-	  c.publish(p)
-	case e := <-c.amqp.AmqpResourceDeliveryError[values.Exchange][values.BindingKey]:
-	  config.EnvSingletons.Logger.Errorf(log.TEMPLATE_PUBLISH, log.EMPTY_STR, PACKAGE, "consume", "johdin", values.Exchange, values.BindingKey, e.Error())
-	  os.Exit(1)
-	}
+	    			if err = unlock(key, headers.LockID); err != nil {
+	      			config.EnvSingletons.Logger.Errorf(log.TEMPLATE_CORE, headers.TransactionID, PACKAGE, "Core", "unlock", err.Error())
+	      			p.sc = StatusConsumer{Status: ERROR, Error: err}
+	      			c.publish(p)
+	      			continue
+	    			}
+	  			}
+
+	  			if sc.Error != nil && sc.Error.Error() == log.EMPTY_STR {
+		  			sc.Error = errors.New("Unknown error!")
+	  			}
+
+	  			p.sc = sc
+	  			c.publish(p)
+				case e := <-c.amqp.AmqpResourceDeliveryError[values.Exchange][values.BindingKey]:
+	  			config.EnvSingletons.Logger.Errorf(log.TEMPLATE_PUBLISH, log.EMPTY_STR, PACKAGE, "consume", "johdin", values.Exchange, values.BindingKey, e.Error())
+	  			os.Exit(1)
+				}
       }
     }(resource, action, values)
   }
@@ -379,7 +396,7 @@ func unlock(key string, id string) error {
 
     if exists {
       if value.(string) == id {
-	return c.Del()
+				return c.Del()
       }
     }
   }
@@ -429,7 +446,7 @@ func (c *Core) publish(p Publish) {
 
     if v, ok := p.msg.Headers[HEADER_REDELIVERED_AMOUNT]; ok {
       if retry, err = strconv.Atoi(v.(string)); err != nil {
-	retry = config.EnvAmqp.Retry + 1
+				retry = config.EnvAmqp.Retry + 1
       }
     } else {
       retry = config.EnvAmqp.Retry + 1
@@ -443,11 +460,11 @@ func (c *Core) publish(p Publish) {
       p.msg.Headers[HEADER_REDELIVERED_AMOUNT] = strconv.Itoa(retry + 1)
 
       if p.values.DelayRequeueMessage != "" {
-	p.msg.Headers[HEADER_DELAY_MESSAGE] = p.values.DelayRequeueMessage
+				p.msg.Headers[HEADER_DELAY_MESSAGE] = p.values.DelayRequeueMessage
       }
     } else {
       if p.values.ErrorExchange == "" || p.values.ErrorRoutingKey == "" {
-	return
+				return
       }
 
       exchange = p.values.ErrorExchange
@@ -458,13 +475,13 @@ func (c *Core) publish(p Publish) {
       p.msg.Headers[HEADER_REDELIVERED_AMOUNT] = DEFAULT_VALUE
 
       if p.values.DelayRequeueMessage != "" {
-	p.msg.Headers[HEADER_DELAY_MESSAGE] = p.values.DelayRequeueMessage
+				p.msg.Headers[HEADER_DELAY_MESSAGE] = p.values.DelayRequeueMessage
       }
 
       if p.id != 0 {
-	if err = p.httpClient.Clients[p.resource].Update(p.id, &SetError{Error: sql.NullString{String: p.sc.Error.Error(), Valid: true}}, p.msg.Headers); err != nil {
-	  config.EnvSingletons.Logger.Errorf(log.TEMPLATE_CORE, p.headers.TransactionID, PACKAGE, "publish", "Update", err.Error())
-	}
+				if err = p.httpClient.Clients[p.resource].Update(p.id, &SetError{Error: sql.NullString{String: p.sc.Error.Error(), Valid: true}}, p.msg.Headers); err != nil {
+	  			config.EnvSingletons.Logger.Errorf(log.TEMPLATE_CORE, p.headers.TransactionID, PACKAGE, "publish", "Update", err.Error())
+				}
       }
     }
   case IN_PROGRESS:
@@ -551,33 +568,33 @@ func (c *Core) resources(ctx context.Context) {
 
     for _, values := range infos {
       if amqpRes.AmqpResourcePublish[values.ExchangeName] == nil {
-	amqpRes.AmqpResourcePublish[values.ExchangeName] = make(map[string]chan johdin.Publishing)
-	amqpRes.AmqpResourcePublishError[values.ExchangeName] = make(map[string]chan error)
-	amqpRes.AmqpResourceDone[values.ExchangeName] = make(map[string]chan bool)
+				amqpRes.AmqpResourcePublish[values.ExchangeName] = make(map[string]chan johdin.Publishing)
+				amqpRes.AmqpResourcePublishError[values.ExchangeName] = make(map[string]chan error)
+				amqpRes.AmqpResourceDone[values.ExchangeName] = make(map[string]chan bool)
 
-	if values.QueueName != "" {
-	  amqpRes.AmqpResourceDelivery[values.ExchangeName] = make(map[string]chan johdin.Delivery)
-	  amqpRes.AmqpResourceDeliveryError[values.ExchangeName] = make(map[string]chan error)
-	}
+				if values.QueueName != "" {
+	  			amqpRes.AmqpResourceDelivery[values.ExchangeName] = make(map[string]chan johdin.Delivery)
+	  			amqpRes.AmqpResourceDeliveryError[values.ExchangeName] = make(map[string]chan error)
+				}
       }
 
       if amqpRes.AmqpResourcePublish[values.ExchangeName][values.RoutingKey] == nil {
-	amqpRes.Lock()
-	amqpRes.AmqpResourcePublish[values.ExchangeName][values.RoutingKey] = make(chan johdin.Publishing)
-	amqpRes.AmqpResourcePublishError[values.ExchangeName][values.RoutingKey] = make(chan error)
-	amqpRes.AmqpResourceDone[values.ExchangeName][values.RoutingKey] = make(chan bool)
-	amqpRes.Unlock()
+				amqpRes.Lock()
+				amqpRes.AmqpResourcePublish[values.ExchangeName][values.RoutingKey] = make(chan johdin.Publishing)
+				amqpRes.AmqpResourcePublishError[values.ExchangeName][values.RoutingKey] = make(chan error)
+				amqpRes.AmqpResourceDone[values.ExchangeName][values.RoutingKey] = make(chan bool)
+				amqpRes.Unlock()
       }
 
       amqpRes.Lock()
       go broker.Publish(ctx, values, amqpRes.AmqpResourcePublish[values.ExchangeName][values.RoutingKey], amqpRes.AmqpResourcePublishError[values.ExchangeName][values.RoutingKey], amqpRes.AmqpResourceDone[values.ExchangeName][values.RoutingKey])
 
       if values.QueueName != "" {
-	amqpRes.AmqpResourceDelivery[values.ExchangeName][values.RoutingKey] = make(chan johdin.Delivery)
-	amqpRes.AmqpResourceDeliveryError[values.ExchangeName][values.RoutingKey] = make(chan error)
-	values.Args = amqp.Table{}
+				amqpRes.AmqpResourceDelivery[values.ExchangeName][values.RoutingKey] = make(chan johdin.Delivery)
+				amqpRes.AmqpResourceDeliveryError[values.ExchangeName][values.RoutingKey] = make(chan error)
+				values.Args = amqp.Table{}
 
-	go broker.Consume(values, 0, amqpRes.AmqpResourceDeliveryError[values.ExchangeName][values.RoutingKey], amqpRes.AmqpResourceDelivery[values.ExchangeName][values.RoutingKey])
+				go broker.Consume(values, 0, amqpRes.AmqpResourceDeliveryError[values.ExchangeName][values.RoutingKey], amqpRes.AmqpResourceDelivery[values.ExchangeName][values.RoutingKey])
       }
       amqpRes.Unlock()
     }
@@ -604,8 +621,8 @@ func (c *Core) mapMethods(worker Worker) AnotherMethods {
 
     for j := 0; j < t2.NumMethod(); j++ {
       if t1.Method(i).Name == t2.Method(j).Name {
-	exists = true
-	break
+				exists = true
+				break
       }
     }
 
