@@ -292,13 +292,21 @@ func (c *Core) Run(ctx	context.Context, httpClient *HttpClient, fw NewWorker) {
 	    			}
 	  			}
 
-					if sc.Slack && sc.Error != nil {
+					if sc.Slack && (sc.Error != nil || msg.Error != log.EMPTY_STR) {
+						var errorMessage string
+
+						if sc.Error != nil {
+						  errorMessage = sc.Error.Error()
+						} else {
+						  errorMessage = msg.Error
+						}
+
 						var attachment = slack.Attachment{
 							Text:   fmt.Sprintf("Erro no recurso %s - Action: %s, Edge: %s", resource, action, config.EnvConfig.Edge),
 							Color:  "#cc0000",
 							Fields: []slack.AttachmentField{{
 							  Title:  headers.TransactionID,
-							  Value:  sc.Error.Error(),
+							  Value:  errorMessage,
 							}},
 						}
 
