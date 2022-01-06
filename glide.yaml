@@ -18,7 +18,7 @@ import:
   version: 0.0.3
 - package: gitlab.com/ascenty/johdin
   repo: git@gitlab.com:ascenty/johdin.git
-  version: 0.0.1
+  version: 0.0.2
 - package: gitlab.com/ascenty/moirai-http-client
   repo: git@gitlab.com:ascenty/moirai-http-client.git
 - package: gitlab.com/ascenty/rubrik-golang
