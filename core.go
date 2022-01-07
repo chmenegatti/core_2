@@ -110,7 +110,7 @@ func (a *AmqpBroker) Consume(infos johdin.Infos, prefetch int,  err chan<- error
 
 func (a *AmqpBroker) Notify() {
 	publishSlack := func(state, message string) {
-		if config.EnvConfig.SlackChannel != nil {
+		if config.EnvSingletons.Slack != nil {
 			var (
 				err	error
 			)
