@@ -135,9 +135,9 @@ func (a *AmqpBroker) Notify() {
 	go func() {
 		for {
 			select {
-			case errStr := <-a.amqp.ConnectionDown:
+			case errStr := <-a.amqp.StrConnectionDown:
 				publishSlack("down", errStr)
-			case sucStr := <-a.amqp.ConnectionUp:
+			case sucStr := <-a.amqp.StrConnectionUp:
 				publishSlack("up", sucStr)
 			}
 		}
