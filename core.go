@@ -588,6 +588,7 @@ func (c *Core) resources(ctx context.Context) {
     		args    = amqp.Table{}
   	)
 
+	config.EnvSingletons.AmqpConnection.SetNumberDeliveries(len(config.EnvAmqpResources))
   	if config.EnvAmqp.ExchangeRouting != "" {
     		args[HEADER_EXCHANGE_ROUTING] = config.EnvAmqp.ExchangeRouting
   	}
