@@ -110,25 +110,27 @@ func (a *AmqpBroker) Consume(infos johdin.Infos, prefetch int,  err chan<- error
 
 func (a *AmqpBroker) Notify() {
 	publishSlack := func(state, message string) {
-		var (
-			err	error
-		)
+		if config.EnvConfig.SlackChannel != nil {
+			var (
+				err	error
+			)
 
-		var attachment = slack.Attachment{
-			Fields:	[]slack.AttachmentField{{
-				Title:	fmt.Sprintf("Notify RabbitMQ %s, Edge: %s", PACKAGE, config.EnvConfig.Edge),
-				Value:	message,
-			}},
-		}
+			var attachment = slack.Attachment{
+				Fields:	[]slack.AttachmentField{{
+					Title:	fmt.Sprintf("Notify RabbitMQ %s, Edge: %s", PACKAGE, config.EnvConfig.Edge),
+					Value:	message,
+				}},
+			}
 
-		if state == "down" {
-			attachment.Color = "#cc0000"
-		} else {
-			attachment.Color = "#228b22"
-		}
+			if state == "down" {
+				attachment.Color = "#cc0000"
+			} else {
+				attachment.Color = "#228b22"
+			}
 
-		if _, _, err = config.EnvSingletons.Slack.PostMessage(config.EnvConfig.SlackChannel, slack.MsgOptionAttachments(attachment)); err != nil {
-			config.EnvSingletons.Logger.Errorf(log.TEMPLATE_CORE, "", PACKAGE, "Core", "Slack", err.Error())
+			if _, _, err = config.EnvSingletons.Slack.PostMessage(config.EnvConfig.SlackChannel, slack.MsgOptionAttachments(attachment)); err != nil {
+				config.EnvSingletons.Logger.Errorf(log.TEMPLATE_CORE, "", PACKAGE, "Core", "Slack", err.Error())
+			}
 		}
 	}
 
