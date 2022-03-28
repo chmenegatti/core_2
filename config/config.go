@@ -108,9 +108,11 @@ type Config struct {
 	GetMyfilesCertFile  string  `json:",omitempty"`
 	GetMyfilesKeyFile   string  `json:",omitempty"`
 
-	Edge					string	`json:",omitempty"`
+	Edge	      string  `json:",omitempty"`
 	SlackToken    string  `json:",omitempty"`
 	SlackChannel  string  `json:",omitempty"`
+
+	TotvsGatewayHistoryUrl	string  `json:",omitempty"`
 }
 
 type Fortinet struct {

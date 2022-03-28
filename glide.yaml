@@ -46,3 +46,5 @@ import:
   repo: git@gitlab.com:ascenty/go-ontap.git
 - package: github.com/slack-go/slack
   version: 0.10.0
+- package: gitlab.com/ascenty/httpRequestClient
+  repo: git@gitlab.com:ascenty/httpRequestClient.git
