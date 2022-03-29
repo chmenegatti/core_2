@@ -5,7 +5,7 @@ import (
 	"bytes"
 	"fmt"
 
-	"gitlab.com/ascenty/core"
+	"gitlab.com/ascenty/core/config"
 	"git-devops.totvs.com.br/intera/httpRequestClient"
 )
 
