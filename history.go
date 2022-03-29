@@ -2,6 +2,7 @@ package core
 
 import (
 	"encoding/json"
+	"errors"
 	"bytes"
 	"fmt"
 
@@ -29,7 +30,7 @@ func TGHInsertDocument(payload interface{}) (err error) {
 		httpRequest.ReqOptions{
 		        PostBody: bytes.NewReader(body),
 		        Headers:  map[string]string{
-				"Content-Type":	"application/json"
+				"Content-Type":	"application/json",
 		        },
 		},
 	)
@@ -41,13 +42,13 @@ func TGHInsertDocument(payload interface{}) (err error) {
 	}
 
 	if output.Code != 201 {
-		var msg Message
+		var msg TGHMessage
 
 		if err = json.Unmarshal(output.Body, &msg); err != nil {
-			msg = string(output.Body)
+			msg.Message = string(output.Body)
 		}
 
-		err = errors.New(msg)
+		err = errors.New(msg.Message)
 	}
 
 	return
