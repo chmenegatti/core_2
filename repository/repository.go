@@ -42,7 +42,7 @@ func (r *Repository) Delete(condition interface{}) (bool, error) {
 	entity = reflect.New(reflect.ValueOf(condition).Type().Elem()).Elem()
 	operation = r.DB.Where(condition).Delete(entity.Interface())
 
-	if operation.RecordNotFound() {
+	if operation.RecordNotFound() || operation.RowsAffected == 0 {
 		return false, nil
 	}
 
