@@ -35,7 +35,7 @@ func TGHInsertDocument(payload interface{}) (err error) {
 		},
 	)
 
-	path = fmt.Sprintf("%s/v1/elastic/documents", config.EnvConfig.TotvsGatewayHistoryUrl)
+	path = fmt.Sprintf("%s/v1/tgh", config.EnvConfig.TotvsGatewayHistoryUrl)
 
 	if output, err = httpRequest.Request(httpRequest.POST, path, options); err != nil {
 		return
