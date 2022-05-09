@@ -6,6 +6,7 @@ import (
 	"bytes"
 	"fmt"
 
+	"gitlab.com/ascenty/core/log"
 	"gitlab.com/ascenty/core/config"
 	"github.com/slack-go/slack"
 	"git-devops.totvs.com.br/intera/httpRequestClient"
