@@ -112,6 +112,7 @@ type Config struct {
 	SlackToken    string  `json:",omitempty"`
 	SlackChannel  string  `json:",omitempty"`
 
+	EnableDataCollector	string	`json:",omitempty"`
 	TotvsGatewayHistoryUrl	string  `json:",omitempty"`
 }
 

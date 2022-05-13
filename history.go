@@ -38,6 +38,10 @@ func publishSlack(payload, message string) {
 }
 
 func TGHInsertDocument(payload interface{}) (err error) {
+	if !config.EnvConfig.EnableDataCollector {
+		return
+	}
+
 	var (
 		body	[]byte
 		output	httpRequest.Response
