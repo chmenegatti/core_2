@@ -91,7 +91,6 @@ func CheckIfExitsTasksRunningOrQueued(virtualMachineName string, vsphereClient *
 			}
 
 			for _, t := range tasks {
-				fmt.Println(t.Key)
 				for _, tvm := range strings.Split(tasksVirtualMachine, ",") {
 					if strings.ToLower(t.Key) == strings.ToLower(tvm) && (t.State == types.TaskInfoStateQueued || t.State == types.TaskInfoStateRunning) {
 						existsTask = true
