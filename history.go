@@ -9,7 +9,7 @@ import (
 	"gitlab.com/ascenty/core/log"
 	"gitlab.com/ascenty/core/config"
 	"github.com/slack-go/slack"
-	"git-devops.totvs.com.br/intera/httpRequestClient"
+	"gitlab.com/ascenty/httpRequestClient"
 )
 
 type TGHMessage struct {
