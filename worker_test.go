@@ -48,6 +48,11 @@ func loadConfWorker() {
 
 	config.EnvAmqp.Hosts = []string{"amqp://"}
 
+	config.EnvConfig.OntapS3URL = "http://187.94.57.8"
+	config.EnvConfig.OntapS3DisableSsl = true
+	config.EnvConfig.OntapS3AccessKeyID = "XGEKL12247X0XBEIRGQB"
+	config.EnvConfig.OntapS3SecretAccessKey = "3335B44uV_8r9Tqlqp8XuAYWXggq4KJNcw7JVcc_"
+
 	config.LoadLogger()
 	config.LoadRedis()
 }
@@ -79,6 +84,15 @@ func Test_WorkerFactory_VMWare(t *testing.T) {
 
 	loadConfWorker()
 	fmt.Println(wf.VMWare())
+}
+
+func Test_WorkerFactory_SessionS3(t *testing.T) {
+	var (
+		wf	WorkerFactory
+	)
+
+	loadConfWorker()
+	fmt.Println(wf.SessionS3())
 }
 
 func Test_WorkerFactory_JCStack(t *testing.T) {

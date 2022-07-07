@@ -16,6 +16,9 @@ import (
 	"gitlab.com/ascenty/core/log"
 	"github.com/vmware/govmomi/vim25/soap"
 	"github.com/vmware/govmomi"
+	"github.com/aws/aws-sdk-go/aws/credentials"
+	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/aws"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
@@ -62,6 +65,7 @@ type Factorier interface {
 	Paloalto(Authenticate) (paloalto.Paloalto, error)
 	JCStack(Authenticate) (*jcstack.JCStack, error)
 	VMWare() (*govmomi.Client, error)
+	SessionS3() (*session.Session, error)
 	GetTransactionID() string
 	SetTransactionID(string)
 }
@@ -88,6 +92,10 @@ func (f *Factory) VMWare() (*govmomi.Client, error) {
 	panic("Method VMWare not implemented")
 }
 
+func (f *Factory) SessionS3() (*session.Session, error) {
+	panic("Method SessionS3 not implemented")
+}
+
 func (f *Factory) GetTransactionID() string {
 	panic("Method GetTransactionID not implemented")
 }
@@ -103,6 +111,7 @@ type WorkerFactory struct {
 	rubrik		*rubrik.Rubrik
 	jcstack		*jcstack.JCStack
 	vmware		*govmomi.Client
+	sess		*session.Session
 	transactionID	string
 }
 
@@ -203,6 +212,27 @@ func (wf *WorkerFactory) VMWare() (*govmomi.Client, error) {
 	client, err = govmomi.NewClient(config.EnvSingletons.Context, u, config.EnvConfig.VMWareInsecure)
 
 	return client, err
+}
+
+func (wf *WorkerFactory) SessionS3() (*session.Session, error) {
+	var (
+		sess  *session.Session
+		err   error
+	)
+
+	sess, err = session.NewSession(&aws.Config{
+		CredentialsChainVerboseErrors:  aws.Bool(true),
+		Region:                         aws.String("*"),
+		Endpoint:                       aws.String(config.EnvConfig.OntapS3URL),
+		S3ForcePathStyle:               aws.Bool(true),
+		DisableSSL:                     aws.Bool(config.EnvConfig.OntapS3DisableSsl),
+		Credentials:                    credentials.NewStaticCredentialsFromCreds(credentials.Value{
+		        AccessKeyID:      config.EnvConfig.OntapS3AccessKeyID,
+		        SecretAccessKey:  config.EnvConfig.OntapS3SecretAccessKey,
+		}),
+	})
+
+	return sess, err
 }
 
 func (wf *WorkerFactory) GetTransactionID() string {

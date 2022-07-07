@@ -48,3 +48,5 @@ import:
   version: 0.10.0
 - package: gitlab.com/ascenty/httpRequestClient
   repo: git@gitlab.com:ascenty/httpRequestClient.git
+- package: github.com/aws/aws-sdk-go
+  version: v1.44.48
