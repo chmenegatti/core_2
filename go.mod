@@ -18,7 +18,7 @@ require (
 	gitlab.com/ascenty/go-nsxt v0.0.3
 	gitlab.com/ascenty/go-ontap v0.0.0-20220923174528-3a2c90e881a3
 	gitlab.com/ascenty/go-singleton v0.0.3
-	gitlab.com/ascenty/httpRequestClient v0.0.5
+	gitlab.com/ascenty/httpRequestClient v0.0.4
 	gitlab.com/ascenty/johdin v0.0.2
 	gitlab.com/ascenty/moirai-http-client v0.0.2
 	gitlab.com/ascenty/paloalto v0.1.4
