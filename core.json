@@ -49,6 +49,7 @@
 	},
 	"VMWareDefaultDatacenter": "NSX-DATACENTER",
 	"VMWareVirtualMachineTimeout": 1200,
+	"CloudInitUserDataURL": "127.0.0.1:5098",
 	"JCStackURL": "https://172.18.204.10",
 	"JCStackUsername": "nemesis",
 	"JCStackPassword": "xKBG}Lu8?{3.?mxc",
@@ -73,4 +74,5 @@
 	"GetMyfilesUsername": "lucas",
 	"GetMyfilesPassword": "!@lucas@286768"
 }
+
 

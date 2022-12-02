@@ -12,4 +12,5 @@ const (
   INTEGRATION_PALOALTO	  = "paloalto"
   INTEGRATION_JCSTACK	  = "jcstack"
   INTEGRATION_ONTAP	  = "ontap"
+  INTEGRATION_FORTINET	  = "fortinet"
 )

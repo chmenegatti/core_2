@@ -3,6 +3,7 @@ package core
 import (
 	configMoiraiHttpClient "gitlab.com/ascenty/moirai-http-client/config"
 	"gitlab.com/ascenty/core/config"
+	"github.com/slack-go/slack"
 	"golang.org/x/net/context"
 	"net/http/httptest"
 	"os/signal"
@@ -70,6 +71,9 @@ func loadConfCore() {
 	config.EnvConfig.SyslogFacility = "local6"
 	config.EnvConfig.CheckURL = "v1/health"
 	config.EnvConfig.CheckPort = "8000"
+	config.EnvConfig.Edge = "Teste"
+	config.EnvConfig.SlackToken = ""
+	config.EnvConfig.SlackChannel = ""
 
 	config.EnvRedis.Hosts = map[string]string{"localhost": "127.0.0.1:6379"}
 	config.EnvRedis.Timeout = 5
@@ -84,6 +88,8 @@ func loadConfCore() {
 	config.EnvAmqp.ExchangeRouting = "topic"
 	config.EnvAmqp.DelayErrorMessage = "1000"
 	config.EnvAmqp.DelayRequeueMessage = "1000"
+
+	config.EnvSingletons.Slack = slack.New(config.EnvConfig.SlackToken)
 
 	config.EnvAmqpResources = []config.AmqpResourceValues{
 		{
@@ -133,7 +139,6 @@ func Test_Core_Run(t *testing.T) {
 		sigs		  = make(chan os.Signal, 1)
 	)
 
-	fmt.Println("PORRA")
 	ctx, done = context.WithCancel(context.Background())
 	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
 

@@ -42,7 +42,7 @@ func (r *Repository) Delete(condition interface{}) (bool, error) {
 	entity = reflect.New(reflect.ValueOf(condition).Type().Elem()).Elem()
 	operation = r.DB.Where(condition).Delete(entity.Interface())
 
-	if operation.RecordNotFound() {
+	if operation.RecordNotFound() || operation.RowsAffected == 0 {
 		return false, nil
 	}
 
@@ -76,7 +76,7 @@ func (r *Repository) ReadByConditions(entity, conditions interface{}) (bool, err
 		return false, errors.New("The target struct is required to be a pointer")
 	}
 
-	var operation *gorm.DB = r.DB.First(entity, conditions)
+	var operation *gorm.DB = r.DB.Find(entity, conditions)
 
 	if operation.RecordNotFound() {
 		return false, nil

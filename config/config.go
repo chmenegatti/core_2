@@ -15,6 +15,7 @@ import (
 	"gitlab.com/ascenty/go-nsxt"
 	"gitlab.com/ascenty/go-ontap"
 	"github.com/vmware/govmomi"
+	"github.com/slack-go/slack"
 )
 
 const (
@@ -97,6 +98,8 @@ type Config struct {
 	OntapUsername string  `json:",omitempty"`
 	OntapPassword string  `json:",omitempty"`
 
+	Fortinet  map[string]Fortinet `json:",omitempty"`
+
 	EnableGetMyfiles    bool    `json:",omitempty"`
 	GetMyfilesURL	    string  `json:",omitempty"`
 	GetMyfilesUsername  string  `json:",omitempty"`
@@ -104,6 +107,18 @@ type Config struct {
 	GetMyfilesEnableSSL bool    `json:",omitempty"`
 	GetMyfilesCertFile  string  `json:",omitempty"`
 	GetMyfilesKeyFile   string  `json:",omitempty"`
+
+	Edge	      string  `json:",omitempty"`
+	SlackToken    string  `json:",omitempty"`
+	SlackChannel  string  `json:",omitempty"`
+
+	EnableDataCollector	bool	`json:",omitempty"`
+	TotvsGatewayHistoryUrl	string  `json:",omitempty"`
+}
+
+type Fortinet struct {
+	URL	    string  `json:",omitempty"`
+	AccessToken string  `json:",omitempty"`
 }
 
 type Rubrik struct {
@@ -134,6 +149,7 @@ type Singletons struct {
 	Paloalto	map[string]paloalto.Paloalto
 	AddressManager	*goam.Client
 	Ontap		*ontap.OntapClient
+	Slack		*slack.Client
 }
 
 type Amqp struct {
@@ -203,6 +219,7 @@ type Infos struct {
 	Paloalto	bool
 	AddressManager	bool
 	Ontap		bool
+	Slack		bool
 	DBKey		string
 }
 
@@ -286,6 +303,10 @@ func loadEtcd(infos Infos) {
 			if err = LoadOntap(); err != nil {
 				_log.Fatalf("Error to init ontap: %s\n", err)
 			}
+		}
+
+		if infos.Slack {
+			EnvSingletons.Slack = slack.New(EnvConfig.SlackToken)
 		}
 
 		if infos.AddressManager {
