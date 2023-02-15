@@ -114,6 +114,11 @@ type Config struct {
 
 	EnableDataCollector	bool	`json:",omitempty"`
 	TotvsGatewayHistoryUrl	string  `json:",omitempty"`
+
+	OntapS3URL		string	`json:",omitempty"`
+	OntapS3DisableSsl	bool	`json:",omitempty"`
+	OntapS3AccessKeyID	string	`json:",omitempty"`
+	OntapS3SecretAccessKey	string	`json:",omitempty"`
 }
 
 type Fortinet struct {
