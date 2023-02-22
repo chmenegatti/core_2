@@ -2,16 +2,58 @@ package repository
 
 import (
 	"fmt"
+	"bytes"
+	"errors"
 	"testing"
 	"database/sql/driver"
 	"github.com/jinzhu/gorm"
 	"github.com/erikstmartin/go-testdb"
 )
 
+type JSON []byte
+func (j JSON) Value() (driver.Value, error) {
+	if j.IsNull() {
+		return nil, nil
+	}
+	return string(j), nil
+}
+func (j *JSON) Scan(value interface{}) error {
+	if value == nil {
+		*j = nil
+		return nil
+	}
+	s, ok := value.([]byte)
+	if !ok {
+		errors.New("Invalid Scan Source")
+	}
+	*j = append((*j)[0:0], s...)
+	return nil
+}
+func (m JSON) MarshalJSON() ([]byte, error) {
+	if m == nil {
+		return []byte("null"), nil
+	}
+	return m, nil
+}
+func (m *JSON) UnmarshalJSON(data []byte) error {
+	if m == nil {
+		return errors.New("null point exception")
+	}
+	*m = append((*m)[0:0], data...)
+	return nil
+}
+func (j JSON) IsNull() bool {
+	return len(j) == 0 || string(j) == "null"
+}
+func (j JSON) Equals(j1 JSON) bool {
+	return bytes.Equal([]byte(j), []byte(j1))
+}
+
 type Src struct {
-	ID	string  `json:"ID,omitempty"`
-	Name	string  `json:"Name,omitempty"`
-	NameID	string  `json:"NameID,omitempty"`
+	ID	    string	    `json:"ID,omitempty"`
+	Name	    string	    `json:"Name,omitempty"`
+	NameID	    string	    `json:"NameID,omitempty"`
+	Attributes  string	    `json:"Attributes,omitempty" gorm:"type:json"`
 }
 
 type Dst struct {
@@ -99,13 +141,13 @@ func Test_Read(t *testing.T) {
 
 func Test_ReadByConditions(t *testing.T) {
 	var (
-		s   = Src{}
+		s   = []Src{}
 		r   Repository
 		err error
 	)
 
 	testdb.SetQueryWithArgsFunc(func(query string, args []driver.Value) (driver.Rows, error) {
-		columns := []string{"name", "name_id"}
+		columns := []string{"name", "name_id", "attributes"}
 		rows := "Name,NameID"
 
 		fmt.Println("query: ", query)
