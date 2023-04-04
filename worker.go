@@ -1,44 +1,46 @@
 package core
 
 import (
-	"errors"
 	"context"
+	"crypto/tls"
+	"errors"
+	"fmt"
+	"net/http"
 	"net/url"
 	"sync"
-	"fmt"
 
-	"gitlab.com/ascenty/rubrik-golang"
-	"gitlab.com/ascenty/paloalto"
-	"gitlab.com/ascenty/go-singleton"
-	"gitlab.com/ascenty/go-cache/redis"
-	"gitlab.com/ascenty/go-jcstack"
-	"gitlab.com/ascenty/core/config"
-	"gitlab.com/ascenty/core/log"
-	"github.com/vmware/govmomi/vim25/soap"
-	"github.com/vmware/govmomi"
+	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
-	"github.com/aws/aws-sdk-go/aws"
+	"github.com/vmware/govmomi"
+	"github.com/vmware/govmomi/vim25/soap"
+	"gitlab.com/ascenty/core/config"
+	"gitlab.com/ascenty/core/log"
+	"gitlab.com/ascenty/go-cache/redis"
+	"gitlab.com/ascenty/go-jcstack"
+	"gitlab.com/ascenty/go-singleton"
+	"gitlab.com/ascenty/paloalto"
+	"gitlab.com/ascenty/rubrik-golang"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
 )
 
 const (
-	FORCE_AUTHENTICATE  = true
+	FORCE_AUTHENTICATE = true
 )
 
 type Authenticate struct {
 	sync.RWMutex
 
-	DB	  DBAuthenticate
-	Dbaas	  DbaasAuthenticate
-	Paloalto  PaloaltoAuthenticate
-	JCStack	  JCStackAuthenticate
+	DB       DBAuthenticate
+	Dbaas    DbaasAuthenticate
+	Paloalto PaloaltoAuthenticate
+	JCStack  JCStackAuthenticate
 }
 
 type DBAuthenticate struct {
-	Connection  *gorm.DB
+	Connection *gorm.DB
 }
 
 type DbaasAuthenticate struct {
@@ -46,17 +48,17 @@ type DbaasAuthenticate struct {
 }
 
 type PaloaltoAuthenticate struct {
-	URL	  string  `json:",omitempty"`
-	Username  string  `json:"-"`
-	Password  string  `json:"-"`
-	Vsys	  string  `json:"-"`
+	URL      string `json:",omitempty"`
+	Username string `json:"-"`
+	Password string `json:"-"`
+	Vsys     string `json:"-"`
 }
 
 type JCStackAuthenticate struct {
-	URL	  string  `json:",omitempty"`
-	Username  string  `json:",omitempty"`
-	Password  string  `json:",omitempty"`
-	Server	  string  `json:",omitempty"`
+	URL      string `json:",omitempty"`
+	Username string `json:",omitempty"`
+	Password string `json:",omitempty"`
+	Server   string `json:",omitempty"`
 }
 
 type Factorier interface {
@@ -70,7 +72,7 @@ type Factorier interface {
 	SetTransactionID(string)
 }
 
-type Factory struct {}
+type Factory struct{}
 
 func (f *Factory) DB(a Authenticate) (*gorm.DB, error) {
 	panic("Method DB not implemented")
@@ -107,20 +109,20 @@ func (f *Factory) SetTransactionID(id string) {
 type WorkerFactory struct {
 	Factory
 
-	db		*gorm.DB
-	rubrik		*rubrik.Rubrik
-	jcstack		*jcstack.JCStack
-	vmware		*govmomi.Client
-	sess		*session.Session
-	transactionID	string
+	db            *gorm.DB
+	rubrik        *rubrik.Rubrik
+	jcstack       *jcstack.JCStack
+	vmware        *govmomi.Client
+	sess          *session.Session
+	transactionID string
 }
 
 func (wf *WorkerFactory) Rubrik(cluster string) (*rubrik.Rubrik, error) {
 	var (
-		client  interface{}
-		err	error
-		r	*rubrik.Rubrik
-		ok	bool
+		client interface{}
+		err    error
+		r      *rubrik.Rubrik
+		ok     bool
 	)
 
 	if _, ok = config.EnvConfig.Rubrik[cluster]; !ok {
@@ -146,17 +148,17 @@ func (wf *WorkerFactory) Rubrik(cluster string) (*rubrik.Rubrik, error) {
 
 func (wf WorkerFactory) JCStack(a Authenticate) (*jcstack.JCStack, error) {
 	var (
-		client	interface{}
-		err	error
-		jc	*jcstack.JCStack
+		client interface{}
+		err    error
+		jc     *jcstack.JCStack
 	)
 
 	if client, err = wf.authenticate(
 		jcstack.JCStackConfig{
-			URL:	  a.JCStack.URL,
+			URL:      a.JCStack.URL,
 			Username: a.JCStack.Username,
 			Password: a.JCStack.Password,
-			Server:	  a.JCStack.Server,
+			Server:   a.JCStack.Server,
 		},
 		"jcstack",
 	); err != nil {
@@ -185,10 +187,10 @@ func (wf *WorkerFactory) Paloalto(a Authenticate) (paloalto.Paloalto, error) {
 	)
 
 	p, err = paloalto.NewClient(paloalto.PaloaltoConfig{
-		URL:	  a.Paloalto.URL,
+		URL:      a.Paloalto.URL,
 		Username: a.Paloalto.Username,
 		Password: a.Paloalto.Password,
-		Vsys:	  a.Paloalto.Vsys,
+		Vsys:     a.Paloalto.Vsys,
 	})
 
 	return p, err
@@ -196,9 +198,9 @@ func (wf *WorkerFactory) Paloalto(a Authenticate) (paloalto.Paloalto, error) {
 
 func (wf *WorkerFactory) VMWare() (*govmomi.Client, error) {
 	var (
-		u	*url.URL
-		client	*govmomi.Client
-		err	error
+		u      *url.URL
+		client *govmomi.Client
+		err    error
 	)
 
 	if u, err = soap.ParseURL(config.EnvConfig.VMWareURL); err != nil {
@@ -216,20 +218,26 @@ func (wf *WorkerFactory) VMWare() (*govmomi.Client, error) {
 
 func (wf *WorkerFactory) SessionS3() (*session.Session, error) {
 	var (
-		sess  *session.Session
-		err   error
+		sess *session.Session
+		err  error
 	)
 
+	tr := &http.Transport{
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+	}
+	client := &http.Client{Transport: tr}
+
 	sess, err = session.NewSession(&aws.Config{
-		CredentialsChainVerboseErrors:  aws.Bool(true),
-		Region:                         aws.String("*"),
-		Endpoint:                       aws.String(config.EnvConfig.OntapS3URL),
-		S3ForcePathStyle:               aws.Bool(true),
-		DisableSSL:                     aws.Bool(config.EnvConfig.OntapS3DisableSsl),
-		Credentials:                    credentials.NewStaticCredentialsFromCreds(credentials.Value{
-		        AccessKeyID:      config.EnvConfig.OntapS3AccessKeyID,
-		        SecretAccessKey:  config.EnvConfig.OntapS3SecretAccessKey,
+		CredentialsChainVerboseErrors: aws.Bool(true),
+		Region:                        aws.String("*"),
+		Endpoint:                      aws.String(config.EnvConfig.OntapS3URL),
+		S3ForcePathStyle:              aws.Bool(true),
+		DisableSSL:                    aws.Bool(config.EnvConfig.OntapS3DisableSsl),
+		Credentials: credentials.NewStaticCredentialsFromCreds(credentials.Value{
+			AccessKeyID:     config.EnvConfig.OntapS3AccessKeyID,
+			SecretAccessKey: config.EnvConfig.OntapS3SecretAccessKey,
 		}),
+		HTTPClient: client,
 	})
 
 	return sess, err
@@ -243,13 +251,13 @@ func (wf *WorkerFactory) SetTransactionID(id string) {
 	wf.transactionID = id
 }
 
-func (wf *WorkerFactory) authenticate(auth interface{},	control string) (interface{}, error) {
+func (wf *WorkerFactory) authenticate(auth interface{}, control string) (interface{}, error) {
 	var s singleton.Singleton = singleton.Singleton{
-		Auth:		    auth,
-		Expire:		    config.EnvRedis.Expire,
-		ConfigCache:	    redis.Config{},
-		ForceAuthenticate:  FORCE_AUTHENTICATE,
-		ClientCache:	    config.EnvSingletons.RedisConnection,
+		Auth:              auth,
+		Expire:            config.EnvRedis.Expire,
+		ConfigCache:       redis.Config{},
+		ForceAuthenticate: FORCE_AUTHENTICATE,
+		ClientCache:       config.EnvSingletons.RedisConnection,
 	}
 
 	return s.CacheControl(control)
