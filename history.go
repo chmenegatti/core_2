@@ -59,7 +59,7 @@ func TGHInsertDocument(payload interface{}) (err error) {
 		return
 	}
 
-	options, _ = httpRequest.SetOptions(
+	options = httpRequest.SetOptions(
 		httpRequest.ReqOptions{
 			PostBody: bytes.NewReader(body),
 			Headers: map[string]string{

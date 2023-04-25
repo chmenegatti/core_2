@@ -236,8 +236,8 @@ gitlab.com/ascenty/go-ontap v0.0.7 h1:RctQmCYzHrsubaNtjjESfZmAghda1dCzAaJ1j3AACw
 gitlab.com/ascenty/go-ontap v0.0.7/go.mod h1:99OvafuoYLfQTKbTUNQItZG7lxv4GZbwvxxfbxAD0Pg=
 gitlab.com/ascenty/go-singleton v0.0.3 h1:vHV67C3sYpPsERQ6par/oC+1slC6vhp4jKIl4kDB3a0=
 gitlab.com/ascenty/go-singleton v0.0.3/go.mod h1:6Bltwd52wi5l+/mLjeKzesk44eRL5+VEdqosCKYyyOg=
-gitlab.com/ascenty/httpRequestClient v0.0.5 h1:PCJ2m3IdDsagPEDkNzJZAx93naDONmBx5y3ZVQs4scw=
-gitlab.com/ascenty/httpRequestClient v0.0.5/go.mod h1:noM2YIEEZRbPdDx7Rj1MkPd1b3vzRm9XWavFAZNDLpw=
+gitlab.com/ascenty/httpRequestClient v0.0.4 h1:wZBd8JZBJ8v4+I6pMAp/NigQNBYpbjVD9x2B77foP5c=
+gitlab.com/ascenty/httpRequestClient v0.0.4/go.mod h1:noM2YIEEZRbPdDx7Rj1MkPd1b3vzRm9XWavFAZNDLpw=
 gitlab.com/ascenty/johdin v0.0.2 h1:AyqYA/erb/CCxJ6jznAQnYEqS9BDO7b8w7rTteOvn3k=
 gitlab.com/ascenty/johdin v0.0.2/go.mod h1:F1AjQpnGcUXvA7g9XD3p0T75ghA2nCW6ZNRrqypX+KM=
 gitlab.com/ascenty/moirai-http-client v0.0.3 h1:k3SS92qPhSu02NoTOYLqY1KYo4jtKFE474ljVLiwkKY=
