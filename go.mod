@@ -2,8 +2,6 @@ module gitlab.com/ascenty/core
 
 go 1.20
 
-replace gitlab.com/ascenty/httpRequestClient => ../httprequestclient
-
 require (
 	github.com/aws/aws-sdk-go v1.44.207
 	github.com/erikstmartin/go-testdb v0.0.0-20160219214506-8d10e4a1bae5
@@ -23,7 +21,7 @@ require (
 	gitlab.com/ascenty/go-singleton v0.0.3
 	gitlab.com/ascenty/httpRequestClient v0.0.4
 	gitlab.com/ascenty/johdin v0.0.2
-	gitlab.com/ascenty/moirai-http-client v0.0.3-troubleshooting
+	gitlab.com/ascenty/moirai-http-client v0.0.6-paas
 	gitlab.com/ascenty/paloalto v0.1.4
 	gitlab.com/ascenty/rubrik-golang v0.4.1
 	golang.org/x/net v0.5.0
@@ -53,7 +51,7 @@ require (
 	github.com/schollz/progressbar/v3 v3.12.2 // indirect
 	github.com/sirupsen/logrus v1.6.0 // indirect
 	github.com/smartystreets/assertions v1.2.0 // indirect
-	gitlab.com/ascenty/dtos v1.0.2-troubleshooting // indirect
+	gitlab.com/ascenty/dtos v1.0.12-paas // indirect
 	go.etcd.io/etcd/api/v3 v3.5.5 // indirect
 	go.etcd.io/etcd/client/pkg/v3 v3.5.5 // indirect
 	go.etcd.io/etcd/client/v3 v3.5.5 // indirect

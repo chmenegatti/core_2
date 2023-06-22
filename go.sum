@@ -219,6 +219,8 @@ github.com/yuin/goldmark v1.3.5/go.mod h1:mwnBkeHKe2W/ZEtQ+71ViKU8L12m81fl3OWwC1
 github.com/yuin/goldmark v1.4.13/go.mod h1:6yULJ656Px+3vBD8DxQVa3kxgyrAnzto9xy5taEt/CY=
 gitlab.com/ascenty/dtos v1.0.2-troubleshooting h1:Q6IKpWskDwaF9+k2ciTB86XsfaHdRSDe7SbwCtHdDXk=
 gitlab.com/ascenty/dtos v1.0.2-troubleshooting/go.mod h1:QW+hm7GH2Oe+J4ODY0qT0ilEzcWpXlvxiiMvOUnFEVg=
+gitlab.com/ascenty/dtos v1.0.12-paas h1:qQgVvtF9Lr9mYK195kP3i2mFQanfr8WHslWa3KFPGSs=
+gitlab.com/ascenty/dtos v1.0.12-paas/go.mod h1:QW+hm7GH2Oe+J4ODY0qT0ilEzcWpXlvxiiMvOUnFEVg=
 gitlab.com/ascenty/go-address-manager v0.0.1 h1:wajKh0HGMmCtifrbvgyGFWlnAh+MGqr/2nZzER+lWgs=
 gitlab.com/ascenty/go-address-manager v0.0.1/go.mod h1:8eqXa1hd53mOT0wcUbx/2+pvXNhnRkD8aqqC7g5wXbk=
 gitlab.com/ascenty/go-cache v0.0.2 h1:VqmUYr22Nkex57Y4/dtMzzHAsitHhlCZCBwi33Y4tQ4=
@@ -235,10 +237,14 @@ gitlab.com/ascenty/go-ontap v0.0.7 h1:RctQmCYzHrsubaNtjjESfZmAghda1dCzAaJ1j3AACw
 gitlab.com/ascenty/go-ontap v0.0.7/go.mod h1:99OvafuoYLfQTKbTUNQItZG7lxv4GZbwvxxfbxAD0Pg=
 gitlab.com/ascenty/go-singleton v0.0.3 h1:vHV67C3sYpPsERQ6par/oC+1slC6vhp4jKIl4kDB3a0=
 gitlab.com/ascenty/go-singleton v0.0.3/go.mod h1:6Bltwd52wi5l+/mLjeKzesk44eRL5+VEdqosCKYyyOg=
+gitlab.com/ascenty/httpRequestClient v0.0.4 h1:wZBd8JZBJ8v4+I6pMAp/NigQNBYpbjVD9x2B77foP5c=
+gitlab.com/ascenty/httpRequestClient v0.0.4/go.mod h1:noM2YIEEZRbPdDx7Rj1MkPd1b3vzRm9XWavFAZNDLpw=
 gitlab.com/ascenty/johdin v0.0.2 h1:AyqYA/erb/CCxJ6jznAQnYEqS9BDO7b8w7rTteOvn3k=
 gitlab.com/ascenty/johdin v0.0.2/go.mod h1:F1AjQpnGcUXvA7g9XD3p0T75ghA2nCW6ZNRrqypX+KM=
 gitlab.com/ascenty/moirai-http-client v0.0.3-troubleshooting h1:g2dK/2Fw+sKY0+jp33s25g63SumuDq07vFEgR9JHYO4=
 gitlab.com/ascenty/moirai-http-client v0.0.3-troubleshooting/go.mod h1:ZjY7yCVWCh+mv9KLShdEt9Eb1aMLdK0KFZZGw+lxGh0=
+gitlab.com/ascenty/moirai-http-client v0.0.6-paas h1:ikicxSrL6EZPtm+Db1rVjfRxcuszbUl/KHIsl77XyHw=
+gitlab.com/ascenty/moirai-http-client v0.0.6-paas/go.mod h1:rIN+OmeFGmFhzyTx1uWvrZj1zb1vplmnbdgYGl4r6xU=
 gitlab.com/ascenty/paloalto v0.1.4 h1:9+dj8RTshe77p8pezG7WsD2puLUwCtlKN4QbY9BSXwc=
 gitlab.com/ascenty/paloalto v0.1.4/go.mod h1:Y//aadyfs9Z34gT4JjBHEh2FZLT9kwYpFJzzzjDgPRY=
 gitlab.com/ascenty/rubrik-golang v0.4.1 h1:ySw+oYtZSYYyG9JaJYQekBvjVkHdhYE0NatmxeiWZPo=
